@@ -6,74 +6,91 @@
     <title>{{ $product->name }} - Farhana Web</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        #mainImage { transition: opacity 0.2s ease-in-out; }
+        #mainImage { transition: opacity 0.3s ease-in-out; }
+        .product-title { letter-spacing: 0.1em; }
+        .description-text { line-height: 1.8; letter-spacing: 0.05em; }
     </style>
 </head>
-<body class="bg-white text-gray-900 font-sans">
+<body class="bg-white text-gray-900 font-sans antialiased">
     
-    <nav class="border-b py-6 mb-10 bg-white sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <a href="{{ route('home') }}" class="text-xs font-bold uppercase tracking-widest hover:text-gray-500 transition">&larr; Kembali ke Koleksi</a>
-            <h1 class="text-xl font-bold tracking-tighter uppercase">Farhana</h1>
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="text-2xl font-light tracking-[0.4em] uppercase">Farhana</a>
+                </div>
+                <a href="{{ route('home') }}" class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-black transition">
+                    &larr; Back to Collection
+                </a>
+            </div>
         </div>
+        @if(session('success'))
+    <div class="bg-black text-white text-[10px] tracking-[0.2em] uppercase py-3 text-center animate-fade-in-down">
+        {{ session('success') }}
+    </div>
+        @endif
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 pb-20">
-        <div class="flex flex-col md:flex-row gap-12">
+    <div class="max-w-7xl mx-auto px-4 py-12 lg:py-20">
+        <div class="flex flex-col lg:flex-row gap-16">
             
-            <div class="md:w-1/2 space-y-4">
-                <div class="bg-gray-50 rounded-sm overflow-hidden aspect-[3/4] border border-gray-100 shadow-sm">
+            <div class="lg:w-3/5 space-y-6">
+                <div class="bg-gray-50 overflow-hidden aspect-[3/4] border border-gray-50">
                     <img id="mainImage" 
-                         src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
+                         src="{{ asset('storage/' . $product->images->where('is_primary', true)->first()->image_path ?? $product->images->first()->image_path) }}" 
                          class="w-full h-full object-cover" 
                          alt="{{ $product->name }}">
                 </div>
 
-                <div class="grid grid-cols-5 gap-2">
+                <div class="grid grid-cols-6 gap-3">
                     @foreach($product->images as $image)
-                        <div class="cursor-pointer border border-transparent hover:border-black transition aspect-square bg-gray-50 rounded-sm overflow-hidden"
+                        <div class="cursor-pointer border-b-2 {{ $loop->first ? 'border-black' : 'border-transparent' }} hover:border-black transition pb-2"
                              onclick="changeImage('{{ asset('storage/' . $image->image_path) }}', this)">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                 class="w-full h-full object-cover opacity-80 hover:opacity-100 transition">
+                            <div class="aspect-square bg-gray-50 overflow-hidden">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover">
+                            </div>
                         </div>
                     @endforeach
                 </div>
             </div>
 
-            <div class="md:w-1/2">
-                <div class="sticky top-28">
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.3em] mb-2 font-semibold">
-                        {{ $product->category->name ?? 'Koleksi Farhana' }}
+            <div class="lg:w-2/5">
+                <div class="sticky top-32">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-4">
+                        {{ $product->category->name ?? 'Collection' }}
                     </p>
-                    <h1 class="text-4xl font-light mb-4 tracking-tight text-gray-800 uppercase italic leading-tight">
+                    <h1 class="text-3xl font-light mb-6 tracking-widest uppercase text-gray-900 leading-snug">
                         {{ $product->name }}
                     </h1>
-                    <p class="text-2xl font-medium mb-8 text-gray-900">
-                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                    <p class="text-2xl font-light mb-10 text-gray-900 tracking-wider">
+                        IDR {{ number_format($product->price, 0, ',', '.') }}
                     </p>
 
-                    <div class="border-t border-b py-10 mb-8 border-gray-100">
-                        <h3 class="text-xs font-bold uppercase mb-6 tracking-[0.2em] text-gray-400">Deskripsi Produk</h3>
-                        <div class="text-gray-600 leading-relaxed text-sm space-y-4 whitespace-pre-line italic">
-                            {{ $product->description }}
+                    <div class="border-t border-gray-100 pt-10 mb-10">
+                        <h3 class="text-[10px] font-bold uppercase mb-6 tracking-[0.3em] text-gray-900">Description</h3>
+                        <div class="text-gray-500 text-xs description-text uppercase">
+                            {!! nl2br(e($product->description)) !!}
                         </div>
                     </div>
 
-                    <div class="space-y-6">
-                        <div class="flex items-center justify-between text-xs uppercase tracking-widest text-gray-400">
-                            <span>Ketersediaan</span>
-                            <span class="text-gray-900 font-bold">{{ $product->stock }} Pcs</span>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-gray-400 pb-4 border-b border-gray-50">
+                            <span>Availability</span>
+                            <span class="text-gray-900 font-bold">{{ $product->stock }} In Stock</span>
                         </div>
                         
+                        <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition duration-500 shadow-lg mb-4">
+                                Add to Cart
+                            </button>
+                        </form>
+
                         <a href="https://wa.me/628123456789?text=Halo%20Farhana,%20saya%20tertarik%20dengan%20produk%20{{ $product->name }}" 
                            target="_blank"
-                           class="block w-full bg-black text-white text-center py-5 rounded-sm uppercase tracking-[0.2em] text-xs font-bold hover:bg-gray-800 transition shadow-xl">
-                            Pesan Melalui WhatsApp
+                           class="block w-full border border-gray-200 text-center py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-900 hover:bg-gray-50 transition duration-500">
+                            Order via WhatsApp
                         </a>
-                        
-                        <p class="text-[10px] text-center text-gray-400 uppercase tracking-widest">
-                            * Pengiriman ke seluruh Indonesia
-                        </p>
                     </div>
                 </div>
             </div>
@@ -82,60 +99,43 @@
     </div>
 
     @if($relatedProducts->count() > 0)
-    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-gray-100">
-        <div class="flex flex-col items-center mb-16">
-            <h3 class="text-sm font-bold uppercase tracking-[0.4em] mb-2">Produk Terkait</h3>
-            <div class="h-px w-20 bg-black"></div>
+    <div class="max-w-7xl mx-auto px-4 py-24 border-t border-gray-50">
+        <div class="text-center mb-16">
+            <h3 class="text-[11px] font-bold uppercase tracking-[0.5em] text-gray-900">You May Also Like</h3>
         </div>
         
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-10">
             @foreach($relatedProducts as $related)
-                <a href="{{ route('product.details', $related->slug) }}" class="group block">
-                    <div class="aspect-[3/4] bg-gray-50 overflow-hidden mb-5 rounded-sm border border-gray-50">
-                        @php
-                            $primaryImg = $related->images->where('is_primary', true)->first() ?? $related->images->first();
-                        @endphp
-                        @if($primaryImg)
-                            <img src="{{ asset('storage/' . $primaryImg->image_path) }}" 
-                                 class="w-full h-full object-cover transition duration-1000 group-hover:scale-110">
-                        @else
-                            <div class="flex items-center justify-center h-full text-gray-300 text-[10px] uppercase">No Image</div>
-                        @endif
+                <a href="{{ route('product.details', $related->slug) }}" class="group text-center">
+                    <div class="aspect-[3/4] bg-gray-50 overflow-hidden mb-6">
+                        @php $relImg = $related->images->where('is_primary', true)->first() ?? $related->images->first(); @endphp
+                        <img src="{{ asset('storage/' . $relImg->image_path) }}" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
                     </div>
-                    <h4 class="text-[10px] font-bold uppercase tracking-widest text-gray-800 group-hover:text-gray-500 transition">{{ $related->name }}</h4>
-                    <p class="text-xs font-medium mt-2 text-gray-900 tracking-tighter">Rp {{ number_format($related->price, 0, ',', '.') }}</p>
+                    <h4 class="text-[10px] font-bold uppercase tracking-widest mb-2">{{ $related->name }}</h4>
+                    <p class="text-[10px] text-gray-400 tracking-widest">IDR {{ number_format($related->price, 0, ',', '.') }}</p>
                 </a>
             @endforeach
         </div>
     </div>
     @endif
 
-    <footer class="py-16 border-t border-gray-100 text-center">
-        <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] mb-4">&copy; 2026 Farhana Web Exclusive</p>
-        <div class="flex justify-center gap-6">
-            </div>
+    <footer class="py-12 border-t border-gray-50 text-center">
+        <p class="text-[9px] text-gray-300 uppercase tracking-[0.5em]">&copy; 2026 Farhana Official</p>
     </footer>
 
     <script>
         function changeImage(imageSrc, element) {
             const mainImage = document.getElementById('mainImage');
-            
-            // Efek Fade Out
             mainImage.style.opacity = '0';
-            
             setTimeout(() => {
                 mainImage.src = imageSrc;
-                // Efek Fade In
                 mainImage.style.opacity = '1';
-            }, 200);
+            }, 300);
 
-            // Menghapus border aktif dari semua thumbnail
             document.querySelectorAll('.cursor-pointer').forEach(el => {
                 el.classList.remove('border-black');
                 el.classList.add('border-transparent');
             });
-            
-            // Menambah border aktif ke thumbnail yang diklik
             element.classList.remove('border-transparent');
             element.classList.add('border-black');
         }

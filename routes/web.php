@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SliderController; // Import Controller Slider
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,14 @@ use Illuminate\Support\Facades\Route;
 // Gunakan HomeController agar logika data sliders/produk terpusat di satu tempat
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{slug}', [HomeController::class, 'show'])->name('product.details');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+
+Route::get('/cart', function () {
+    $cart = session()->get('cart', []);
+    return view('cart.index', compact('cart'));
+})->name('cart.index');
+
+Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
 
 /*
