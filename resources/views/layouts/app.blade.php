@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel Admin') }}</title>
+        <title>{{ config('app.name', 'Farhana Web') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -18,33 +18,44 @@
             <aside class="w-64 bg-white border-r border-gray-200 hidden md:block flex-shrink-0 shadow-sm">
                 <div class="h-full flex flex-col">
                     <div class="p-6 border-b border-gray-100">
-                        <span class="text-xl font-bold tracking-tighter text-black uppercase">FARHANA ADMIN</span>
+                        <span class="text-xl font-bold tracking-tighter text-black uppercase">
+                            {{ auth()->user()->role === 'admin' ? 'FARHANA ADMIN' : 'MY ACCOUNT' }}
+                        </span>
                     </div>
 
                     <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                         <p class="text-xs font-semibold text-gray-400 uppercase px-3 mb-2 tracking-widest">Utama</p>
                         
-                        <a href="{{ route('admin.dashboard') }}" 
-                           class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('admin.dashboard') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
+                        <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" 
+                           class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('admin.dashboard') || request()->routeIs('dashboard') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
                             Dashboard
                         </a>
 
-                        <p class="text-xs font-semibold text-gray-400 uppercase px-3 mt-6 mb-2 tracking-widest">Katalog</p>
+                        @if(auth()->user()->role === 'admin')
+                            <p class="text-xs font-semibold text-gray-400 uppercase px-3 mt-6 mb-2 tracking-widest">Katalog</p>
 
-                        <a href="{{ route('categories.index') }}" 
-                           class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('categories.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            Kelola Kategori
-                        </a>
+                            <a href="{{ route('categories.index') }}" 
+                               class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('categories.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
+                                Kelola Kategori
+                            </a>
 
-                        <a href="{{ route('products.index') }}" 
-                           class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('products.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            Kelola Produk
-                        </a>
+                            <a href="{{ route('products.index') }}" 
+                               class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('products.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
+                                Kelola Produk
+                            </a>
 
-                         <a href="{{ route('sliders.index') }}" 
-                           class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('products.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            Kelola Banner
-                        </a>
+                             <a href="{{ route('sliders.index') }}" 
+                               class="flex items-center px-4 py-3 text-sm rounded-lg transition {{ request()->routeIs('sliders.*') ? 'bg-black text-white shadow-md font-bold' : 'text-gray-600 hover:bg-gray-50' }}">
+                                Kelola Banner
+                            </a>
+                        @else
+                            <p class="text-xs font-semibold text-gray-400 uppercase px-3 mt-6 mb-2 tracking-widest">Aktivitas</p>
+                            
+                            <a href="{{ route('dashboard') }}" 
+                               class="flex items-center px-4 py-3 text-sm rounded-lg text-gray-600 hover:bg-gray-50 transition">
+                                Pesanan Saya
+                            </a>
+                        @endif
                     </nav>
 
                     <div class="p-4 border-t border-gray-100">
