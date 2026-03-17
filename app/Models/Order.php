@@ -14,14 +14,15 @@ class Order extends Model
         'order_number', 'user_id', 'total_amount', 'shipping_cost', 
         'grand_total', 'status', 'payment_method', 'payment_token', 
         'payment_deadline', 'shipping_service', 'tracking_number',
-        'receiver_name', 'receiver_phone', 'receiver_address'
+        'receiver_name', 'receiver_phone', 'receiver_address',
+        'destination_id', 'courier_name' // Kolom baru untuk Komerce
     ];
 
-    // Otomatis set deadline 2 jam saat order dibuat
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($order) {
+            // Deadline 2 jam secara default (akan dioverride di controller jika perlu)
             $order->payment_deadline = Carbon::now()->addHours(2);
             $order->order_number = 'FRH-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
         });

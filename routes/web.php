@@ -6,11 +6,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Jalur Publik
+| Public Routes
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -18,40 +19,53 @@ Route::get('/product/{slug}', [HomeController::class, 'show'])->name('product.de
 
 // Cart Routes
 Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', function () {
-        $cart = session()->get('cart', []);
-        return view('cart.index', compact('cart'));
-    })->name('index');
+    Route::get('/', [CartController::class, 'index'])->name('index'); 
     Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
     Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Jalur Customer / User Terautentikasi
+| Authenticated Routes (Customer)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // Dashboard Logic
     Route::get('/dashboard', function () {
-        // Jika admin mencoba akses dashboard user, arahkan ke admin dashboard
         if (auth()->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
         return view('dashboard');
     })->name('dashboard');
 
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // --- TAMBAHKAN ROUTE ALAMAT DI SINI ---
+    Route::patch('/profile/address', [ProfileController::class, 'updateAddress'])->name('profile.address.update');
+
+    // --- CHECKOUT ROUTES (UPDATED WITH API) ---
+    Route::prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        Route::post('/store', [CheckoutController::class, 'store'])->name('store');
+        Route::get('/waiting/{order_number}', [CheckoutController::class, 'waiting'])->name('waiting');
+        Route::post('/simulate-pay/{id}', [CheckoutController::class, 'simulatePay'])->name('simulatePay');
+    });
+
+    // --- API ROUTES FOR SHIPPING (KOMERCE) ---
+    Route::get('/api/locations', [CheckoutController::class, 'searchLocation'])->name('api.locations');
+    Route::post('/api/shipping-cost', [CheckoutController::class, 'calculateShipping'])->name('api.shipping');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Jalur Khusus Admin (Prefix: /admin)
+| Admin Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');

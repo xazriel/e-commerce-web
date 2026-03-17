@@ -1,4 +1,19 @@
 <x-app-layout>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container--default .select2-selection--single {
+            border-radius: 0.5rem;
+            border-color: #e5e7eb;
+            height: 45px;
+            line-height: 45px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 45px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+    </style>
+
     <div class="max-w-5xl mx-auto px-4 py-10" x-data="{ tab: 'orders' }">
         
         <div class="flex justify-between items-center mb-10">
@@ -7,6 +22,12 @@
                 Settings
             </a>
         </div>
+
+        @if(session('status') === 'address-updated')
+            <div class="mb-6 p-4 bg-green-50 border border-green-100 text-green-600 text-[10px] uppercase tracking-widest font-bold rounded-xl">
+                Address updated successfully.
+            </div>
+        @endif
 
         <div class="mb-10 border border-gray-100 p-8 bg-white shadow-sm rounded-xl">
             <h3 class="text-[11px] font-bold uppercase tracking-[0.3em] mb-8 text-gray-500">My Vouchers</h3>
@@ -28,6 +49,11 @@
                     class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
                     Orders
                 </button>
+                <button @click="tab = 'delivery'" 
+                    :class="tab === 'delivery' ? 'border-black text-black' : 'border-transparent text-gray-400'"
+                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
+                    Delivery Info
+                </button>
                 <button @click="tab = 'wishlist'" 
                     :class="tab === 'wishlist' ? 'border-black text-black' : 'border-transparent text-gray-400'"
                     class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
@@ -39,7 +65,6 @@
                 <div x-show="tab === 'orders'">
                     <div class="flex justify-between items-center mb-8">
                         <h4 class="text-[11px] font-bold uppercase tracking-widest">My Orders (0)</h4>
-                        
                         <select class="text-[10px] border-gray-200 rounded-md uppercase tracking-wider focus:ring-0 focus:border-black">
                             <option>All Status</option>
                             <option>Unpaid</option>
@@ -47,7 +72,6 @@
                             <option>Shipped</option>
                             <option>Completed</option>
                             <option>Cancelled</option>
-                            <option>Returned</option>
                         </select>
                     </div>
 
@@ -65,12 +89,80 @@
                     </div>
                 </div>
 
+                <div x-show="tab === 'delivery'" style="display: none;">
+                    <form action="{{ route('profile.address.update') }}" method="POST" class="max-w-2xl space-y-6">
+                        @csrf
+                        @method('PATCH')
+
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Recipient Phone Number</label>
+                                <input type="text" name="phone" value="{{ auth()->user()->phone }}" placeholder="0812..." required
+                                    class="w-full border-gray-200 rounded-lg p-3 text-[13px] focus:ring-0 focus:border-black transition">
+                            </div>
+
+                            <div>
+                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Sub-district, District, City</label>
+                                <select name="destination_id" id="search-location-dashboard" class="w-full" required>
+                                    @if(auth()->user()->destination_id)
+                                        <option value="{{ auth()->user()->destination_id }}" selected>{{ auth()->user()->destination_name }}</option>
+                                    @endif
+                                </select>
+                                <input type="hidden" name="destination_name" id="dashboard_destination_name" value="{{ auth()->user()->destination_name }}">
+                            </div>
+
+                            <div>
+                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Address Details</label>
+                                <textarea name="address" rows="3" placeholder="Street Name, House Number, etc." required
+                                    class="w-full border-gray-200 rounded-lg p-3 text-[13px] focus:ring-0 focus:border-black transition">{{ auth()->user()->address }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="bg-[#6B6631] text-white px-10 py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black transition rounded-md">
+                                Save Delivery Info
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div x-show="tab === 'wishlist'" style="display: none;">
                     <div class="flex flex-col items-center py-20 text-center">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400">Your wishlist is empty</p>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Your wishlist is empty</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#search-location-dashboard').select2({
+                placeholder: 'Type to search location (e.g. Senen)',
+                minimumInputLength: 3,
+                ajax: {
+                    url: "{{ route('api.locations') }}",
+                    dataType: 'json',
+                    delay: 400,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data.map(function (item) {
+                                return { id: item.id, text: item.label };
+                            })
+                        };
+                    }
+                }
+            });
+
+            $('#search-location-dashboard').on('select2:select', function (e) {
+                var data = e.params.data;
+                $('#dashboard_destination_name').val(data.text);
+            });
+        });
+    </script>   
 </x-app-layout>

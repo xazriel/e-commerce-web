@@ -22,6 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'phone',            // Tambahkan ini
+        'address',          // Tambahkan ini
+        'destination_id',   // Tambahkan ini
+        'destination_name', // Tambahkan ini
     ];
 
     /**

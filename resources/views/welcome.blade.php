@@ -54,6 +54,20 @@
         .swiper-pagination-bullet-active {
             background: #fff !important;
         }
+
+        /* --- PERBAIKAN RESPONSIVE SLIDER --- */
+        /* Sembunyikan slide khusus mobile saat di layar desktop */
+        @media (min-width: 768px) {
+            .mobile-only {
+                display: none !important;
+            }
+        }
+        /* Sembunyikan slide khusus desktop saat di layar mobile */
+        @media (max-width: 767px) {
+            .desktop-only {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="antialiased bg-white text-gray-900">
@@ -82,7 +96,7 @@
                                     <ul class="space-y-3">
                                         <li>
                                             <a href="{{ route('home', ['category' => $cat->slug]) }}" class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
-                                                View All {{ $cat->name }}
+                                                {{ $cat->name }}
                                             </a>
                                         </li>
                                     </ul>
@@ -91,7 +105,8 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="nav-link font-bold hover:text-gray-400 uppercase">Our Story</a>
+
+                    <a href="#about" class="nav-link font-bold hover:text-gray-400 uppercase">About</a>
                 </div>
 
                 <div class="flex items-center space-x-6">
@@ -123,11 +138,19 @@
         <div class="swiper heroSwiper">
             <div class="swiper-wrapper">
                 @forelse($sliders as $slider)
-                    <div class="swiper-slide relative {{ !$slider->image_mobile_path ? 'desktop-only' : '' }}">
+                    {{-- Logika Penentuan Class Slide --}}
+                    @php
+                        $hasDesktop = !empty($slider->image_path);
+                        $hasMobile = !empty($slider->image_mobile_path);
+                    @endphp
+
+                    <div class="swiper-slide relative {{ !$hasMobile ? 'desktop-only' : '' }} {{ !$hasDesktop ? 'mobile-only' : '' }}">
                         <picture>
-                            @if($slider->image_mobile_path)
+                            @if($hasMobile)
                                 <source media="(max-width: 767px)" srcset="{{ asset('storage/' . $slider->image_mobile_path) }}">
                             @endif
+                            
+                            {{-- Gunakan image_path untuk desktop, fallback ke mobile jika desktop kosong --}}
                             <img src="{{ asset('storage/' . ($slider->image_path ?? $slider->image_mobile_path)) }}" 
                                  alt="{{ $slider->title }}"
                                  class="main-slider-img"
@@ -201,7 +224,7 @@
         </div>
     </section>
 
-    <footer class="py-20 border-t border-gray-100 bg-white">
+    <footer id="about" class="py-20 border-t border-gray-100 bg-white">
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
             <div>
                 <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
@@ -233,9 +256,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function initSwiper() {
+                // Hapus elemen secara fisik berdasarkan ukuran layar saat ini
                 const isMobile = window.innerWidth < 768;
                 if (isMobile) {
                     document.querySelectorAll('.swiper-slide.desktop-only').forEach(el => el.remove());
+                } else {
+                    document.querySelectorAll('.swiper-slide.mobile-only').forEach(el => el.remove());
                 }
 
                 return new Swiper('.heroSwiper', {

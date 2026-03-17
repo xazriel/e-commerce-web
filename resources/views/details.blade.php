@@ -34,6 +34,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(session('error'))
+            <div class="bg-red-500 text-white text-[10px] tracking-[0.2em] uppercase py-3 text-center animate-fade-in-down">
+                {{ session('error') }}
+            </div>
+        @endif
     </nav>
 
     <div class="max-w-7xl mx-auto px-4 py-12 lg:py-20">
@@ -81,6 +86,8 @@
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" id="addToCartForm">
                         @csrf
                         
+                        <input type="hidden" name="variant_id" id="variant_id_input" required>
+
                         @php
                             $uniqueColors = $product->variants->pluck('color')->unique();
                             $uniqueSizes = $product->variants->pluck('size')->unique();
@@ -142,7 +149,7 @@
                             <a href="https://wa.me/628123456789?text=Halo%20Farhana,%20saya%20tertarik%20dengan%20produk%20{{ $product->name }}" 
                                target="_blank"
                                class="block w-full text-center py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 hover:text-black transition duration-500">
-                                Inquire via WhatsApp
+                                 Inquire via WhatsApp
                             </a>
                         </div>
                     </form>
@@ -207,14 +214,14 @@
         const variants = @json($product->variants);
 
         function filterSizeByColor(color) {
-            // 1. Ganti Gambar Utama sesuai warna
             const colorLower = color.toLowerCase();
             const matchingThumb = document.querySelector(`.thumb-img[data-color="${colorLower}"]`);
             if (matchingThumb) matchingThumb.click();
 
-            // 2. Reset pilihan size & qty
+            // Reset pilihan size & qty
             document.querySelectorAll('.size-radio').forEach(radio => radio.checked = false);
             document.getElementById('qtyInput').value = 1;
+            document.getElementById('variant_id_input').value = ''; // Reset ID Variant
             updateStockDisplay();
         }
 
@@ -224,26 +231,35 @@
             const stockDisplay = document.getElementById('stock-count');
             const submitBtn = document.getElementById('mainSubmitBtn');
             const qtyInput = document.getElementById('qtyInput');
+            const variantIdInput = document.getElementById('variant_id_input');
 
             if (selectedColor && selectedSize) {
                 const variant = variants.find(v => v.color === selectedColor && v.size === selectedSize);
-                const stock = variant ? variant.stock : 0;
+                
+                if (variant) {
+                    const stock = variant.stock;
+                    variantIdInput.value = variant.id; // SIMPAN ID VARIANT KE HIDDEN INPUT
 
-                if (stock > 0) {
-                    stockDisplay.innerText = `${stock} Pieces Available`;
-                    stockDisplay.classList.replace('text-red-500', 'text-gray-400');
-                    qtyInput.max = stock;
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Add to Cart";
-                    submitBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                    submitBtn.classList.add('bg-black');
+                    if (stock > 0) {
+                        stockDisplay.innerText = `${stock} Pieces Available`;
+                        stockDisplay.className = 'text-[9px] uppercase text-gray-400 tracking-widest';
+                        qtyInput.max = stock;
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Add to Cart";
+                        submitBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                        submitBtn.classList.add('bg-black');
+                    } else {
+                        stockDisplay.innerText = "Out of Stock for this variant";
+                        stockDisplay.className = 'text-[9px] uppercase text-red-500 tracking-widest font-bold';
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = "Sold Out";
+                        submitBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                        submitBtn.classList.remove('bg-black');
+                    }
                 } else {
-                    stockDisplay.innerText = "Out of Stock for this variant";
-                    stockDisplay.classList.replace('text-gray-400', 'text-red-500');
+                    variantIdInput.value = '';
+                    stockDisplay.innerText = "Combination not available";
                     submitBtn.disabled = true;
-                    submitBtn.innerText = "Sold Out";
-                    submitBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                    submitBtn.classList.remove('bg-black');
                 }
             }
         }

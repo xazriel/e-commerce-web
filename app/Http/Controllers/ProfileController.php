@@ -38,6 +38,29 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update the user's shipping address and Komerce location ID.
+     * Fitur ini untuk mendukung otomatisasi ongkir seperti di Itsar Syari.
+     */
+    public function updateAddress(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'phone' => ['required', 'string', 'max:20'],
+            'address' => ['required', 'string'],
+            'destination_id' => ['required', 'string'], // ID internal Komerce
+            'destination_name' => ['required', 'string'], // Label lokasi (e.g., Senen, Jakarta Pusat)
+        ]);
+
+        $request->user()->update([
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'destination_id' => $request->destination_id,
+            'destination_name' => $request->destination_name,
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'address-updated');
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
