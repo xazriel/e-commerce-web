@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Order; // Pastikan ini ditambahkan agar tidak error
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,8 +39,22 @@ class ProfileController extends Controller
     }
 
     /**
+     * Display the detail of a specific order.
+     */
+    public function orderDetail($order_number): View
+    {
+        // Mengambil data order berdasarkan nomor order dan user yang sedang login
+        // Eager loading 'items.product' agar tidak berat saat load data di view
+        $order = Order::with(['items.product'])
+            ->where('order_number', $order_number)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('profile.order-detail', compact('order'));
+    }
+
+    /**
      * Update the user's shipping address and Komerce location ID.
-     * Fitur ini untuk mendukung otomatisasi ongkir seperti di Itsar Syari.
      */
     public function updateAddress(Request $request): RedirectResponse
     {
@@ -57,7 +72,8 @@ class ProfileController extends Controller
             'destination_name' => $request->destination_name,
         ]);
 
-        return Redirect::route('profile.edit')->with('status', 'address-updated');
+        // Redirect ke dashboard karena form delivery info ada di sana
+        return Redirect::route('dashboard')->with('status', 'address-updated');
     }
 
     /**

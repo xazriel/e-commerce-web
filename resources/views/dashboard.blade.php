@@ -62,9 +62,10 @@
             </div>
 
             <div class="p-6 md:p-8">
+                {{-- TAB: ORDERS --}}
                 <div x-show="tab === 'orders'">
                     <div class="flex justify-between items-center mb-8">
-                        <h4 class="text-[11px] font-bold uppercase tracking-widest">My Orders (0)</h4>
+                        <h4 class="text-[11px] font-bold uppercase tracking-widest">My Orders ({{ $orders->count() }})</h4>
                         <select class="text-[10px] border-gray-200 rounded-md uppercase tracking-wider focus:ring-0 focus:border-black">
                             <option>All Status</option>
                             <option>Unpaid</option>
@@ -75,20 +76,54 @@
                         </select>
                     </div>
 
-                    <div class="flex flex-col items-center py-20 text-center">
-                        <div class="w-16 h-16 bg-gray-50 flex items-center justify-center mb-6 rounded-lg">
-                            <svg class="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
+                    @if($orders->isEmpty())
+                        <div class="flex flex-col items-center py-20 text-center">
+                            <div class="w-16 h-16 bg-gray-50 flex items-center justify-center mb-6 rounded-lg">
+                                <svg class="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            </div>
+                            <h4 class="text-[12px] font-bold uppercase tracking-[0.2em] mb-2 text-gray-700">No Orders Found</h4>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-8">Place an order to see it listed here.</p>
+                            <a href="/" class="px-10 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition shadow-lg">
+                                Start Shopping
+                            </a>
                         </div>
-                        <h4 class="text-[12px] font-bold uppercase tracking-[0.2em] mb-2 text-gray-700">No Orders Found</h4>
-                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-8">Place an order to see it listed here.</p>
-                        <a href="/" class="px-10 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition shadow-lg">
-                            Start Shopping
-                        </a>
-                    </div>
+                    @else
+                        <div class="space-y-4">
+                            @foreach($orders as $order)
+                                <div class="group border border-gray-100 p-5 rounded-xl hover:border-black transition-all duration-300 bg-white">
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-1">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest text-black">#{{ $order->order_number }}</span>
+                                                <span class="text-[9px] text-gray-400 uppercase tracking-widest">{{ $order->created_at->format('d M Y') }}</span>
+                                            </div>
+                                            <p class="text-[11px] text-gray-500 uppercase tracking-wider">
+                                                Total Amount: <span class="font-bold text-black italic">IDR {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="flex items-center w-full md:w-auto justify-between md:justify-end gap-6">
+                                            <span class="px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] rounded-full 
+                                                {{ $order->status == 'paid' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 border border-gray-100' }}">
+                                                {{ $order->status }}
+                                            </span>
+                                            
+                                            <a href="{{ route('profile.orders.detail', $order->order_number) }}" 
+                                               class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 group-hover:text-black transition-colors flex items-center gap-2">
+                                                Details
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
+                {{-- TAB: DELIVERY INFO --}}
                 <div x-show="tab === 'delivery'" style="display: none;">
                     <form action="{{ route('profile.address.update') }}" method="POST" class="max-w-2xl space-y-6">
                         @csrf
@@ -126,6 +161,7 @@
                     </form>
                 </div>
 
+                {{-- TAB: WISHLIST --}}
                 <div x-show="tab === 'wishlist'" style="display: none;">
                     <div class="flex flex-col items-center py-20 text-center">
                         <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Your wishlist is empty</p>

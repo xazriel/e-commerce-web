@@ -11,6 +11,7 @@
                     @csrf
                     
                     <div class="space-y-10">
+                        {{-- Basic Information --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Nama Produk</label>
@@ -50,6 +51,7 @@
                             </div>
                         </div>
 
+                        {{-- Variant Section --}}
                         <div class="p-6 border border-gray-100 rounded-xl bg-gray-50/30">
                             <div class="flex justify-between items-center mb-6">
                                 <div>
@@ -64,8 +66,9 @@
                             <div id="variant-container" class="space-y-3">
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white border border-gray-100 rounded-lg shadow-sm variant-row">
                                     <div class="md:col-span-2">
-                                        <input type="text" name="variant_color[]" placeholder="Warna (Misal: Midnight Black)" 
-                                            class="w-full text-xs border-gray-200 rounded-md focus:ring-black focus:border-black" required>
+                                        {{-- Tambahkan class 'variant-color-input' untuk dideteksi JS --}}
+                                        <input type="text" name="variant_color[]" onkeyup="updateColorOptions()" placeholder="Warna (Misal: Midnight Black)" 
+                                            class="variant-color-input w-full text-xs border-gray-200 rounded-md focus:ring-black focus:border-black" required>
                                     </div>
                                     <div>
                                         <select name="variant_size[]" class="w-full text-xs border-gray-200 rounded-md focus:ring-black focus:border-black">
@@ -77,7 +80,7 @@
                                     <div class="relative">
                                         <input type="number" name="variant_stock[]" placeholder="Stok" 
                                             class="w-full text-xs border-gray-200 rounded-md focus:ring-black focus:border-black" required>
-                                        <button type="button" onclick="this.parentElement.parentElement.remove()" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center hover:bg-red-600">×</button>
+                                        <button type="button" onclick="removeVariantRow(this)" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center hover:bg-red-600">×</button>
                                     </div>
                                 </div>
                             </div>
@@ -89,6 +92,7 @@
                                 class="w-full border-gray-200 rounded-lg shadow-sm focus:border-black focus:ring-black"></textarea>
                         </div>
 
+                        {{-- Image Upload Section --}}
                         <div class="p-6 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
                             <div class="flex justify-between items-center mb-4">
                                 <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-widest">Foto Produk & Mapping Warna</label>
@@ -96,13 +100,18 @@
                             </div>
                             
                             <div id="image-container" class="space-y-4">
-                                <div class="flex flex-col md:flex-row gap-4 p-4 bg-white border border-gray-100 rounded-lg items-center">
+                                <div class="flex flex-col md:flex-row gap-4 p-4 bg-white border border-gray-100 rounded-lg items-center image-row">
                                     <input type="file" name="images[]" class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-black file:text-white hover:file:bg-gray-800" required />
-                                    <input type="text" name="image_colors[]" placeholder="Warna pada foto ini (Misal: Midnight Black)" 
-                                        class="w-full md:w-1/3 text-xs border-gray-200 rounded-md focus:ring-black focus:border-black">
+                                    
+                                    {{-- Mengubah input text menjadi SELECT agar sinkron dengan varian warna --}}
+                                    <select name="image_colors[]" class="color-selector w-full md:w-1/3 text-xs border-gray-200 rounded-md focus:ring-black focus:border-black">
+                                        <option value="">Pilih Warna Foto</option>
+                                    </select>
+                                    
+                                    <button type="button" onclick="removeImageRow(this)" class="text-red-500 text-xs font-bold uppercase tracking-widest ml-2">Hapus</button>
                                 </div>
                             </div>
-                            <p class="text-[9px] text-gray-400 mt-4 italic uppercase tracking-wider">*Isi 'Warna' agar saat user klik pilihan warna, gambar utama otomatis berubah.</p>
+                            <p class="text-[9px] text-gray-400 mt-4 italic uppercase tracking-wider">*Pilih 'Warna' agar saat user klik pilihan warna, gambar utama otomatis berubah.</p>
                         </div>
 
                         <div class="pt-6">
@@ -117,28 +126,70 @@
     </div>
 
     <script>
-        // Fungsi tambah baris varian stok
+        // 1. Fungsi Tambah Baris Varian
         function addVariantRow() {
             const container = document.getElementById('variant-container');
             const newRow = container.querySelector('.variant-row').cloneNode(true);
-            
-            // Reset values
             newRow.querySelectorAll('input').forEach(input => input.value = '');
-            
-            // Tambahkan tombol hapus jika belum ada
             container.appendChild(newRow);
+            updateColorOptions(); // Update list warna di bagian image
         }
 
-        // Fungsi tambah slot upload gambar
+        function removeVariantRow(btn) {
+            const rows = document.querySelectorAll('.variant-row');
+            if(rows.length > 1) {
+                btn.closest('.variant-row').remove();
+                updateColorOptions();
+            } else {
+                alert('Minimal harus ada 1 varian');
+            }
+        }
+
+        // 2. Fungsi Tambah Slot Foto
         function addImageRow() {
             const container = document.getElementById('image-container');
-            const newRow = container.querySelector('div').cloneNode(true);
-            
-            // Reset values
+            const newRow = container.querySelector('.image-row').cloneNode(true);
             newRow.querySelector('input[type="file"]').value = '';
-            newRow.querySelector('input[type="text"]').value = '';
-            
             container.appendChild(newRow);
+            updateColorOptions(); // Pastikan slot baru punya pilihan warna
         }
-    </script>
+
+        function removeImageRow(btn) {
+            const rows = document.querySelectorAll('.image-row');
+            if(rows.length > 1) {
+                btn.closest('.image-row').remove();
+            }
+        }
+
+        // 3. LOGIKA UTAMA: Sinkronisasi Warna Varian ke Dropdown Foto
+        function updateColorOptions() {
+            // Ambil semua warna unik dari input varian
+            const colorInputs = document.querySelectorAll('.variant-color-input');
+            let colors = [];
+            
+            colorInputs.forEach(input => {
+                const val = input.value.trim();
+                if (val && !colors.includes(val)) {
+                    colors.push(val);
+                }
+            });
+
+            // Update semua dropdown warna di bagian upload foto
+            const selectors = document.querySelectorAll('.color-selector');
+            selectors.forEach(select => {
+                const currentValue = select.value; // Simpan nilai yang sedang terpilih
+                
+                // Reset options tapi sisakan default
+                select.innerHTML = '<option value="">Pilih Warna Foto</option>';
+                
+                colors.forEach(color => {
+                    const option = document.createElement('option');
+                    option.value = color;
+                    option.textContent = color;
+                    if(color === currentValue) option.selected = true;
+                    select.appendChild(option);
+                });
+            });
+        }
+</script>
 </x-app-layout>

@@ -23,6 +23,9 @@
                         <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
                             {{ __('KATEGORI') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                            {{ __('ORDERS') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -121,5 +124,7 @@
                 </form>
             </div>
         </div>
+
+        
     </div>
 </nav>

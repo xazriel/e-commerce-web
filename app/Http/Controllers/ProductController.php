@@ -45,14 +45,13 @@ class ProductController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1. Simpan data produk utama (tanpa kolom stock lama)
+            // 1. Simpan data produk utama
             $product = Product::create([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'price' => $request->price,
-                // Kolom stock dihilangkan karena pindah ke tabel variants
             ]);
 
             // 2. Simpan Varian (Stok per Warna & Size)
@@ -72,7 +71,7 @@ class ProductController extends Controller
                 $product->tags()->sync($request->tags);
             }
 
-            // 4. Simpan Gambar dengan Color Mapping
+            // 4. Simpan Gambar dengan Color Mapping (FIXED)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $key => $image) {
                     $path = $image->store('products', 'public');
@@ -111,11 +110,15 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'description' => 'required',
             'variant_color' => 'required|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'images.*.max' => 'Ukuran salah satu foto terlalu besar (Maksimal 2MB).',
+            'images.*.image' => 'File harus berupa gambar.',
         ]);
 
         DB::beginTransaction();
         try {
-            // 1. Update data teks utama
+            // 1. Update data utama produk
             $product->update([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
@@ -124,41 +127,64 @@ class ProductController extends Controller
                 'description' => $request->description,
             ]);
 
-            // 2. Update Varian (Hapus yang lama, simpan yang baru)
-            $product->variants()->delete();
-            foreach ($request->variant_color as $index => $color) {
-                if (!empty($color)) {
-                    $product->variants()->create([
-                        'color' => $color,
-                        'size' => $request->variant_size[$index],
-                        'stock' => $request->variant_stock[$index] ?? 0,
-                    ]);
+            // 2. Kelola Varian (Update, Create, atau Delete)
+            $inputVariantIds = array_filter($request->variant_ids ?? []);
+            $product->variants()->whereNotIn('id', $inputVariantIds)->delete();
+
+            if ($request->has('variant_color')) {
+                foreach ($request->variant_color as $index => $color) {
+                    if (!empty($color)) {
+                        $vId = $request->variant_ids[$index] ?? null;
+                        $variantData = [
+                            'color' => $color,
+                            'size'  => $request->variant_size[$index] ?? 'All Size',
+                            'stock' => $request->variant_stock[$index] ?? 0,
+                        ];
+
+                        if (!empty($vId)) {
+                            ProductVariant::where('id', $vId)->where('product_id', $product->id)->update($variantData);
+                        } else {
+                            $product->variants()->create($variantData);
+                        }
+                    }
                 }
             }
 
             // 3. Update Tags
             $product->tags()->sync($request->tags ?? []);
 
-            // 4. Tambah foto baru jika ada
+            // 4. FIX: Update Warna Foto yang SUDAH ADA (Ini yang sebelumnya belum ada)
+            if ($request->has('existing_image_ids')) {
+                foreach ($request->existing_image_ids as $index => $imageId) {
+                    ProductImage::where('id', $imageId)
+                        ->where('product_id', $product->id)
+                        ->update([
+                            'color' => $request->existing_image_colors[$index] ?? null
+                        ]);
+                }
+            }
+
+            // 5. Upload Foto Baru (jika ada)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $key => $image) {
-                    $path = $image->store('products', 'public');
-                    
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image_path' => $path,
-                        'color' => $request->image_colors_new[$key] ?? null,
-                        'is_primary' => false
-                    ]);
+                    if ($image->isValid()) {
+                        $path = $image->store('products', 'public');
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_path' => $path,
+                            'color' => $request->image_colors_new[$key] ?? null,
+                            'is_primary' => false
+                        ]);
+                    }
                 }
             }
 
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
+            return redirect()->route('products.index')->with('success', 'Produk dan varian berhasil diperbarui!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Update gagal: ' . $e->getMessage());
+            return back()->with('error', 'Gagal memperbarui produk: ' . $e->getMessage());
         }
     }
 
@@ -170,14 +196,10 @@ class ProductController extends Controller
                 Storage::disk('public')->delete($image->image_path);
             }
         }
-
-        // Karena onDelete('cascade'), variants, images, dan product_tag otomatis terhapus
         $product->delete();
-
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
     }
 
-    // Fitur Management Gambar (Set Primary & Delete) tetap sama
     public function setPrimary($id)
     {
         $image = ProductImage::findOrFail($id);

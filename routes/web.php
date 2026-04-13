@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (auth()->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        return view('dashboard');
+
+        $orders = \App\Models\Order::where('user_id', auth()->id())
+           ->orderBy('created_at', 'desc')
+           ->take(10) // Batasi hanya 10 terbaru agar dashboard tetap enteng
+           ->get();
+
+        return view('dashboard', compact('orders'));
     })->name('dashboard');
 
     // Profile Routes
@@ -44,10 +51,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // --- TAMBAHKAN ROUTE ALAMAT DI SINI ---
+    // Order Routes (TAMBAHAN UNTUK MENGHILANGKAN ERROR)
+    Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
+    Route::get('/profile/orders/{order_number}', [ProfileController::class, 'orderDetail'])->name('profile.orders.detail');
+    
+    // Address Route
     Route::patch('/profile/address', [ProfileController::class, 'updateAddress'])->name('profile.address.update');
 
-    // --- CHECKOUT ROUTES (UPDATED WITH API) ---
+    // Checkout Routes
     Route::prefix('checkout')->name('checkout.')->group(function () {
         Route::get('/', [CheckoutController::class, 'index'])->name('index');
         Route::post('/store', [CheckoutController::class, 'store'])->name('store');
@@ -55,7 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/simulate-pay/{id}', [CheckoutController::class, 'simulatePay'])->name('simulatePay');
     });
 
-    // --- API ROUTES FOR SHIPPING (KOMERCE) ---
+    // API Routes for Shipping
     Route::get('/api/locations', [CheckoutController::class, 'searchLocation'])->name('api.locations');
     Route::post('/api/shipping-cost', [CheckoutController::class, 'calculateShipping'])->name('api.shipping');
 });
@@ -76,6 +87,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::delete('/product-images/{id}', [ProductController::class, 'destroyImage'])->name('products.images.destroy');
     Route::patch('/product-images/{id}/set-primary', [ProductController::class, 'setPrimary'])->name('products.images.setPrimary');
+});
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order_number}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
 require __DIR__.'/auth.php';

@@ -35,9 +35,8 @@
             animation: fadeInDown 0.4s ease-out;
         }
         
-        /* Fix Swiper & Zoom Effect */
         .heroSwiper {
-            height: 85vh;
+            height: 90vh;
         }
         .swiper-slide {
             overflow: hidden;
@@ -55,14 +54,17 @@
             background: #fff !important;
         }
 
-        /* --- PERBAIKAN RESPONSIVE SLIDER --- */
-        /* Sembunyikan slide khusus mobile saat di layar desktop */
+        .category-btn.active {
+            font-weight: 700;
+            border-bottom: 1px solid black;
+            color: black;
+        }
+
         @media (min-width: 768px) {
             .mobile-only {
                 display: none !important;
             }
         }
-        /* Sembunyikan slide khusus desktop saat di layar mobile */
         @media (max-width: 767px) {
             .desktop-only {
                 display: none !important;
@@ -83,21 +85,30 @@
 
                 <div class="hidden md:flex space-x-10 items-center">
                     <a href="{{ route('home') }}" class="nav-link font-bold hover:text-gray-400 uppercase">Shop All</a>
+                    
                     <div class="group static">
                         <button class="nav-link font-bold hover:text-gray-400 flex items-center uppercase">
                             Collections 
-                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
                         </button>
+
                         <div class="mega-menu pt-10 pb-12 shadow-2xl animate-fade-in-down">
                             <div class="max-w-7xl mx-auto px-8 grid grid-cols-4 gap-12">
                                 @foreach($categories as $cat)
                                 <div>
-                                    <h4 class="text-[11px] font-black tracking-widest text-gray-900 mb-5 uppercase border-b pb-2">{{ $cat->name }}</h4>
+                                    <h4 class="text-[11px] font-black tracking-widest text-gray-900 mb-5 uppercase border-b pb-2">
+                                        {{ $cat->name }}
+                                    </h4>
                                     <ul class="space-y-3">
                                         <li>
-                                            <a href="{{ route('home', ['category' => $cat->slug]) }}" class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
+                                            <button
+                                                type="button"
+                                                onclick="filterCategory('{{ $cat->slug }}')"
+                                                class="text-[10px] text-gray-500 hover:text-black uppercase tracking-widest transition">
                                                 {{ $cat->name }}
-                                            </a>
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
@@ -111,7 +122,9 @@
 
                 <div class="flex items-center space-x-6">
                     <button class="text-gray-600 hover:text-black transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
                     </button>
 
                     <x-cart-count />
@@ -138,7 +151,6 @@
         <div class="swiper heroSwiper">
             <div class="swiper-wrapper">
                 @forelse($sliders as $slider)
-                    {{-- Logika Penentuan Class Slide --}}
                     @php
                         $hasDesktop = !empty($slider->image_path);
                         $hasMobile = !empty($slider->image_mobile_path);
@@ -150,21 +162,24 @@
                                 <source media="(max-width: 767px)" srcset="{{ asset('storage/' . $slider->image_mobile_path) }}">
                             @endif
                             
-                            {{-- Gunakan image_path untuk desktop, fallback ke mobile jika desktop kosong --}}
                             <img src="{{ asset('storage/' . ($slider->image_path ?? $slider->image_mobile_path)) }}" 
                                  alt="{{ $slider->title }}"
                                  class="main-slider-img"
                                  loading="eager">
                         </picture>
+
                         <div class="absolute inset-0 bg-black/20"></div>
+
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-white px-4">
                             <h2 class="text-xs tracking-[0.6em] uppercase mb-6 animate-fade-in-down">
                                 {{ $slider->title ?? 'Given Beauty, Wrapped in Modesty' }}
                             </h2>
-                            <h1 class="text-5xl md:text-7xl font-extralight tracking-widest uppercase mb-8">
+
+                            <h1 class="text-5xl md:text-6xl font-extralight tracking-widest uppercase mb-8">
                                 Koleksi Eksklusif
                             </h1>
-                            <a href="#koleksi" class="px-10 py-4 border border-white text-[10px] tracking-[0.4em] uppercase hover:bg-white hover:text-black transition duration-500">
+
+                            <a href="#koleksi" class="mt-10 inline-block px-10 py-4 border border-[#6B7D5C] text-[10px] tracking-[0.4em] uppercase text-white hover:bg-[#6B7D5C] hover:text-white transition duration-500">
                                 Shop Now
                             </a>
                         </div>
@@ -175,50 +190,70 @@
                     </div>
                 @endforelse
             </div>
+
             <div class="swiper-pagination"></div>
         </div>
     </header>
 
     <section id="koleksi" class="py-24 max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
-            <h3 class="text-2xl font-light tracking-[0.3em] uppercase mb-4">Our Collection</h3>
-            <div class="w-12 h-[1px] bg-black mx-auto"></div>
+            <h3 class="text-2xl font-medium tracking-[0.3em] uppercase mb-4">
+                Our Collection
+            </h3>
         </div>
         
         <div class="flex flex-wrap justify-center gap-8 mb-20">
-            <a href="{{ route('home') }}" 
-               class="text-[10px] uppercase tracking-[0.2em] {{ !request('category') ? 'font-bold border-b border-black' : 'text-gray-400 hover:text-black transition' }} pb-2">
+            <button
+                type="button"
+                onclick="filterCategory('all')"
+                class="category-btn active text-[10px] uppercase tracking-[0.2em] pb-2 text-gray-400 hover:text-black transition">
                 All Products
-            </a>
+            </button>
+
             @foreach($categories as $cat)
-                <a href="{{ route('home', ['category' => $cat->slug]) }}" 
-                   class="text-[10px] uppercase tracking-[0.2em] {{ request('category') == $cat->slug ? 'font-bold border-b border-black' : 'text-gray-400 hover:text-black transition' }} pb-2">
+                <button
+                    type="button"
+                    onclick="filterCategory('{{ $cat->slug }}')"
+                    class="category-btn text-[10px] uppercase tracking-[0.2em] pb-2 text-gray-400 hover:text-black transition">
                     {{ $cat->name }}
-                </a>
+                </button>
             @endforeach
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-12">
             @forelse($products as $product)
-                <a href="{{ route('product.details', $product->slug) }}" class="group block no-underline">
+                <a href="{{ route('product.details', $product->slug) }}"
+                   class="group block no-underline product-item"
+                   data-category="{{ $product->category->slug }}">
                     <div class="relative overflow-hidden aspect-[3/4] bg-gray-50 mb-6">
                         @if($product->images->first())
-                            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
+                            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
                                  alt="{{ $product->name }}"
                                  class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
                         @else
-                            <div class="flex items-center justify-center h-full text-gray-300 text-[10px] tracking-widest uppercase">No Image</div>
+                            <div class="flex items-center justify-center h-full text-gray-300 text-[10px] tracking-widest uppercase">
+                                No Image
+                            </div>
                         @endif
                     </div>
+
                     <div class="text-center">
-                        <h4 class="text-[11px] font-bold tracking-widest uppercase mb-1">{{ $product->name }}</h4>
-                        <p class="text-[10px] text-gray-400 italic mb-3">{{ $product->category->name ?? 'Collection' }}</p>
-                        <p class="text-xs font-light tracking-widest">IDR {{ number_format($product->price, 0, ',', '.') }}</p>
+                        <h4 class="text-[11px] font-bold tracking-widest uppercase mb-1">
+                            {{ $product->name }}
+                        </h4>
+                        <p class="text-[10px] text-gray-400 italic mb-3">
+                            {{ $product->category->name ?? 'Collection' }}
+                        </p>
+                        <p class="text-xs font-light tracking-widest">
+                            IDR {{ number_format($product->price, 0, ',', '.') }}
+                        </p>
                     </div>
                 </a>
             @empty
                 <div class="col-span-full text-center py-20">
-                    <p class="text-gray-400 text-xs tracking-widest uppercase italic">The collection is currently being updated.</p>
+                    <p class="text-gray-400 text-xs tracking-widest uppercase italic">
+                        The collection is currently being updated.
+                    </p>
                 </div>
             @endforelse
         </div>
@@ -232,6 +267,7 @@
                     Eksklusivitas dalam balutan kesantunan. Kami menghadirkan kualitas terbaik.
                 </p>
             </div>
+
             <div class="text-center">
                 <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">Follow Us</h4>
                 <div class="flex justify-center space-x-6 text-gray-400">
@@ -239,6 +275,7 @@
                     <a href="#" class="hover:text-black transition text-[10px] tracking-widest uppercase">TikTok</a>
                 </div>
             </div>
+
             <div class="md:text-right">
                 <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">Customer Care</h4>
                 <ul class="text-[10px] text-gray-400 space-y-3 tracking-widest uppercase">
@@ -247,6 +284,7 @@
                 </ul>
             </div>
         </div>
+
         <div class="mt-20 text-center text-[9px] text-gray-300 uppercase tracking-[0.4em]">
             &copy; 2026 Farhana Official. All Rights Reserved.
         </div>
@@ -256,8 +294,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function initSwiper() {
-                // Hapus elemen secara fisik berdasarkan ukuran layar saat ini
                 const isMobile = window.innerWidth < 768;
+
                 if (isMobile) {
                     document.querySelectorAll('.swiper-slide.desktop-only').forEach(el => el.remove());
                 } else {
@@ -274,8 +312,38 @@
                     observeParents: true,
                 });
             }
+
             initSwiper();
         });
+
+        function filterCategory(category) {
+            const products = document.querySelectorAll('.product-item');
+            const buttons = document.querySelectorAll('.category-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            buttons.forEach(btn => {
+                if (
+                    (category === 'all' && btn.textContent.trim().toLowerCase() === 'all products') ||
+                    btn.textContent.trim().toLowerCase() === category.toLowerCase()
+                ) {
+                    btn.classList.add('active');
+                }
+            });
+
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+
+            document.getElementById('koleksi').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     </script>
 </body>
 </html>
