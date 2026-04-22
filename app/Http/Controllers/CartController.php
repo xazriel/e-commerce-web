@@ -18,36 +18,56 @@ class CartController extends Controller
     }
 
     /**
-     * Menambah produk ke keranjang.
-     * Mendukung penambahan jumlah (quantity) secara dinamis.
+     * Menambah produk ke keranjang dengan deteksi gambar warna yang akurat.
      */
     public function add(Request $request, $id)
     {
-        // 1. Ambil variant_id dan quantity dari input form
+        // 1. Ambil variant_id dan quantity
         $variantId = $request->input('variant_id'); 
-        $quantityToAdd = $request->input('quantity', 1); // Default ke 1 jika tidak ada input quantity
+        $quantityToAdd = (int) $request->input('quantity', 1);
 
         if (!$variantId) {
             return redirect()->back()->with('error', 'Silakan pilih ukuran/warna terlebih dahulu.');
         }
 
-        // 2. Cari data variant beserta produknya
+        // 2. Ambil data varian dan relasi gambar produknya
         $variant = ProductVariant::with('product.images')->findOrFail($variantId);
         $product = $variant->product;
 
-        // Cek apakah stok variant mencukupi sebelum masuk ke keranjang
+        // Validasi stok
         if ($variant->stock < $quantityToAdd) {
             return redirect()->back()->with('error', "Maaf, stok hanya tersisa {$variant->stock}.");
         }
 
         $cart = session()->get('cart', []);
 
-        // 3. Gunakan $variantId sebagai KEY session
+        // --- LOGIKA FIX GAMBAR BERDASARKAN WARNA (SENSITIVE FIX) ---
+        $selectedColor = trim($variant->color); 
+
+        // Mencari gambar yang memiliki warna sama (Case Insensitive & Trim Spasi)
+        $colorSpecificImage = $product->images->filter(function($img) use ($selectedColor) {
+            return strtolower(trim($img->color)) === strtolower($selectedColor);
+        })->first();
+
+        // Tentukan gambar yang akan disimpan di session
+        if ($colorSpecificImage) {
+            $imageToDisplay = $colorSpecificImage->image_path;
+        } else {
+            // Fallback 1: Cari yang is_primary
+            $primaryImage = $product->images->where('is_primary', true)->first();
+            // Fallback 2: Ambil gambar apa saja yang tersedia jika primary tidak ada
+            $imageToDisplay = $primaryImage ? $primaryImage->image_path : ($product->images->first()->image_path ?? null);
+        }
+        // ----------------------------------------------------------
+
+        // 3. Masukkan ke Session Cart menggunakan variant_id sebagai key
         if(isset($cart[$variantId])) {
-            // JIKA SUDAH ADA: Tambahkan quantity sesuai input (bukan cuma +1)
+            // Cek stok gabungan
+            if ($variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
+                return redirect()->back()->with('error', "Total di keranjang melebihi stok.");
+            }
             $cart[$variantId]['quantity'] += $quantityToAdd;
         } else {
-            // JIKA BELUM ADA: Masukkan data baru dengan quantity sesuai input
             $cart[$variantId] = [
                 "product_id" => $product->id,
                 "name"       => $product->name,
@@ -56,7 +76,7 @@ class CartController extends Controller
                 "price"      => $product->price,
                 "size"       => $variant->size,
                 "color"      => $variant->color,
-                "image"      => $product->images->where('is_primary', true)->first()->image_path ?? null,
+                "image"      => $imageToDisplay, // Path gambar hasil deteksi warna
                 "slug"       => $product->slug
             ];
         }
@@ -81,20 +101,19 @@ class CartController extends Controller
     }
 
     /**
-     * (Tambahan) Update quantity langsung di halaman Cart
+     * Update quantity via AJAX (jika ada fitur tambah/kurang di halaman cart)
      */
     public function update(Request $request)
     {
         if($request->id && $request->quantity) {
             $cart = session()->get('cart');
             
-            // Validasi stok real-time saat update di keranjang
             $variant = ProductVariant::find($request->id);
-            if($variant->stock < $request->quantity) {
+            if(!$variant || $variant->stock < $request->quantity) {
                 return response()->json(['error' => "Stok tidak mencukupi"], 400);
             }
 
-            $cart[$request->id]["quantity"] = $request->quantity;
+            $cart[$request->id]["quantity"] = (int)$request->quantity;
             session()->put('cart', $cart);
             return response()->json(['success' => "Keranjang diperbarui"]);
         }

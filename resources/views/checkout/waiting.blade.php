@@ -18,7 +18,7 @@
                 </p>
             </div>
 
-            <p class="text-[9px] text-gray-400 tracking-[0.3em] uppercase mb-8 italic">Scan QRIS to Complete Purchase</p>
+            <p class="text-[9px] text-gray-400 tracking-[0.3em] uppercase mb-8 italic">Scan QR to Complete Purchase</p>
             
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ $order->order_number }}" 
                  class="mx-auto mb-8 grayscale hover:grayscale-0 transition duration-500 rounded-lg shadow-sm" alt="QRIS">

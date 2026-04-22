@@ -14,108 +14,77 @@
         }
     </style>
 
-    <div class="max-w-5xl mx-auto px-4 py-10" x-data="{ tab: 'orders' }">
+    <div class="max-w-4xl mx-auto px-4 py-16" x-data="{ tab: 'orders' }">
         
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-2xl font-light tracking-widest uppercase">Hi {{ auth()->user()->name }}</h1>
-            <a href="{{ route('profile.edit') }}" class="px-6 py-2 border border-gray-200 text-[10px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition rounded-full">
-                Settings
-            </a>
+        <div class="flex justify-between items-end mb-12 border-b border-gray-100 pb-8">
+            <div>
+                <span class="text-[10px] uppercase tracking-[0.4em] text-gray-400 block mb-2">Customer Account</span>
+                <h1 class="text-2xl font-light tracking-widest uppercase italic">Hi, {{ auth()->user()->name }}</h1>
+            </div>
+            <div class="flex gap-4">
+                <a href="{{ route('profile.edit') }}" class="px-6 py-2 border border-gray-200 text-[9px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition rounded-full font-bold">
+                    Settings
+                </a>
+            </div>
         </div>
 
         @if(session('status') === 'address-updated')
-            <div class="mb-6 p-4 bg-green-50 border border-green-100 text-green-600 text-[10px] uppercase tracking-widest font-bold rounded-xl">
-                Address updated successfully.
+            <div class="mb-8 p-4 bg-[#6B6631] text-white text-[9px] uppercase tracking-[0.3em] font-bold text-center">
+                Profile Information Updated.
             </div>
         @endif
 
-        <div class="mb-10 border border-gray-100 p-8 bg-white shadow-sm rounded-xl">
-            <h3 class="text-[11px] font-bold uppercase tracking-[0.3em] mb-8 text-gray-500">My Vouchers</h3>
-            <div class="flex flex-col items-center py-6 text-center">
-                <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                    </svg>
-                </div>
-                <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">No vouchers available</p>
-                <p class="text-[9px] text-gray-300 mt-1">You don't have any vouchers at the moment</p>
-            </div>
-        </div>
-
-        <div class="border border-gray-100 bg-white shadow-sm rounded-xl overflow-hidden">
+        <div class="border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div class="flex border-b border-gray-100">
                 <button @click="tab = 'orders'" 
-                    :class="tab === 'orders' ? 'border-black text-black' : 'border-transparent text-gray-400'"
-                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
-                    Orders
+                    :class="tab === 'orders' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'"
+                    class="flex-1 py-5 text-[10px] font-bold uppercase tracking-[0.3em] transition-all">
+                    My Orders
                 </button>
                 <button @click="tab = 'delivery'" 
-                    :class="tab === 'delivery' ? 'border-black text-black' : 'border-transparent text-gray-400'"
-                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
+                    :class="tab === 'delivery' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'"
+                    class="flex-1 py-5 text-[10px] font-bold uppercase tracking-[0.3em] transition-all border-x border-gray-50">
                     Delivery Info
                 </button>
                 <button @click="tab = 'wishlist'" 
-                    :class="tab === 'wishlist' ? 'border-black text-black' : 'border-transparent text-gray-400'"
-                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-[0.3em] border-b-2 transition">
+                    :class="tab === 'wishlist' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'"
+                    class="flex-1 py-5 text-[10px] font-bold uppercase tracking-[0.3em] transition-all">
                     Wishlist
                 </button>
             </div>
 
-            <div class="p-6 md:p-8">
+            <div class="p-8 md:p-12">
                 {{-- TAB: ORDERS --}}
                 <div x-show="tab === 'orders'">
-                    <div class="flex justify-between items-center mb-8">
-                        <h4 class="text-[11px] font-bold uppercase tracking-widest">My Orders ({{ $orders->count() }})</h4>
-                        <select class="text-[10px] border-gray-200 rounded-md uppercase tracking-wider focus:ring-0 focus:border-black">
-                            <option>All Status</option>
-                            <option>Unpaid</option>
-                            <option>To Ship</option>
-                            <option>Shipped</option>
-                            <option>Completed</option>
-                            <option>Cancelled</option>
-                        </select>
+                    <div class="flex justify-between items-center mb-10">
+                        <h4 class="text-[11px] font-bold uppercase tracking-[0.3em] text-gray-800">History ({{ $orders->count() }})</h4>
                     </div>
 
                     @if($orders->isEmpty())
-                        <div class="flex flex-col items-center py-20 text-center">
-                            <div class="w-16 h-16 bg-gray-50 flex items-center justify-center mb-6 rounded-lg">
-                                <svg class="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                            </div>
-                            <h4 class="text-[12px] font-bold uppercase tracking-[0.2em] mb-2 text-gray-700">No Orders Found</h4>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-8">Place an order to see it listed here.</p>
-                            <a href="/" class="px-10 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition shadow-lg">
-                                Start Shopping
+                        <div class="py-20 text-center">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-8 italic">No orders found.</p>
+                            <a href="/" class="inline-block px-12 py-4 border border-black text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-black hover:text-white transition">
+                                Shop Now
                             </a>
                         </div>
                     @else
                         <div class="space-y-4">
                             @foreach($orders as $order)
-                                <div class="group border border-gray-100 p-5 rounded-xl hover:border-black transition-all duration-300 bg-white">
-                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                        <div class="flex-1">
-                                            <div class="flex items-center gap-3 mb-1">
-                                                <span class="text-[10px] font-bold uppercase tracking-widest text-black">#{{ $order->order_number }}</span>
-                                                <span class="text-[9px] text-gray-400 uppercase tracking-widest">{{ $order->created_at->format('d M Y') }}</span>
+                                <div class="group border border-gray-100 p-6 hover:border-gray-300 transition-all bg-white">
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                        <div>
+                                            <div class="flex items-center gap-4 mb-2">
+                                                <span class="text-[11px] font-bold uppercase tracking-widest text-black">#{{ $order->order_number }}</span>
+                                                <span class="text-[9px] text-gray-400 uppercase tracking-widest">{{ $order->created_at->format('d/m/Y') }}</span>
                                             </div>
-                                            <p class="text-[11px] text-gray-500 uppercase tracking-wider">
-                                                Total Amount: <span class="font-bold text-black italic">IDR {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                                            <p class="text-[10px] text-gray-500 uppercase tracking-widest">
+                                                IDR {{ number_format($order->total_amount, 0, ',', '.') }} — <span class="italic">{{ $order->status }}</span>
                                             </p>
                                         </div>
-                                        
-                                        <div class="flex items-center w-full md:w-auto justify-between md:justify-end gap-6">
-                                            <span class="px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] rounded-full 
-                                                {{ $order->status == 'paid' ? 'bg-black text-white' : 'bg-gray-100 text-gray-400 border border-gray-100' }}">
-                                                {{ $order->status }}
-                                            </span>
-                                            
-                                            <a href="{{ route('profile.orders.detail', $order->order_number) }}" 
-                                               class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 group-hover:text-black transition-colors flex items-center gap-2">
-                                                Details
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                                            </a>
-                                        </div>
+                                        <a href="{{ route('profile.orders.detail', $order->order_number) }}" 
+                                           class="text-[9px] font-bold uppercase tracking-[0.3em] border-b border-black pb-1">
+                                            View Details
+                                        </a>
                                     </div>
                                 </div>
                             @endforeach
@@ -125,19 +94,19 @@
 
                 {{-- TAB: DELIVERY INFO --}}
                 <div x-show="tab === 'delivery'" style="display: none;">
-                    <form action="{{ route('profile.address.update') }}" method="POST" class="max-w-2xl space-y-6">
+                    <form action="{{ route('profile.address.update') }}" method="POST" class="max-w-xl space-y-8">
                         @csrf
                         @method('PATCH')
 
-                        <div class="grid grid-cols-1 gap-6">
+                        <div class="space-y-6">
                             <div>
-                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Recipient Phone Number</label>
-                                <input type="text" name="phone" value="{{ auth()->user()->phone }}" placeholder="0812..." required
-                                    class="w-full border-gray-200 rounded-lg p-3 text-[13px] focus:ring-0 focus:border-black transition">
+                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Contact Number</label>
+                                <input type="text" name="phone" value="{{ auth()->user()->phone }}" placeholder="08..." required
+                                    class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-[13px] focus:ring-0 focus:border-black transition bg-transparent">
                             </div>
 
                             <div>
-                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Sub-district, District, City</label>
+                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Location Area</label>
                                 <select name="destination_id" id="search-location-dashboard" class="w-full" required>
                                     @if(auth()->user()->destination_id)
                                         <option value="{{ auth()->user()->destination_id }}" selected>{{ auth()->user()->destination_name }}</option>
@@ -147,15 +116,19 @@
                             </div>
 
                             <div>
-                                <label class="text-[9px] uppercase tracking-widest text-gray-400 block mb-2 font-bold">Address Details</label>
-                                <textarea name="address" rows="3" placeholder="Street Name, House Number, etc." required
-                                    class="w-full border-gray-200 rounded-lg p-3 text-[13px] focus:ring-0 focus:border-black transition">{{ auth()->user()->address }}</textarea>
+                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Full Address</label>
+                                <textarea name="address" rows="3" placeholder="Street, Unit Number, etc." required
+                                    class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-[13px] focus:ring-0 focus:border-black transition bg-transparent">{{ auth()->user()->address }}</textarea>
                             </div>
                         </div>
 
-                        <div class="pt-4">
-                            <button type="submit" class="bg-[#6B6631] text-white px-10 py-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black transition rounded-md">
-                                Save Delivery Info
+                        <div class="pt-6 flex items-center gap-6">
+                            <button type="submit" class="bg-black text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition">
+                                Update Address
+                            </button>
+                            
+                            <button type="button" @click="if(confirm('Clear address info?')) { window.location.reload(); }" class="text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-red-500 transition">
+                                Clear Info
                             </button>
                         </div>
                     </form>
@@ -163,8 +136,8 @@
 
                 {{-- TAB: WISHLIST --}}
                 <div x-show="tab === 'wishlist'" style="display: none;">
-                    <div class="flex flex-col items-center py-20 text-center">
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Your wishlist is empty</p>
+                    <div class="py-32 text-center">
+                        <p class="text-[10px] uppercase tracking-[0.5em] text-gray-300 italic">Discovery is ongoing. Your wishlist is empty.</p>
                     </div>
                 </div>
             </div>
@@ -176,7 +149,7 @@
     <script>
         $(document).ready(function() {
             $('#search-location-dashboard').select2({
-                placeholder: 'Type to search location (e.g. Senen)',
+                placeholder: 'Search City or District...',
                 minimumInputLength: 3,
                 ajax: {
                     url: "{{ route('api.locations') }}",

@@ -7,8 +7,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\SizeGuideController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,9 +40,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
 
         $orders = \App\Models\Order::where('user_id', auth()->id())
-           ->orderBy('created_at', 'desc')
-           ->take(10) // Batasi hanya 10 terbaru agar dashboard tetap enteng
-           ->get();
+            ->orderBy('created_at', 'desc')
+            ->take(10) // Batasi hanya 10 terbaru agar dashboard tetap enteng
+            ->get();
 
         return view('dashboard', compact('orders'));
     })->name('dashboard');
@@ -51,7 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Order Routes (TAMBAHAN UNTUK MENGHILANGKAN ERROR)
+    // Order Routes
     Route::get('/profile/orders', [ProfileController::class, 'orders'])->name('profile.orders');
     Route::get('/profile/orders/{order_number}', [ProfileController::class, 'orderDetail'])->name('profile.orders.detail');
     
@@ -77,22 +78,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
+    // Resources
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
     Route::resource('sliders', SliderController::class);
+    
+    // Size Guide Templates (Fitur Baru)
+    Route::resource('size-guides', SizeGuideController::class);
 
+    // Product Image Management
     Route::delete('/product-images/{id}', [ProductController::class, 'destroyImage'])->name('products.images.destroy');
     Route::patch('/product-images/{id}/set-primary', [ProductController::class, 'setPrimary'])->name('products.images.setPrimary');
-});
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order_number}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    
+    // Order Management
+    Route::name('admin.')->group(function () {
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order_number}', [AdminOrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    });
 });
 
 require __DIR__.'/auth.php';

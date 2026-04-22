@@ -6,7 +6,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\Category;
-use App\Models\Tag;
+use App\Models\SizeGuideTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -14,20 +14,44 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    /**
+     * Tampilan untuk Admin: Daftar Produk
+     */
     public function index()
     {
-        // Load variants dan tags agar bisa dimonitor di dashboard admin
-        $products = Product::with(['category', 'images', 'variants', 'tags'])->get();
+        $products = Product::with(['category', 'images', 'variants', 'sizeGuide'])->get();
         return view('admin.products.index', compact('products'));
     }
 
+    /**
+     * Tampilan untuk User: Detail Produk (Frontend)
+     */
+    public function show($slug)
+    {
+        $product = Product::with(['category', 'images', 'variants', 'sizeGuide'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        return view('details', compact('product')); 
+    }
+
+    /**
+     * Form Tambah Produk (Admin)
+     */
     public function create()
     {
         $categories = Category::all();
-        $tags = Tag::all(); // Mengambil daftar label yang ada
-        return view('admin.products.create', compact('categories', 'tags'));
+        $templates = SizeGuideTemplate::orderBy('name')->get(); 
+        
+        // Kita kirimkan dua variabel agar cocok dengan file create maupun edit jika berbeda
+        $sizeGuides = $templates; 
+        
+        return view('admin.products.create', compact('categories', 'templates', 'sizeGuides'));
     }
 
+    /**
+     * Simpan Produk Baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -37,24 +61,29 @@ class ProductController extends Controller
             'description' => 'required',
             'images' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
-            // Validasi Varian
             'variant_color' => 'required|array',
             'variant_size' => 'required|array',
             'variant_stock' => 'required|array',
+            'release_date' => 'nullable|date',
+            'size_guide_template_id' => 'nullable|exists:size_guide_templates,id',
         ]);
 
         DB::beginTransaction();
         try {
-            // 1. Simpan data produk utama
             $product = Product::create([
                 'category_id' => $request->category_id,
+                'size_guide_template_id' => $request->size_guide_template_id,
+                'custom_size_guide' => $request->custom_size_guide,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'price' => $request->price,
+                'is_preorder' => $request->has('is_preorder'),
+                'is_limited' => $request->has('is_limited'),
+                'release_date' => $request->release_date,
+                'custom_tag' => $request->custom_tag,
             ]);
 
-            // 2. Simpan Varian (Stok per Warna & Size)
             foreach ($request->variant_color as $index => $color) {
                 if (!empty($color)) {
                     ProductVariant::create([
@@ -62,31 +91,25 @@ class ProductController extends Controller
                         'color' => $color,
                         'size' => $request->variant_size[$index],
                         'stock' => $request->variant_stock[$index] ?? 0,
+                        'additional_price' => $request->additional_price[$index] ?? 0,
                     ]);
                 }
             }
 
-            // 3. Simpan Tags (Label seperti New Arrival/Koleksi)
-            if ($request->has('tags')) {
-                $product->tags()->sync($request->tags);
-            }
-
-            // 4. Simpan Gambar dengan Color Mapping (FIXED)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $key => $image) {
                     $path = $image->store('products', 'public');
-
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $path,
-                        'color' => $request->image_colors[$key] ?? null, // Simpan warna per gambar
+                        'color' => $request->image_colors[$key] ?? null,
                         'is_primary' => $key === 0
                     ]);
                 }
             }
 
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Produk, Varian, & Foto berhasil disimpan!');
+            return redirect()->route('products.index')->with('success', 'Produk Berhasil Disimpan!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -94,14 +117,26 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Form Edit Produk (Admin)
+     */
     public function edit(Product $product)
     {
         $categories = Category::all();
-        $tags = Tag::all();
-        $product->load(['images', 'variants', 'tags']); 
-        return view('admin.products.edit', compact('product', 'categories', 'tags'));
+        $templates = SizeGuideTemplate::orderBy('name', 'asc')->get();
+        
+        // Di file edit.blade.php kamu baris 37 memanggil $sizeGuides
+        // Jadi kita definisikan variabel $sizeGuides di sini
+        $sizeGuides = $templates;
+
+        $product->load(['images', 'variants', 'sizeGuide']);
+        
+        return view('admin.products.edit', compact('product', 'categories', 'templates', 'sizeGuides'));
     }
 
+    /**
+     * Update Produk
+     */
     public function update(Request $request, Product $product)
     {
         $request->validate([
@@ -109,25 +144,26 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'description' => 'required',
-            'variant_color' => 'required|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ], [
-            'images.*.max' => 'Ukuran salah satu foto terlalu besar (Maksimal 2MB).',
-            'images.*.image' => 'File harus berupa gambar.',
+            'release_date' => 'nullable|date',
+            'size_guide_template_id' => 'nullable|exists:size_guide_templates,id',
         ]);
 
         DB::beginTransaction();
         try {
-            // 1. Update data utama produk
             $product->update([
                 'category_id' => $request->category_id,
+                'size_guide_template_id' => $request->size_guide_template_id,
+                'custom_size_guide' => $request->custom_size_guide,
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'price' => $request->price,
                 'description' => $request->description,
+                'is_preorder' => $request->has('is_preorder'),
+                'is_limited' => $request->has('is_limited'),
+                'release_date' => $request->release_date,
+                'custom_tag' => $request->custom_tag,
             ]);
 
-            // 2. Kelola Varian (Update, Create, atau Delete)
             $inputVariantIds = array_filter($request->variant_ids ?? []);
             $product->variants()->whereNotIn('id', $inputVariantIds)->delete();
 
@@ -139,6 +175,7 @@ class ProductController extends Controller
                             'color' => $color,
                             'size'  => $request->variant_size[$index] ?? 'All Size',
                             'stock' => $request->variant_stock[$index] ?? 0,
+                            'additional_price' => $request->additional_price[$index] ?? 0,
                         ];
 
                         if (!empty($vId)) {
@@ -150,21 +187,14 @@ class ProductController extends Controller
                 }
             }
 
-            // 3. Update Tags
-            $product->tags()->sync($request->tags ?? []);
-
-            // 4. FIX: Update Warna Foto yang SUDAH ADA (Ini yang sebelumnya belum ada)
             if ($request->has('existing_image_ids')) {
                 foreach ($request->existing_image_ids as $index => $imageId) {
-                    ProductImage::where('id', $imageId)
-                        ->where('product_id', $product->id)
-                        ->update([
-                            'color' => $request->existing_image_colors[$index] ?? null
-                        ]);
+                    ProductImage::where('id', $imageId)->where('product_id', $product->id)->update([
+                        'color' => $request->existing_image_colors[$index] ?? null
+                    ]);
                 }
             }
 
-            // 5. Upload Foto Baru (jika ada)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $key => $image) {
                     if ($image->isValid()) {
@@ -180,7 +210,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Produk dan varian berhasil diperbarui!');
+            return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -188,6 +218,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Hapus Produk
+     */
     public function destroy(Product $product)
     {
         $images = $product->images;
@@ -200,6 +233,9 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
     }
 
+    /**
+     * Set Gambar Utama
+     */
     public function setPrimary($id)
     {
         $image = ProductImage::findOrFail($id);
@@ -208,6 +244,9 @@ class ProductController extends Controller
         return back()->with('success', 'Gambar utama berhasil diubah!');
     }
 
+    /**
+     * Hapus Salah Satu Gambar
+     */
     public function destroyImage($id)
     {
         $image = ProductImage::findOrFail($id);

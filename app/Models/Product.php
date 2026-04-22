@@ -5,17 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
-    // Hilangkan 'stock', 'colors', dan 'sizes' karena data ini sudah pindah ke tabel variants
+    // Mass assignment untuk kolom-kolom baru (Opsi A)
     protected $fillable = [
         'category_id', 
+        'size_guide_template_id', // Tambahkan ini
         'name', 
         'slug', 
         'description', 
-        'price'
+        'price',
+        'is_preorder',
+        'is_limited',
+        'release_date',
+        'custom_tag',
+    ];
+
+    /**
+     * Casting data agar tipe data konsisten.
+     * release_date diubah jadi objek datetime agar bisa pakai ->format() atau ->diff()
+     * is_preorder & is_limited diubah jadi boolean.
+     */
+    protected $casts = [
+        'release_date' => 'datetime',
+        'is_preorder' => 'boolean',
+        'is_limited' => 'boolean',
     ];
 
     // Relasi ke Kategori
@@ -32,7 +47,6 @@ class Product extends Model
 
     /**
      * Relasi ke Varian Produk (Stok per warna & ukuran)
-     * Ini yang akan memperbaiki error 'variants' not found tadi.
      */
     public function variants(): HasMany
     {
@@ -40,20 +54,26 @@ class Product extends Model
     }
 
     /**
-     * Relasi ke Tag/Label (Many-to-Many)
-     * Memungkinkan produk punya label seperti 'New Arrival', 'Pre-Order', dll.
-     */
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class);
-    }
-
-    /**
      * Accessor untuk menghitung total stok dari semua varian.
-     * Jadi kamu tetap bisa memanggil $product->total_stock di view.
+     * Kamu bisa panggil dengan $product->total_stock
      */
-    public function getTotalStockAttribute()
+    public function getTotalStockAttribute(): int
     {
         return $this->variants->sum('stock');
     }
+
+    /**
+     * Helper untuk cek apakah produk masih baru (kurang dari 7 hari)
+     * Digunakan untuk tag 'New Arrival' otomatis.
+     */
+    public function getIsNewArrivalAttribute(): bool
+    {
+        return $this->created_at->diffInDays() < 7;
+    }
+
+    public function sizeGuide(): BelongsTo
+{
+    return $this->belongsTo(SizeGuideTemplate::class, 'size_guide_template_id');
+}
+
 }

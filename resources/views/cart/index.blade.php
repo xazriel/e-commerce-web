@@ -3,89 +3,139 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Your Cart - Farhana Web</title>
+    <title>Cart - Farhana Official</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        .cart-container { max-width: 900px; }
-        .product-img { width: 230px; height: 330px; object-fit: cover; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .cart-item-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Ukuran Gambar Container */
+        .product-img-container { width: 120px; height: 160px; }
+
+        /* Style Quantity Kotak */
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            background-color: #f9f9f9;
+            width: fit-content;
+        }
+        .qty-input-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 300;
+            color: #4b5563;
+            transition: all 0.2s;
+        }
+        .qty-input-btn:hover {
+            color: #000;
+            background-color: #f3f4f6;
+        }
+        .qty-value {
+            width: 40px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 500;
+            color: #1a1a1a;
+            user-select: none;
+        }
     </style>
 </head>
-<body class="bg-[#FCFCFA] text-[#4A4A4A] antialiased font-sans">
+<body class="bg-[#FCFCFA] text-[#1a1a1a] antialiased">
 
-    <header class="py-6 px-8 flex justify-between items-center border-b border-gray-100 bg-white">
-        <a href="{{ route('home') }}" class="text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-60 transition">
+    <header class="py-6 px-8 flex justify-between items-center border-b border-gray-100 bg-white sticky top-0 z-50">
+        <a href="/" class="text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-60 transition font-sans">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Farhana
         </a>
     </header>
     
-    <main class="cart-container mx-auto px-6 py-12">
-        <h1 class="text-center text-lg tracking-[0.3em] uppercase mb-16 text-[#8B864E]">Cart</h1>
+    <main class="max-w-[1000px] mx-auto px-6 py-16 min-h-[70vh]">
+        
+        <div class="flex items-center gap-6 mb-16">
+            <h1 class="text-lg tracking-[0.4em] uppercase font-light text-[#1a1a1a]">Shopping Bag</h1>
+            <div class="h-[1px] flex-grow bg-gray-100"></div>
+            <span class="text-[9px] uppercase tracking-widest text-gray-400 font-medium font-sans">{{ count(session('cart') ?? []) }} ITEMS</span>
+        </div>
 
         @if(session('cart') && count(session('cart')) > 0)
-            <div class="bg-white p-8 border border-gray-50 shadow-sm rounded-sm">
+            <div class="divide-y divide-gray-50">
                 @php $total = 0; @endphp
                 @foreach(session('cart') as $id => $details)
                     @php $total += $details['price'] * $details['quantity']; @endphp
                     
-                    <div class="flex items-start gap-8 py-6 border-b border-gray-50 last:border-0">
-                        <div class="flex-shrink-0 bg-gray-50 rounded-sm overflow-hidden border border-gray-100">
-                            @if($details['image'])
-                                <img src="{{ asset('storage/' . $details['image']) }}" alt="{{ $details['name'] }}" class="product-img">
-                            @endif
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center cart-item-transition">
+                        <div class="col-span-1 md:col-span-2 flex justify-center md:justify-start">
+                            <div class="product-img-container overflow-hidden bg-[#f9f9f7] relative border border-gray-50">
+                                @if($details['image'])
+                                    <img src="{{ asset('storage/' . $details['image']) }}" 
+                                         alt="{{ $details['name'] }}" 
+                                         class="w-full h-full object-cover mix-blend-multiply">
+                                @endif
+                            </div>
                         </div>
 
-                        <div class="flex-grow">
-                            <h2 class="text-[12px] font-medium tracking-wide text-gray-800 mb-1 uppercase italic">{{ $details['name'] }}</h2>
-                            
-                            <p class="text-[10px] text-gray-400 mb-2 uppercase tracking-widest">
-                                {{ $details['color'] }} / {{ $details['size'] }}
-                            </p>
-                            
-                            <p class="text-[13px] font-semibold text-[#8B864E]">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
-                            
-                            <div class="mt-6 flex items-center justify-end gap-6">
-                                <form action="{{ route('cart.remove', $id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-[10px] uppercase tracking-widest text-[#8B864E] hover:text-red-800 transition border-b border-[#8B864E] pb-0.5">
-                                        Remove
-                                    </button>
-                                </form>
+                        <div class="col-span-1 md:col-span-5 text-center md:text-left">
+                            <h2 class="text-[12px] tracking-[0.15em] uppercase font-semibold text-[#1a1a1a] mb-1">{{ $details['name'] }}</h2>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-[0.15em] mb-1 font-sans">{{ $details['color'] }} / {{ $details['size'] }}</p>
+                            <p class="text-[11px] font-medium text-gray-600 font-sans">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
+                        </div>
 
-                                <div class="flex items-center border border-gray-200 rounded-sm px-4 py-1">
-                                    <span class="text-[11px] font-bold">Qty: {{ $details['quantity'] }}</span>
-                                </div>
+                        <div class="col-span-1 md:col-span-3 flex justify-center">
+                            <div class="qty-wrapper">
+                                <button class="qty-input-btn">−</button>
+                                <span class="qty-value font-sans">{{ $details['quantity'] }}</span>
+                                <button class="qty-input-btn">+</button>
                             </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 flex flex-col items-center md:items-end gap-3">
+                            <span class="text-[12px] font-semibold tracking-wider text-[#1a1a1a] font-sans">Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}</span>
+                            <form action="{{ route('cart.remove', $id) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-[9px] uppercase tracking-[0.2em] text-gray-300 hover:text-red-500 transition-colors border-b border-gray-100 hover:border-red-500 pb-0.5 font-sans">
+                                    Remove
+                                </button>
+                            </form>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="mt-8 flex flex-col items-end gap-6">
-                <div class="flex justify-between w-full sm:w-1/2 text-sm border-t border-gray-100 pt-6">
-                    <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400">Total Price ({{ count(session('cart')) }})</span>
-                    <span class="text-md font-bold text-[#8B864E]">Rp {{ number_format($total, 0, ',', '.') }}</span>
-                </div>
-
-                <div class="w-full sm:w-1/3">
-                    <a href="{{ route('checkout.index') }}" class="block w-full bg-[#6B6631] text-white text-center py-4 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full hover:bg-[#5A5629] transition shadow-md flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        Secure Checkout
+            <div class="mt-16 pt-10 border-t border-gray-100 flex flex-col items-center md:items-end">
+                <div class="w-full md:w-[320px] space-y-6">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Subtotal</span>
+                        <span class="text-lg font-light tracking-[0.05em] text-[#1a1a1a] font-sans">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+                    
+                    <a href="{{ route('checkout.index') }}" 
+                    class="block w-full bg-[#5A5A00] text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] text-center border border-[#5A5A00] hover:bg-white hover:text-[#5A5A00] transition-all duration-500">
+                    Checkout
                     </a>
+                    <p class="text-[9px] text-gray-400 tracking-widest text-center uppercase italic opacity-60">Taxes and shipping calculated at checkout</p>
                 </div>
             </div>
 
         @else
-            <div class="text-center py-20 bg-white border border-gray-50">
-                <p class="text-[11px] text-gray-400 uppercase tracking-widest italic mb-8">Your cart is empty</p>
-                <a href="{{ route('home') }}" class="text-[10px] font-bold uppercase tracking-widest text-[#8B864E] border border-[#8B864E] px-10 py-3 rounded-full hover:bg-[#8B864E] hover:text-white transition">Explore Now</a>
+            <div class="text-center py-40">
+                <p class="text-[11px] text-gray-400 uppercase tracking-[0.4em] mb-12 italic">Your shopping bag is empty.</p>
+                <a href="/" class="inline-block text-[10px] font-bold uppercase tracking-[0.4em] border border-[#1a1a1a] px-14 py-4 hover:bg-[#1a1a1a] hover:text-white transition-all">Start Shopping</a>
             </div>
         @endif
     </main>
-
+    
     <footer class="mt-20 py-10 text-center border-t border-gray-50">
-        <p class="text-[9px] text-gray-300 uppercase tracking-[0.5em]">&copy; 2026 Farhana Official</p>
+        <p class="text-[9px] text-gray-300 uppercase tracking-[0.5em] font-sans">&copy; 2026 Farhana Official</p>
     </footer>
 
 </body>
