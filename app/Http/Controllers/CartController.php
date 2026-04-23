@@ -103,19 +103,40 @@ class CartController extends Controller
     /**
      * Update quantity via AJAX (jika ada fitur tambah/kurang di halaman cart)
      */
-    public function update(Request $request)
-    {
-        if($request->id && $request->quantity) {
-            $cart = session()->get('cart');
-            
-            $variant = ProductVariant::find($request->id);
-            if(!$variant || $variant->stock < $request->quantity) {
-                return response()->json(['error' => "Stok tidak mencukupi"], 400);
-            }
+    // Contoh logic di CartController.php
+public function update(Request $request, $id)
+{
+    $cart = session()->get('cart');
 
-            $cart[$request->id]["quantity"] = (int)$request->quantity;
-            session()->put('cart', $cart);
-            return response()->json(['success' => "Keranjang diperbarui"]);
+    if(isset($cart[$id])) {
+        $variant = \App\Models\ProductVariant::find($id);
+
+        if($request->action == 'increase') {
+            if ($variant && $variant->stock > $cart[$id]['quantity']) {
+                $cart[$id]['quantity']++;
+            } else {
+                return response()->json(['success' => false, 'message' => 'Stok tidak mencukupi.'], 400);
+            }
+        } elseif($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
+            $cart[$id]['quantity']--;
         }
+        
+        session()->put('cart', $cart);
+
+        // Hitung total keseluruhan baru untuk dikirim ke JS
+        $total = 0;
+        foreach($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return response()->json([
+            'success' => true,
+            'newQty' => $cart[$id]['quantity'],
+            'itemSubtotal' => 'Rp ' . number_format($cart[$id]['price'] * $cart[$id]['quantity'], 0, ',', '.'),
+            'cartTotal' => 'Rp ' . number_format($total, 0, ',', '.')
+        ]);
     }
+
+    return response()->json(['success' => false], 404);
+}
 }

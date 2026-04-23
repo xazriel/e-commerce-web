@@ -1,21 +1,12 @@
 <x-app-layout>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {{-- CSS Minimalis untuk tab --}}
     <style>
-        .select2-container--default .select2-selection--single {
-            border-radius: 0.5rem;
-            border-color: #e5e7eb;
-            height: 45px;
-            line-height: 45px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 45px;
-            font-size: 14px;
-            color: #4b5563;
-        }
+        [x-cloak] { display: none !important; }
     </style>
 
-    <div class="max-w-4xl mx-auto px-4 py-16" x-data="{ tab: 'orders' }">
+    <div class="max-w-4xl mx-auto px-4 py-16" x-data="{ tab: 'orders' }" x-cloak>
         
+        {{-- Header Dashboard --}}
         <div class="flex justify-between items-end mb-12 border-b border-gray-100 pb-8">
             <div>
                 <span class="text-[10px] uppercase tracking-[0.4em] text-gray-400 block mb-2">Customer Account</span>
@@ -28,13 +19,15 @@
             </div>
         </div>
 
-        @if(session('status') === 'address-updated')
+        {{-- Flash Message --}}
+        @if(session('success'))
             <div class="mb-8 p-4 bg-[#6B6631] text-white text-[9px] uppercase tracking-[0.3em] font-bold text-center">
-                Profile Information Updated.
+                {{ session('success') }}
             </div>
         @endif
 
         <div class="border border-gray-100 bg-white shadow-sm overflow-hidden">
+            {{-- Navigation Tabs --}}
             <div class="flex border-b border-gray-100">
                 <button @click="tab = 'orders'" 
                     :class="tab === 'orders' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'"
@@ -92,86 +85,80 @@
                     @endif
                 </div>
 
-                {{-- TAB: DELIVERY INFO --}}
+                {{-- TAB: DELIVERY INFO (MULTIPLE ADDRESSES) --}}
                 <div x-show="tab === 'delivery'" style="display: none;">
-                    <form action="{{ route('profile.address.update') }}" method="POST" class="max-w-xl space-y-8">
-                        @csrf
-                        @method('PATCH')
+                    <div class="flex justify-between items-center mb-10">
+                        <div>
+                            <h4 class="text-[11px] font-bold uppercase tracking-[0.3em] text-gray-800">Shipping Addresses</h4>
+                            <p class="text-[9px] text-gray-400 uppercase tracking-widest mt-1">Manage your delivery locations for faster checkout.</p>
+                        </div>
+                        <a href="{{ route('address.create') }}" class="bg-black text-white px-8 py-3 text-[9px] font-bold uppercase tracking-[0.2em] hover:bg-[#5A5A00] transition shadow-sm">
+                            + Add New Address
+                        </a>
+                    </div>
 
-                        <div class="space-y-6">
-                            <div>
-                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Contact Number</label>
-                                <input type="text" name="phone" value="{{ auth()->user()->phone }}" placeholder="08..." required
-                                    class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-[13px] focus:ring-0 focus:border-black transition bg-transparent">
-                            </div>
+                    @php
+                        $addresses = auth()->user()->addresses;
+                    @endphp
 
-                            <div>
-                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Location Area</label>
-                                <select name="destination_id" id="search-location-dashboard" class="w-full" required>
-                                    @if(auth()->user()->destination_id)
-                                        <option value="{{ auth()->user()->destination_id }}" selected>{{ auth()->user()->destination_name }}</option>
+                    @if($addresses->isEmpty())
+                        <div class="py-20 text-center border-2 border-dashed border-gray-100">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-4 italic">You haven't saved any addresses yet.</p>
+                            <a href="{{ route('address.create') }}" class="text-[9px] font-bold uppercase border-b border-black pb-1">Create your first address</a>
+                        </div>
+                    @else
+                        <div class="grid grid-cols-1 gap-6">
+                            @foreach($addresses as $address)
+                                <div class="border {{ $address->is_default ? 'border-black' : 'border-gray-100' }} p-8 relative group transition-all">
+                                    @if($address->is_default)
+                                        <span class="absolute top-0 right-0 bg-black text-white text-[8px] px-4 py-1 uppercase tracking-[0.2em] font-bold">Default Address</span>
                                     @endif
-                                </select>
-                                <input type="hidden" name="destination_name" id="dashboard_destination_name" value="{{ auth()->user()->destination_name }}">
-                            </div>
+                                    
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h5 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A5A00]">
+                                            {{ $address->label ?? 'Home / Office' }}
+                                        </h5>
+                                    </div>
 
-                            <div>
-                                <label class="text-[9px] uppercase tracking-[0.3em] text-gray-400 block mb-3 font-bold">Full Address</label>
-                                <textarea name="address" rows="3" placeholder="Street, Unit Number, etc." required
-                                    class="w-full border-gray-200 border-x-0 border-t-0 border-b p-2 text-[13px] focus:ring-0 focus:border-black transition bg-transparent">{{ auth()->user()->address }}</textarea>
-                            </div>
-                        </div>
+                                    <div class="text-[12px] text-gray-600 leading-relaxed uppercase tracking-wider space-y-1">
+                                        <p class="text-black font-bold">{{ $address->recipient_name }}</p>
+                                        <p>{{ $address->phone }}</p>
+                                        <p class="mt-2">{{ $address->address }}</p>
+                                        <p>{{ $address->district_name }}, {{ $address->city_name }}</p>
+                                        <p>{{ $address->province_name }} — {{ $address->postal_code }}</p>
+                                    </div>
 
-                        <div class="pt-6 flex items-center gap-6">
-                            <button type="submit" class="bg-black text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition">
-                                Update Address
-                            </button>
-                            
-                            <button type="button" @click="if(confirm('Clear address info?')) { window.location.reload(); }" class="text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-red-500 transition">
-                                Clear Info
-                            </button>
+                                    <div class="mt-8 pt-6 border-t border-gray-50 flex items-center gap-8">
+                                        @if(!$address->is_default)
+                                            <form action="{{ route('address.select', $address->id) }}" method="POST">
+                                                @csrf
+                                                <button class="text-[9px] font-bold uppercase tracking-widest text-black hover:text-[#5A5A00] transition">
+                                                    Set as Default
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <form action="{{ route('address.destroy', $address->id) }}" method="POST" onsubmit="return confirm('Delete this address?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="text-[9px] font-bold uppercase tracking-widest text-red-400 hover:text-red-600 transition">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    </form>
+                    @endif
                 </div>
 
                 {{-- TAB: WISHLIST --}}
                 <div x-show="tab === 'wishlist'" style="display: none;">
                     <div class="py-32 text-center">
-                        <p class="text-[10px] uppercase tracking-[0.5em] text-gray-300 italic">Discovery is ongoing. Your wishlist is empty.</p>
+                        <p class="text-[10px] uppercase tracking-[0.5em] text-gray-300 italic">Your curation starts here. Wishlist is empty.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#search-location-dashboard').select2({
-                placeholder: 'Search City or District...',
-                minimumInputLength: 3,
-                ajax: {
-                    url: "{{ route('api.locations') }}",
-                    dataType: 'json',
-                    delay: 400,
-                    data: function (params) {
-                        return { q: params.term };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.data.map(function (item) {
-                                return { id: item.id, text: item.label };
-                            })
-                        };
-                    }
-                }
-            });
-
-            $('#search-location-dashboard').on('select2:select', function (e) {
-                var data = e.params.data;
-                $('#dashboard_destination_name').val(data.text);
-            });
-        });
-    </script>   
 </x-app-layout>

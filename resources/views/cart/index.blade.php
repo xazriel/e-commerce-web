@@ -10,11 +10,8 @@
         body { font-family: 'Inter', sans-serif; }
         
         .cart-item-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* Ukuran Gambar Container */
         .product-img-container { width: 120px; height: 160px; }
 
-        /* Style Quantity Kotak */
         .qty-wrapper {
             display: flex;
             align-items: center;
@@ -32,10 +29,17 @@
             font-weight: 300;
             color: #4b5563;
             transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
         }
-        .qty-input-btn:hover {
+        .qty-input-btn:hover:not(:disabled) {
             color: #000;
             background-color: #f3f4f6;
+        }
+        .qty-input-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
         .qty-value {
             width: 40px;
@@ -47,7 +51,10 @@
             font-weight: 500;
             color: #1a1a1a;
             user-select: none;
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
         }
+        .updating { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
 <body class="bg-[#FCFCFA] text-[#1a1a1a] antialiased">
@@ -64,16 +71,18 @@
         <div class="flex items-center gap-6 mb-16">
             <h1 class="text-lg tracking-[0.4em] uppercase font-light text-[#1a1a1a]">Shopping Bag</h1>
             <div class="h-[1px] flex-grow bg-gray-100"></div>
-            <span class="text-[9px] uppercase tracking-widest text-gray-400 font-medium font-sans">{{ count(session('cart') ?? []) }} ITEMS</span>
+            <span class="text-[9px] uppercase tracking-widest text-gray-400 font-medium font-sans">
+                <span id="cart-count">{{ count(session('cart') ?? []) }}</span> ITEMS
+            </span>
         </div>
 
         @if(session('cart') && count(session('cart')) > 0)
-            <div class="divide-y divide-gray-50">
+            <div class="divide-y divide-gray-50" id="cart-container">
                 @php $total = 0; @endphp
                 @foreach(session('cart') as $id => $details)
                     @php $total += $details['price'] * $details['quantity']; @endphp
                     
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center cart-item-transition">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 py-10 items-center cart-item-transition" id="item-row-{{ $id }}">
                         <div class="col-span-1 md:col-span-2 flex justify-center md:justify-start">
                             <div class="product-img-container overflow-hidden bg-[#f9f9f7] relative border border-gray-50">
                                 @if($details['image'])
@@ -91,15 +100,17 @@
                         </div>
 
                         <div class="col-span-1 md:col-span-3 flex justify-center">
-                            <div class="qty-wrapper">
-                                <button class="qty-input-btn">−</button>
-                                <span class="qty-value font-sans">{{ $details['quantity'] }}</span>
-                                <button class="qty-input-btn">+</button>
+                            <div class="qty-wrapper" data-id="{{ $id }}">
+                                <button type="button" class="qty-input-btn btn-update" data-action="decrease" {{ $details['quantity'] <= 1 ? 'disabled' : '' }}>−</button>
+                                <span class="qty-value font-sans" id="qty-val-{{ $id }}">{{ $details['quantity'] }}</span>
+                                <button type="button" class="qty-input-btn btn-update" data-action="increase">+</button>
                             </div>
                         </div>
 
                         <div class="col-span-1 md:col-span-2 flex flex-col items-center md:items-end gap-3">
-                            <span class="text-[12px] font-semibold tracking-wider text-[#1a1a1a] font-sans">Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}</span>
+                            <span class="text-[12px] font-semibold tracking-wider text-[#1a1a1a] font-sans" id="item-subtotal-{{ $id }}">
+                                Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
+                            </span>
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-[9px] uppercase tracking-[0.2em] text-gray-300 hover:text-red-500 transition-colors border-b border-gray-100 hover:border-red-500 pb-0.5 font-sans">
@@ -115,7 +126,9 @@
                 <div class="w-full md:w-[320px] space-y-6">
                     <div class="flex justify-between items-baseline">
                         <span class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Subtotal</span>
-                        <span class="text-lg font-light tracking-[0.05em] text-[#1a1a1a] font-sans">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        <span class="text-lg font-light tracking-[0.05em] text-[#1a1a1a] font-sans" id="cart-total">
+                            Rp {{ number_format($total, 0, ',', '.') }}
+                        </span>
                     </div>
                     
                     <a href="{{ route('checkout.index') }}" 
@@ -138,5 +151,49 @@
         <p class="text-[9px] text-gray-300 uppercase tracking-[0.5em] font-sans">&copy; 2026 Farhana Official</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.querySelectorAll('.btn-update').forEach(button => {
+            button.addEventListener('click', function() {
+                const wrapper = this.closest('.qty-wrapper');
+                const id = wrapper.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+                const qtyValSpan = document.getElementById(`qty-val-${id}`);
+                const row = document.getElementById(`item-row-${id}`);
+
+                // Visual feedback: Tambahkan kelas updating
+                row.classList.add('updating');
+
+                axios.patch(`/cart/update/${id}`, {
+                    action: action
+                })
+                .then(response => {
+                    if (response.data.success) {
+                        // 1. Update Angka Quantity
+                        qtyValSpan.innerText = response.data.newQty;
+
+                        // 2. Update Subtotal Item tersebut (Format Rupiah)
+                        const itemSubtotal = document.getElementById(`item-subtotal-${id}`);
+                        itemSubtotal.innerText = response.data.itemSubtotal;
+
+                        // 3. Update Total Akhir Keranjang
+                        const cartTotal = document.getElementById('cart-total');
+                        cartTotal.innerText = response.data.cartTotal;
+
+                        // 4. Update Button State (Disable minus jika qty 1)
+                        const btnMinus = wrapper.querySelector('[data-action="decrease"]');
+                        btnMinus.disabled = (response.data.newQty <= 1);
+                    }
+                })
+                .catch(error => {
+                    const msg = error.response?.data?.message || 'Gagal memperbarui keranjang';
+                    alert(msg);
+                })
+                .finally(() => {
+                    row.classList.remove('updating');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
