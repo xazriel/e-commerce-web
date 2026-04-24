@@ -1,120 +1,131 @@
 <x-app-layout>
-    <div class="max-w-4xl mx-auto px-4 py-10">
-        
-        {{-- Header: Back Button & Status --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:text-black transition group">
-                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-                Back to Dashboard
-            </a>
-            <div class="flex items-center gap-3">
-                <span class="text-[9px] uppercase tracking-[0.3em] text-gray-400 font-bold">Order Status</span>
-                <span class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full 
-                    {{ $order->status == 'paid' ? 'bg-black text-white' : 'bg-gray-100 text-gray-500' }}">
-                    {{ $order->status }}
-                </span>
+    <div class="max-w-3xl mx-auto px-6 py-12 md:py-20 font-sans tracking-tight text-gray-900">
+    
+        {{-- Header: ID, Date & Status --}}
+        <div class="mb-16">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-8 border-b border-gray-100">
+                <div>
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-gray-400 mb-2 font-bold">My Order</p>
+                    <h1 class="text-xl font-bold tracking-[0.2em] uppercase text-gray-900">#{{ $order->order_number }}</h1>
+                </div>
+                <div class="text-left md:text-right space-y-2">
+                    <div class="flex md:justify-end items-center gap-3">
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Status</p>
+                        
+                        {{-- Logika Warna Status History --}}
+                        @php
+                            $status = strtolower($order->status);
+                            if ($status == 'completed') {
+                                $statusClass = 'bg-[#5A5A00] text-white'; // Hijau Olive (Selesai)
+                            } elseif (in_array($status, ['canceled', 'returned'])) {
+                                $statusClass = 'bg-red-600 text-white'; // Merah (Batal/Retur)
+                            } else {
+                                $statusClass = 'bg-gray-900 text-white'; // Hitam (Unpaid, To Ship, Shipped)
+                            }
+                        @endphp
+
+                        <span class="px-3 py-1 {{ $statusClass }} text-[9px] font-black uppercase tracking-[0.2em] rounded transition-colors duration-300">
+                            {{ $order->status }}
+                        </span>
+                    </div>
+                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+                        {{ $order->created_at->format('d M Y') }}
+                    </p>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {{-- Kolom Kiri: Detail Produk --}}
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-gray-50">
-                        <h3 class="text-[11px] font-bold uppercase tracking-[0.3em] text-gray-800">Items Ordered</h3>
-                    </div>
-                    
-                    <div class="divide-y divide-gray-50">
-                        @foreach($order->items as $item)
-                        <div class="p-6 flex items-center gap-6">
-                            {{-- Image Placeholder/Product Image --}}
-                            <div class="w-20 h-20 bg-gray-50 rounded-xl flex-shrink-0 overflow-hidden border border-gray-100">
-                                @if($item->product && $item->product->images->where('is_primary', 1)->first())
-                                    <img src="{{ asset('storage/' . $item->product->images->where('is_primary', 1)->first()->image_path) }}" class="w-full h-full object-cover">
+        <div class="space-y-12">
+            {{-- Items List --}}
+            <section>
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-xs font-black uppercase tracking-widest text-gray-900">Order Summary</h2>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">{{ $order->items->count() }} Item(s)</span>
+                </div>
+                
+                <div class="space-y-8">
+                    @foreach($order->items as $item)
+                    <div class="flex items-center justify-between gap-4 group">
+                        <div class="flex items-center gap-6">
+                            <div class="w-16 h-20 bg-gray-50 overflow-hidden border border-gray-100 transition-transform group-hover:scale-105 shadow-sm">
+                                @php $primaryImage = $item->product->images->where('is_primary', 1)->first(); @endphp
+                                @if($item->product && $primaryImage)
+                                    <img src="{{ asset('storage/' . $primaryImage->image_path) }}" class="w-full h-full object-cover">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center text-[8px] text-gray-300 italic">No Image</div>
+                                    <div class="w-full h-full flex items-center justify-center bg-gray-50 text-gray-200 uppercase text-[8px] font-bold">No Image</div>
                                 @endif
                             </div>
+                            <div>
+                                <p class="text-sm font-bold uppercase tracking-tight text-gray-900">{{ $item->product->name ?? 'Unknown Product' }}</p>
+                                
+                                {{-- Warna Produk Dinamis --}}
+                                @if($item->color)
+                                    <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold mt-0.5"> {{ $item->color }}</p>
+                                @endif
 
-                            <div class="flex-1">
-                                <h4 class="text-[12px] font-bold uppercase tracking-wider text-black mb-1">
-                                    {{ $item->product->name ?? 'Product Unavailable' }}
-                                </h4>
-                                <p class="text-[10px] text-gray-400 uppercase tracking-widest">
-                                    Qty: {{ $item->quantity }} × IDR {{ number_format($item->price, 0, ',', '.') }}
-                                </p>
-                            </div>
-
-                            <div class="text-right">
-                                <p class="text-[12px] font-bold italic text-black">
-                                    IDR {{ number_format($item->price * $item->quantity, 0, ',', '.') }}
-                                </p>
+                                <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-1 font-bold">{{ $item->variant_name }}  {{ $item->quantity }}x</p>
                             </div>
                         </div>
-                        @endforeach
+                        <p class="text-sm font-black text-gray-900 tracking-tighter">IDR {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
+                    </div>
+                    @endforeach
+                </div>
+            </section>
+
+            {{-- Price Totals --}}
+            <section class="bg-gray-50 p-10 space-y-4 border border-gray-100 rounded-sm">
+                <div class="flex justify-between text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold">
+                    <span>Subtotal</span>
+                    <span class="text-gray-900">IDR {{ number_format($order->total_amount - ($order->shipping_cost ?? 0), 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold">
+                    <span>Shipping Fee</span>
+                    <span class="text-gray-900">IDR {{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-lg font-black pt-6 border-t border-gray-200">
+                    <span class="uppercase tracking-[0.3em] text-[10px] text-gray-400 font-bold">Total Payment</span>
+                    <span class="tracking-tighter text-gray-900 font-black">IDR {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                </div>
+            </section>
+
+            {{-- Order Details --}}
+            <section class="pt-8 border-t border-gray-100">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-8 underline decoration-gray-200 underline-offset-8">Order Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    {{-- Column 1: Recipient --}}
+                    <div class="text-sm space-y-2">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Recipient</p>
+                        <p class="font-black uppercase tracking-tight leading-none text-gray-900">{{ auth()->user()->name }}</p>
+                        <p class="text-gray-500 font-bold text-[13px]">{{ auth()->user()->phone }}</p>
+                        <p class="text-gray-400 text-[11px] mt-1 font-medium tracking-tight">{{ auth()->user()->email }}</p>
                     </div>
 
-                    {{-- Summary Total --}}
-                    <div class="p-6 bg-gray-50 border-t border-gray-100 space-y-3">
-                        <div class="flex justify-between text-[10px] uppercase tracking-widest text-gray-500">
-                            <span>Subtotal</span>
-                            <span>IDR {{ number_format($order->total_amount - ($order->shipping_cost ?? 0), 0, ',', '.') }}</span>
+                    {{-- Column 2: Address --}}
+                    <div class="text-sm space-y-2">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shipping Address</p>
+                        <div class="bg-gray-50/50 p-4 rounded-sm">
+                            <p class="text-[13px] leading-relaxed text-gray-600 font-medium uppercase tracking-tight">
+                                {{ auth()->user()->address }}
+                            </p>
                         </div>
-                        <div class="flex justify-between text-[10px] uppercase tracking-widest text-gray-500">
-                            <span>Shipping Cost</span>
-                            <span>IDR {{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="flex justify-between text-[14px] font-bold uppercase tracking-[0.2em] text-black pt-3 border-t border-gray-200">
-                            <span>Total Amount</span>
-                            <span>IDR {{ number_format($order->total_amount, 0, ',', '.') }}</span>
-                        </div>
+                        <p class="text-[10px] font-black pt-2 uppercase tracking-widest text-gray-900 underline underline-offset-4 decoration-gray-200">
+                            {{ auth()->user()->destination_name }}
+                        </p>
                     </div>
                 </div>
+            </section>
+
+            {{-- CTA --}}
+            <div class="pt-20 flex flex-col items-center gap-8 text-center border-t border-gray-50">
+                <a href="{{ route('dashboard') }}" 
+                   style="background-color: #5A5A00;" 
+                   class="group relative inline-flex items-center justify-center px-16 py-4 text-white hover:opacity-90 transition-all w-full md:w-auto shadow-sm">
+                    <span class="relative text-[10px] uppercase tracking-[0.4em] font-black">Continue Shopping</span>
+                </a>
+                <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">
+                    Need help? <a href="#" class="text-gray-900 font-black border-b border-gray-900 pb-0.5">Contact Us</a>
+                </p>
             </div>
-
-            {{-- Kolom Kanan: Info Pengiriman & Pembayaran --}}
-            <div class="space-y-6">
-                {{-- Info Pesanan --}}
-                <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm">
-                    <h3 class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4">Order Info</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-[9px] uppercase tracking-widest text-gray-400 mb-1">Order Number</p>
-                            <p class="text-[12px] font-bold tracking-widest text-black">#{{ $order->order_number }}</p>
-                        </div>
-                        <div>
-                            <p class="text-[9px] uppercase tracking-widest text-gray-400 mb-1">Transaction Date</p>
-                            <p class="text-[12px] text-gray-600">{{ $order->created_at->format('d M Y, H:i') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Alamat Pengiriman --}}
-                <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm">
-                    <h3 class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 mb-4">Shipping To</h3>
-                    <div class="text-[11px] leading-relaxed text-gray-600">
-                        <p class="font-bold text-black uppercase tracking-widest mb-2">{{ auth()->user()->name }}</p>
-                        <p>{{ auth()->user()->phone }}</p>
-                        <p class="mt-2 italic font-light">{{ auth()->user()->address }}</p>
-                        <p class="mt-1 font-bold uppercase text-black tracking-tighter">{{ auth()->user()->destination_name }}</p>
-                    </div>
-                </div>
-
-                {{-- Metode Pembayaran --}}
-                <div class="bg-black text-white p-6 rounded-2xl shadow-lg">
-                    <h3 class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500 mb-4">Payment Method</h3>
-                    <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                        <p class="text-[11px] uppercase tracking-[0.2em] font-bold">Digital Payment</p>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </x-app-layout>

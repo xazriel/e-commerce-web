@@ -34,45 +34,64 @@
         .image-swipe-zone { touch-action: pan-y; position: relative; overflow: hidden; }
         .countdown-box { border: 1px solid #5A5A00; background-color: #fcfcf7; }
 
-        /* Scannability for recommended products */
         .product-card-img { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
         .product-card:hover .product-card-img { transform: scale(1.05); }
+
+        .size-option.disabled, .color-option.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background-color: #f3f4f6;
+            text-decoration: line-through;
+            pointer-events: none;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Notification Animation */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .error-notif { animation: fadeInDown 0.4s ease forwards; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="bg-white text-gray-900 font-sans antialiased">
     
-    {{-- WhatsApp Floating Button --}}
     <a href="https://wa.me/628123456789?text=Halo%20Farhana,%20saya%20tertarik%20dengan%20produk%20{{ urlencode($product->name) }}" 
        class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    {{-- Navigation --}}
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex-shrink-0">
-                    <a href="{{ route('home') }}" class="text-2xl font-light tracking-[0.4em] uppercase">Farhana</a>
-                </div>
-                <div class="flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-black transition">
-                        &larr; Back to Collection
-                    </a>
-                </div>
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <div class="flex items-center">
+                <a href="{{ route('home') }}" class="group flex items-center text-[9px] tracking-[0.3em] uppercase text-gray-400 hover:text-[#5A5A00] transition-all duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-3 transform group-hover:-translate-x-1 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span class="font-light">Back to Collection</span>
+                </a>
+            </div>
+
+            <div class="flex-shrink-0">
+                <a href="{{ route('home') }}" class="text-1xl font-light tracking-[0.4em] uppercase">Farhana</a>
             </div>
         </div>
-        @if(session('success'))
-            <div class="bg-black text-white text-[10px] tracking-[0.2em] uppercase py-3 text-center animate-fade-in-down">
-                {{ session('success') }}
-            </div>
-        @endif
-    </nav>
+    </div>
+
+    @if(session('success'))
+        <div class="bg-black text-white text-[10px] tracking-[0.2em] uppercase py-3 text-center">
+            {{ session('success') }}
+        </div>
+    @endif
+</nav>
 
     <main class="max-w-7xl mx-auto px-4 py-8 lg:py-20">
         <div class="flex flex-col lg:flex-row justify-between gap-12">
             
-            {{-- SEKSI GAMBAR (SLIDER) --}}
             <div class="lg:w-[50%] space-y-6">
                 <div id="swipeArea" class="image-swipe-zone bg-gray-50 overflow-hidden aspect-[3/5] border border-gray-50 relative group">
                     <button type="button" class="nav-btn prev-btn hidden lg:flex items-center justify-center" onclick="prevImage()">&#10094;</button>
@@ -83,14 +102,12 @@
                     <button type="button" class="nav-btn next-btn hidden lg:flex items-center justify-center" onclick="nextImage()">&#10095;</button>
                 </div>
                 
-                {{-- Dot indicators for Mobile --}}
                 <div class="flex justify-center gap-2 lg:hidden" id="imageDots">
                     @foreach($product->images as $index => $image)
                         <div class="h-1.5 w-1.5 rounded-full dot-item {{ $loop->first ? 'bg-[#5A5A00] w-4' : 'bg-gray-300' }}" data-index="{{ $index }}"></div>
                     @endforeach
                 </div>
 
-                {{-- Thumbnails for Desktop --}}
                 <div class="hidden lg:grid grid-cols-6 gap-3">
                     @foreach($product->images as $index => $image)
                         <div class="cursor-pointer border-b-2 {{ $loop->first ? 'border-black' : 'border-transparent' }} hover:border-black transition pb-2 thumb-img"
@@ -104,30 +121,30 @@
                 </div>
             </div>
 
-            {{-- SEKSI INFO PRODUK --}}
             <div class="lg:w-[55%]">
                 <div class="sticky top-32">
-                    <div class="flex flex-col gap-2 mb-4">
+                    <div class="flex flex-col items-start gap-2 mb-4">
                         <div class="flex flex-wrap gap-2">
                             @if($product->is_preorder)
-                                <span class="px-2 py-0.5 bg-[#5A5A00] text-white text-[9px] font-bold uppercase tracking-widest border border-[#5A5A00]">Pre-Order</span>
+                                <span class="px-2 py-0.5 bg-[#5A5A00] text-white text-[9px] font-bold uppercase tracking-widest">Pre-Order</span>
                             @endif
                             @if($product->custom_tag)
                                 <span class="px-2 py-0.5 bg-gray-100 text-[#5A5A00] text-[9px] font-bold uppercase tracking-widest border border-gray-200">{{ $product->custom_tag }}</span>
                             @endif
                         </div>
-                        <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em]">{{ $product->category->name ?? 'Collection' }}</p>
+                        <span class="inline-block w-fit bg-[#5A5A00]/80 text-white text-[9px] font-bold uppercase tracking-[0.3em] px-4 py-1.5 rounded-full">
+                            {{ $product->category->name ?? 'Collection' }}
+                        </span>
                     </div>
 
-                    <h1 class="text-3xl font-light mb-6 tracking-widest uppercase text-gray-900 leading-snug">{{ $product->name }}</h1>
+                    <h1 class="text-2xl font-light mb-6 tracking-widest uppercase text-gray-900 leading-snug">{{ $product->name }}</h1>
                     
                     <div class="mb-6">
-                        <p id="product-price" data-base-price="{{ $product->price }}" class="text-2xl font-light text-gray-900 tracking-wider">
+                        <p class="text-1xl font-light text-gray-900 tracking-wider">
                             IDR {{ number_format($product->price, 0, ',', '.') }}
                         </p>
                     </div>
 
-                    {{-- COUNTDOWN PRE-ORDER --}}
                     @if($product->is_preorder && $product->release_date)
                         <div id="preorder-countdown" data-expire="{{ $product->release_date }}" class="hidden mb-10 p-5 countdown-box">
                             <p class="text-[9px] uppercase tracking-[0.2em] text-gray-400 mb-3">Pre-Order Ends In:</p>
@@ -142,7 +159,7 @@
 
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" id="addToCartForm">
                         @csrf
-                        <input type="hidden" name="variant_id" id="variant_id_input" required>
+                        <input type="hidden" name="variant_id" id="variant_id_input">
 
                         @php
                             $uniqueColors = $product->variants->pluck('color')->unique();
@@ -153,14 +170,13 @@
                             });
                         @endphp
 
-                        {{-- Warna --}}
                         @if($uniqueColors->count() > 0)
                         <div class="mb-8">
                             <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-gray-900">Select Color</h3>
                             <div class="flex flex-wrap gap-3">
                                 @foreach($uniqueColors as $color)
-                                    <label class="cursor-pointer">
-                                        <input type="radio" name="color" value="{{ $color }}" class="hidden peer color-radio" onchange="filterSizeByColor('{{ $color }}')" required>
+                                    <label class="cursor-pointer color-option">
+                                        <input type="radio" name="color" value="{{ $color }}" class="hidden peer" onchange="filterSizeByColor('{{ $color }}')">
                                         <span class="px-5 py-2 border border-gray-200 text-[10px] uppercase tracking-widest peer-checked:border-[#5A5A00] peer-checked:bg-[#5A5A00] peer-checked:text-white hover:border-[#5A5A00] transition block text-center">
                                             {{ $color }}
                                         </span> 
@@ -170,21 +186,17 @@
                         </div>
                         @endif
 
-                        {{-- Ukuran & Size Guide Trigger --}}
                         <div class="mb-8">
                             <div class="flex items-center w-full mb-4">
                                 <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">Select Size</h3>
                                 @if($product->sizeGuide)
-                                <button type="button" onclick="toggleModal('sizeGuideModal')" 
-                                    class="ml-auto text-[9px] uppercase tracking-widest border-b border-gray-300 pb-0.5 text-gray-400 hover:text-black transition">
-                                    Size Guide
-                                </button>
+                                <button type="button" onclick="toggleModal('sizeGuideModal')" class="ml-auto text-[9px] uppercase tracking-widest border-b border-gray-300 pb-0.5 text-gray-400 hover:text-black transition">Size Guide</button>
                                 @endif
                             </div>
                             <div class="flex flex-wrap gap-3" id="size-container">
                                 @foreach($uniqueSizes as $size)
                                     <label class="cursor-pointer size-option" data-size="{{ $size }}">
-                                        <input type="radio" name="size" value="{{ $size }}" class="hidden peer size-radio" onchange="updateStockDisplay()" required>
+                                        <input type="radio" name="size" value="{{ $size }}" class="hidden peer" onchange="updateStockDisplay()">
                                         <span class="min-w-12 h-12 px-3 flex items-center justify-center border border-gray-200 text-[10px] peer-checked:border-[#5A5A00] peer-checked:bg-[#5A5A00] peer-checked:text-white hover:border-[#5A5A00] transition">
                                             {{ $size }}
                                         </span>
@@ -193,11 +205,10 @@
                             </div>
                         </div>
 
-                        {{-- Quantity --}}
                         <div class="mb-10">
                             <div class="flex justify-between mb-4">
                                 <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">Quantity</h3>
-                                <span id="stock-count" class="text-[9px] uppercase text-gray-400 tracking-widest">Select size to see stock</span>
+                                <span id="stock-count" class="text-[9px] uppercase text-gray-400 tracking-widest">Select color & size</span>
                             </div>
                             <div class="flex items-center border border-gray-200 w-32">
                                 <button type="button" onclick="decrementQty()" class="px-4 py-2 hover:bg-gray-50 transition text-gray-400">-</button>
@@ -206,18 +217,18 @@
                             </div>
                         </div>
 
-                        {{-- Action Buttons --}}
+                        <div id="validation-msg" class="hidden mb-4 text-[10px] text-red-500 font-bold uppercase tracking-widest error-notif"></div>
+
                         <div class="space-y-4">
-                            <button type="submit" id="mainSubmitBtn" class="w-full bg-white border border-gray-300 text-black py-5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-100 transition duration-500">
+                            <button type="button" onclick="handleFormSubmit('add')" class="w-full bg-white border border-gray-300 text-black py-3 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-100 transition duration-500">
                                 {{ $product->is_preorder ? 'Pre-Order Now' : 'Add to Cart' }}
                             </button>
-                            <button type="button" onclick="buyNow()" class="w-full py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-white transition duration-500" style="background-color:#5A5A00;">
+                            <button type="button" onclick="handleFormSubmit('buy')" class="w-full py-3 text-[10px] font-bold uppercase tracking-[0.3em] text-white transition duration-500" style="background-color:#5A5A00;">
                                 Buy It Now
                             </button>
                         </div>
                     </form>
 
-                    {{-- Description --}}
                     <div class="border-t border-gray-100 pt-10 mt-10">
                         <h3 class="text-[10px] font-bold uppercase mb-6 tracking-[0.3em] text-gray-900">Description</h3>
                         <div class="text-gray-500 text-xs description-text uppercase">
@@ -228,35 +239,29 @@
             </div>
         </div>
 
-        {{-- SEKSI REKOMENDASI PRODUK --}}
         @if(isset($relatedProducts) && $relatedProducts->count() > 0)
-        <div class="mt-32 border-t border-gray-50 pt-20">
-            <h2 class="text-xl font-light tracking-[0.5em] uppercase text-center mb-16">You May Also Like</h2>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
-                @foreach($relatedProducts as $related)
-                <a href="{{ route('product.details', $related->slug) }}" class="group product-card">
-                    <div class="aspect-[3/4] bg-gray-50 overflow-hidden mb-4 relative">
-                        <img src="{{ asset('storage/' . ($related->images->where('is_primary', true)->first()->image_path ?? $related->images->first()->image_path)) }}" 
-                             alt="{{ $related->name }}" 
-                             class="w-full h-full object-cover product-card-img">
-                        
-                        @if($related->is_preorder)
-                            <span class="absolute top-3 left-3 px-2 py-0.5 bg-[#5A5A00] text-white text-[8px] font-bold uppercase tracking-widest">Pre-Order</span>
-                        @endif
-                    </div>
-                    <div class="text-center px-2">
-                        <h3 class="text-[10px] tracking-[0.2em] uppercase text-gray-900 mb-1 group-hover:text-[#5A5A00] transition">{{ $related->name }}</h3>
-                        <p class="text-[10px] text-gray-400 tracking-wider">IDR {{ number_format($related->price, 0, ',', '.') }}</p>
-                    </div>
-                </a>
-                @endforeach
+        <div class="mt-32 border-t border-gray-50 pt-20 relative group/slider">
+            <h2 class="text-xl font-medium tracking-[0.5em] uppercase text-center mb-16">You May Also Like</h2>
+            <div id="scroll-container" class="overflow-x-auto scrollbar-hide scroll-smooth">
+                <div class="flex flex-nowrap lg:grid lg:grid-cols-5 gap-6 lg:gap-10 min-w-max lg:min-w-full pb-4">
+                    @foreach($relatedProducts as $related)
+                    <a href="{{ route('product.details', $related->slug) }}" class="group product-card block text-center w-[180px] lg:w-auto flex-none">
+                        <div class="aspect-[2/3] bg-gray-50 overflow-hidden mb-4 relative border border-gray-50">
+                            <img src="{{ asset('storage/' . ($related->images->where('is_primary', true)->first()->image_path ?? $related->images->first()->image_path)) }}" 
+                                 alt="{{ $related->name }}" 
+                                 class="w-full h-full object-cover product-card-img">
+                        </div>
+                        <h3 class="text-[9px] lg:text-[10px] tracking-[0.2em] uppercase text-gray-900 mb-1">{{ $related->name }}</h3>
+                        <p class="text-[9px] text-gray-400 tracking-wider">IDR {{ number_format($related->price, 0, ',', '.') }}</p>
+                    </a>
+                    @endforeach
+                </div>
             </div>
         </div>
         @endif
     </main>
 
-    {{-- FOOTER (SESUAI WELCOME.BLADE) --}}
-    <footer id="about" class="py-16 bg-[#5A5A00] text-white mt-20">
+<footer id="about" class="py-16 bg-[#5A5A00] text-white">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-left">
                 <div>
@@ -297,17 +302,13 @@
         </div>
     </footer>
 
-    {{-- MODAL SIZE GUIDE --}}
     @if($product->sizeGuide)
     <div id="sizeGuideModal" class="fixed inset-0 z-[60] hidden bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white max-w-2xl w-full p-2 relative shadow-2xl overflow-y-auto max-h-[95vh] animate-fade-in-up">
-            <button onclick="toggleModal('sizeGuideModal')" class="absolute top-4 right-4 z-10 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-black text-xl shadow-sm hover:bg-black hover:text-white transition">&times;</button>
+        <div class="bg-white max-w-2xl w-full p-2 relative shadow-2xl overflow-y-auto max-h-[95vh]">
+            <button onclick="toggleModal('sizeGuideModal')" class="absolute top-4 right-4 text-black text-xl">&times;</button>
             <div class="p-4">
-                <h2 class="text-[11px] font-bold uppercase tracking-[0.3em] mb-4 text-center">Panduan Ukuran: {{ $product->sizeGuide->name }}</h2>
-                <img src="{{ asset('storage/' . $product->sizeGuide->image) }}" class="w-full h-auto object-contain" alt="Panduan Ukuran">
-                <div class="mt-6 text-center italic text-gray-400 text-[9px] uppercase tracking-widest">
-                    * Toleransi ukuran 1-3 cm karena proses produksi massal
-                </div>
+                <h2 class="text-[11px] font-bold uppercase tracking-[0.3em] mb-4 text-center">Panduan Ukuran</h2>
+                <img src="{{ asset('storage/' . $product->sizeGuide->image) }}" class="w-full h-auto" alt="Size Guide">
             </div>
         </div>
     </div>
@@ -318,155 +319,127 @@
         const images = @json($product->images->values()->map(fn($img) => asset('storage/' . $img->image_path)));
         let currentIndex = 0;
 
-        // --- SWIPE LOGIC ---
-        let touchstartX = 0;
-        let touchendX = 0;
-        const swipeArea = document.getElementById('swipeArea');
+        // NEW: Form Validation Handler
+        function handleFormSubmit(type) {
+            const color = document.querySelector('input[name="color"]:checked');
+            const size = document.querySelector('input[name="size"]:checked');
+            const notif = document.getElementById('validation-msg');
 
-        swipeArea.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
-        swipeArea.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
+            notif.classList.add('hidden');
+            notif.innerText = '';
 
-        function handleSwipe() {
-            const threshold = 50; 
-            if (touchendX < touchstartX - threshold) nextImage(); 
-            if (touchendX > touchstartX + threshold) prevImage(); 
-        }
+            if (!color) {
+                notif.innerText = "Please select a color first.";
+                notif.classList.remove('hidden');
+                return;
+            }
 
-        function updateDots() {
-            const dots = document.querySelectorAll('.dot-item');
-            dots.forEach((dot, index) => {
-                if (index === currentIndex) {
-                    dot.classList.add('bg-[#5A5A00]', 'w-4');
-                    dot.classList.remove('bg-gray-300');
-                } else {
-                    dot.classList.remove('bg-[#5A5A00]', 'w-4');
-                    dot.classList.add('bg-gray-300');
-                }
-            });
-        }
+            if (!size) {
+                notif.innerText = "Please select your size.";
+                notif.classList.remove('hidden');
+                return;
+            }
 
-        function initCountdown() {
-            const countdownEl = document.getElementById('preorder-countdown');
-            if (!countdownEl) return;
-            const expireDate = countdownEl.getAttribute('data-expire');
-            const target = new Date(expireDate).getTime();
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = target - now;
-                if (distance < 0) {
-                    clearInterval(timer);
-                    countdownEl.innerHTML = "<p class='text-[10px] uppercase tracking-widest text-red-500 font-bold'>Pre-Order Closed</p>";
-                    return;
-                }
-                countdownEl.classList.remove('hidden');
-                document.getElementById('days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-                document.getElementById('hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-                document.getElementById('minutes').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-                document.getElementById('seconds').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
-            }, 1000);
+            // Jika semua oke, lanjut submit
+            const form = document.getElementById('addToCartForm');
+            if (type === 'buy') {
+                // Kamu bisa tambah parameter buy_now=1 jika butuh logic khusus di backend
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'buy_now';
+                input.value = '1';
+                form.appendChild(input);
+            }
+            form.submit();
         }
 
         function filterSizeByColor(color) {
             const colorLower = color.toLowerCase().trim();
             const matchingThumb = document.querySelector(`.thumb-img[data-color="${colorLower}"]`);
-            if (matchingThumb) {
-                const imgPath = matchingThumb.querySelector('img').src;
-                changeImage(imgPath, matchingThumb);
-            }
-            document.querySelectorAll('.size-radio').forEach(radio => radio.checked = false);
-            document.getElementById('variant_id_input').value = ''; 
+            if (matchingThumb) changeImage(matchingThumb.querySelector('img').src, matchingThumb);
+
+            document.querySelectorAll('.size-radio').forEach(r => r.checked = false);
+            
+            document.querySelectorAll('.size-option').forEach(option => {
+                const sizeVal = option.getAttribute('data-size');
+                const v = variants.find(v => v.color === color && v.size === sizeVal);
+                const input = option.querySelector('input');
+
+                if (!v || parseInt(v.stock) <= 0) {
+                    option.classList.add('disabled');
+                    input.disabled = true;
+                } else {
+                    option.classList.remove('disabled');
+                    input.disabled = false;
+                }
+            });
+
+            document.getElementById('variant_id_input').value = '';
+            document.getElementById('validation-msg').classList.add('hidden'); // Sembunyikan notif saat pilih ulang
             updateStockDisplay();
         }
 
         function updateStockDisplay() {
-            const selectedColor = document.querySelector('input[name="color"]:checked')?.value;
-            const selectedSize = document.querySelector('input[name="size"]:checked')?.value;
-            const stockDisplay = document.getElementById('stock-count');
-            const submitBtn = document.getElementById('mainSubmitBtn');
-            const variantIdInput = document.getElementById('variant_id_input');
+            const c = document.querySelector('input[name="color"]:checked')?.value;
+            const s = document.querySelector('input[name="size"]:checked')?.value;
+            const stockTxt = document.getElementById('stock-count');
+            const notif = document.getElementById('validation-msg');
 
-            if (selectedColor && selectedSize) {
-                const variant = variants.find(v => v.color === selectedColor && v.size === selectedSize);
-                if (variant) {
-                    variantIdInput.value = variant.id; 
-                    const stock = parseInt(variant.stock);
+            if (c && s) {
+                const v = variants.find(v => v.color === c && v.size === s);
+                if (v) {
+                    document.getElementById('variant_id_input').value = v.id;
+                    const stock = parseInt(v.stock);
                     if (stock > 0) {
-                        stockDisplay.innerText = `${stock} Pieces Available`;
-                        stockDisplay.className = 'text-[9px] uppercase text-gray-400 tracking-widest';
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = "{{ $product->is_preorder ? 'Pre-Order Now' : 'Add to Cart' }}";
-                        submitBtn.style.opacity = "1";
+                        stockTxt.innerText = `${stock} Pieces Available`;
+                        notif.classList.add('hidden');
                     } else {
-                        stockDisplay.innerText = "Out of Stock";
-                        stockDisplay.className = 'text-[9px] uppercase text-red-400 tracking-widest';
-                        submitBtn.disabled = true;
-                        submitBtn.innerText = "Sold Out";
-                        submitBtn.style.opacity = "0.5";
+                        stockTxt.innerText = "Sold Out";
                     }
                 }
             }
         }
 
-        function changeImage(imageSrc, element) {
-            const mainImage = document.getElementById('mainImage');
-            mainImage.style.opacity = '0';
-            setTimeout(() => {
-                mainImage.src = imageSrc;
-                mainImage.style.opacity = '1';
-                updateDots(); 
-            }, 300);
-            document.querySelectorAll('.thumb-img').forEach(el => {
-                el.classList.remove('border-black');
-                el.classList.add('border-transparent');
-            });
-            if(element) {
-                element.classList.add('border-black');
-                currentIndex = parseInt(element.getAttribute('data-index'));
+        // Gallery Functions
+        function changeImage(src, el) {
+            const main = document.getElementById('mainImage');
+            main.style.opacity = '0';
+            setTimeout(() => { main.src = src; main.style.opacity = '1'; }, 300);
+            document.querySelectorAll('.thumb-img').forEach(t => t.classList.replace('border-black', 'border-transparent'));
+            if(el) { el.classList.replace('border-transparent', 'border-black'); currentIndex = parseInt(el.dataset.index); }
+        }
+
+        function nextImage() { currentIndex = (currentIndex + 1) % images.length; changeImage(images[currentIndex], document.querySelector(`.thumb-img[data-index="${currentIndex}"]`)); }
+        function prevImage() { currentIndex = (currentIndex - 1 + images.length) % images.length; changeImage(images[currentIndex], document.querySelector(`.thumb-img[data-index="${currentIndex}"]`)); }
+        function incrementQty() { const i = document.getElementById('qtyInput'); i.value = parseInt(i.value) + 1; }
+        function decrementQty() { const i = document.getElementById('qtyInput'); if (parseInt(i.value) > 1) i.value = parseInt(i.value) - 1; }
+        function toggleModal(id) { const m = document.getElementById(id); m.classList.toggle('hidden'); document.body.style.overflow = m.classList.contains('hidden') ? 'auto' : 'hidden'; }
+
+        // Swipe handler
+        let startX = 0;
+        document.getElementById('swipeArea').addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        document.getElementById('swipeArea').addEventListener('touchend', e => {
+            const endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) nextImage();
+            if (endX - startX > 50) prevImage();
+        });
+
+        // Countdown
+        document.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('preorder-countdown');
+            if (el) {
+                const target = new Date(el.dataset.expire).getTime();
+                setInterval(() => {
+                    const dist = target - new Date().getTime();
+                    if (dist < 0) return;
+                    el.classList.remove('hidden');
+                    document.getElementById('days').innerText = Math.floor(dist / 86400000).toString().padStart(2, '0');
+                    document.getElementById('hours').innerText = Math.floor((dist % 86400000) / 3600000).toString().padStart(2, '0');
+                    document.getElementById('minutes').innerText = Math.floor((dist % 3600000) / 60000).toString().padStart(2, '0');
+                    document.getElementById('seconds').innerText = Math.floor((dist % 60000) / 1000).toString().padStart(2, '0');
+                }, 1000);
             }
-        }
-
-        function nextImage() {
-            currentIndex = (currentIndex + 1) % images.length;
-            const nextPath = images[currentIndex];
-            const thumb = document.querySelector(`.thumb-img[data-index="${currentIndex}"]`);
-            changeImage(nextPath, thumb);
-        }
-
-        function prevImage() {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            const prevPath = images[currentIndex];
-            const thumb = document.querySelector(`.thumb-img[data-index="${currentIndex}"]`);
-            changeImage(prevPath, thumb);
-        }
-
-        function incrementQty() {
-            const input = document.getElementById('qtyInput');
-            input.value = parseInt(input.value) + 1;
-        }
-
-        function decrementQty() {
-            const input = document.getElementById('qtyInput');
-            if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
-        }
-
-        function toggleModal(id) {
-            const modal = document.getElementById(id);
-            if (!modal) return;
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            } else {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function buyNow() {
-            const form = document.getElementById('addToCartForm');
-            if(form.reportValidity()) form.submit();
-        }
-
-        document.addEventListener('DOMContentLoaded', initCountdown);
+        });
     </script>
 </body>
 </html>
