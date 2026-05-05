@@ -58,7 +58,7 @@ class SliderController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'image'        => 'required|file|mimes:jpeg,png,jpg,webp,gif,mp4|max:102400',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,mp4|max:102400',
             'image_mobile' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,mp4|max:102400',
             'title'        => 'nullable|string|max:255',
         ], [
@@ -69,10 +69,12 @@ class SliderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            Log::warning('Validasi upload gagal', ['errors' => $validator->errors()->toArray()]);
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
+        if (!$request->hasFile('image') && !$request->hasFile('image_mobile')) {
             return redirect()->back()
-                ->withErrors($validator)
+                ->with('error', '❌ Pilih minimal satu file (desktop atau mobile) terlebih dahulu.')
                 ->withInput();
         }
 

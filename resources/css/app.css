@@ -3,41 +3,57 @@
 @tailwind utilities;
 
 @layer base {
-    /* Mencegah zoom otomatis yang mengganggu di iPhone */
-    input[type="text"], input[type="number"], textarea {
+    /* ── Font Global ─────────────────────────────────── */
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: 400;
+    strong, b, 
+    [class*="font-bold"],
+    [class*="font-semibold"],
+    [class*="font-medium"] {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    }
+
+    
+
+    /* ── CSS Variables Color Palette ─────────────────── */
+    :root {
+        --color-primary:    #2F3526;
+        --color-white:      #FFFFFF;
+        --color-black:      #000000;
+        --color-olive-tint: #6B705C;
+        --color-light-gray: #E9E9E9;
+    }
+
+    /* Mencegah zoom otomatis di iPhone */
+    input[type="text"],
+    input[type="number"],
+    textarea {
         font-size: 16px !important;
     }
 
-    /* Scrollbar minimalis untuk area navigasi */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
+    /* Scrollbar minimalis */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb {
         background: #e2e8f0;
         border-radius: 10px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
-    }
+    ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 }
 
 @layer components {
-    /* Mencegah Tabel Admin meluap ke samping (scrollable tabel) */
     .table-container {
         @apply w-full overflow-x-auto rounded-xl border border-gray-100;
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Mencegah gambar di postingan/produk jadi terlalu besar */
     .content-img {
         @apply max-w-full h-auto rounded-2xl object-cover;
     }
 }
 
-/* Fix Khusus Mobile agar font tidak raksasa */
 @media (max-width: 640px) {
     h1 { @apply text-2xl !important; }
     h2 { @apply text-xl !important; }

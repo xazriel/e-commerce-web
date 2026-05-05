@@ -11,18 +11,31 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_number', 'user_id', 'total_amount', 'shipping_cost', 
-        'grand_total', 'status', 'payment_method', 'payment_token', 
-        'payment_deadline', 'shipping_service', 'tracking_number',
-        'receiver_name', 'receiver_phone', 'receiver_address',
-        'destination_id', 'courier_name' // Kolom baru untuk Komerce
+        'order_number',
+        'user_id',
+        'total_amount',
+        'shipping_cost',
+        'grand_total',
+        'status',
+        'payment_method',
+        'payment_token',
+        'payment_deadline',
+        'shipping_service',
+        'tracking_number',
+        'receiver_name',
+        'receiver_phone',
+        'receiver_address',
+        'destination_id',
+        'courier_name',
+        'service_code',   // ← ditambahkan
+        'receiver_city',  // ← ditambahkan
+        'receiver_zip',   // ← ditambahkan
     ];
 
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($order) {
-            // Deadline 2 jam secara default (akan dioverride di controller jika perlu)
             $order->payment_deadline = Carbon::now()->addHours(2);
             $order->order_number = 'FRH-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
         });
@@ -36,5 +49,11 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function orders(): HasMany
+    {
+        // Pastikan nama model kamu adalah 'Order'
+        return $this->hasMany(Order::class); 
     }
 }

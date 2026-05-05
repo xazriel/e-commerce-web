@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -18,71 +19,97 @@ class CartController extends Controller
     }
 
     /**
-     * Menambah produk ke keranjang dengan deteksi gambar warna yang akurat.
+     * Menambah produk ke keranjang.
+     * Jika buy_now=1 → redirect ke checkout.
+     * Jika tidak       → redirect ke cart.index.
      */
     public function add(Request $request, $id)
     {
-        // 1. Ambil variant_id dan quantity
-        $variantId = $request->input('variant_id'); 
+        Log::info('CART.ADD STEP 1', [
+            'buy_now'    => $request->input('buy_now'),
+            'variant_id' => $request->input('variant_id'),
+            'quantity'   => $request->input('quantity'),
+            'auth_id'    => auth()->id(),
+        ]);
+
+        // 1. Ambil input
+        $variantId     = $request->input('variant_id');
         $quantityToAdd = (int) $request->input('quantity', 1);
 
         if (!$variantId) {
             return redirect()->back()->with('error', 'Silakan pilih ukuran/warna terlebih dahulu.');
         }
 
-        // 2. Ambil data varian dan relasi gambar produknya
+        // 2. Ambil variant & product
         $variant = ProductVariant::with('product.images')->findOrFail($variantId);
         $product = $variant->product;
 
-        // Validasi stok
+        Log::info('CART.ADD STEP 2', ['variant' => $variantId, 'stock' => $variant->stock]);
+
+        // 3. Validasi stok
         if ($variant->stock < $quantityToAdd) {
             return redirect()->back()->with('error', "Maaf, stok hanya tersisa {$variant->stock}.");
         }
 
-        $cart = session()->get('cart', []);
-
-        // --- LOGIKA FIX GAMBAR BERDASARKAN WARNA (SENSITIVE FIX) ---
-        $selectedColor = trim($variant->color); 
-
-        // Mencari gambar yang memiliki warna sama (Case Insensitive & Trim Spasi)
-        $colorSpecificImage = $product->images->filter(function($img) use ($selectedColor) {
+        // 4. Tentukan gambar berdasarkan warna
+        $selectedColor      = trim($variant->color);
+        $colorSpecificImage = $product->images->first(function ($img) use ($selectedColor) {
             return strtolower(trim($img->color)) === strtolower($selectedColor);
-        })->first();
+        });
 
-        // Tentukan gambar yang akan disimpan di session
         if ($colorSpecificImage) {
             $imageToDisplay = $colorSpecificImage->image_path;
         } else {
-            // Fallback 1: Cari yang is_primary
-            $primaryImage = $product->images->where('is_primary', true)->first();
-            // Fallback 2: Ambil gambar apa saja yang tersedia jika primary tidak ada
-            $imageToDisplay = $primaryImage ? $primaryImage->image_path : ($product->images->first()->image_path ?? null);
+            $primaryImage   = $product->images->where('is_primary', true)->first();
+            $imageToDisplay = $primaryImage
+                ? $primaryImage->image_path
+                : ($product->images->first()->image_path ?? null);
         }
-        // ----------------------------------------------------------
 
-        // 3. Masukkan ke Session Cart menggunakan variant_id sebagai key
-        if(isset($cart[$variantId])) {
-            // Cek stok gabungan
+        // 5. Masukkan ke session cart
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$variantId])) {
             if ($variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
-                return redirect()->back()->with('error', "Total di keranjang melebihi stok.");
+                return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
             }
             $cart[$variantId]['quantity'] += $quantityToAdd;
         } else {
             $cart[$variantId] = [
-                "product_id" => $product->id,
-                "name"       => $product->name,
-                "variant_id" => $variant->id,
-                "quantity"   => $quantityToAdd,
-                "price"      => $product->price,
-                "size"       => $variant->size,
-                "color"      => $variant->color,
-                "image"      => $imageToDisplay, // Path gambar hasil deteksi warna
-                "slug"       => $product->slug
+                'product_id' => $product->id,
+                'name'       => $product->name,
+                'variant_id' => $variant->id,
+                'quantity'   => $quantityToAdd,
+                'price'      => $product->price,
+                'size'       => $variant->size,
+                'color'      => $variant->color,
+                'image'      => $imageToDisplay,
+                'slug'       => $product->slug,
             ];
         }
 
         session()->put('cart', $cart);
-        return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+
+        Log::info('CART.ADD STEP 3: cart saved', ['buy_now' => $request->input('buy_now')]);
+
+        // 6. Arahkan sesuai tipe tombol
+        if ($request->input('buy_now') == '1') {
+            Log::info('CART.ADD STEP 4: buy_now detected');
+
+            if (!auth()->check()) {
+                Log::info('CART.ADD STEP 4a: not logged in, redirect to login');
+                session()->put('url.intended', route('checkout.index'));
+                return redirect()->route('login')
+                    ->with('info', 'Login dulu untuk melanjutkan checkout.');
+            }
+
+            Log::info('CART.ADD STEP 4b: logged in, redirect to checkout', ['user' => auth()->id()]);
+            return redirect()->route('checkout.index');
+        }
+
+        Log::info('CART.ADD STEP 5: redirect to cart.index');
+        return redirect()->route('cart.index')
+            ->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
     /**
@@ -92,7 +119,7 @@ class CartController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        if(isset($cart[$id])) {
+        if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
@@ -101,42 +128,40 @@ class CartController extends Controller
     }
 
     /**
-     * Update quantity via AJAX (jika ada fitur tambah/kurang di halaman cart)
+     * Update quantity via AJAX.
      */
-    // Contoh logic di CartController.php
-public function update(Request $request, $id)
-{
-    $cart = session()->get('cart');
+    public function update(Request $request, $id)
+    {
+        $cart = session()->get('cart');
 
-    if(isset($cart[$id])) {
-        $variant = \App\Models\ProductVariant::find($id);
+        if (isset($cart[$id])) {
+            $variant = ProductVariant::find($id);
 
-        if($request->action == 'increase') {
-            if ($variant && $variant->stock > $cart[$id]['quantity']) {
-                $cart[$id]['quantity']++;
-            } else {
-                return response()->json(['success' => false, 'message' => 'Stok tidak mencukupi.'], 400);
+            if ($request->action == 'increase') {
+                if ($variant && $variant->stock > $cart[$id]['quantity']) {
+                    $cart[$id]['quantity']++;
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok tidak mencukupi.',
+                    ], 400);
+                }
+            } elseif ($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
+                $cart[$id]['quantity']--;
             }
-        } elseif($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
-            $cart[$id]['quantity']--;
-        }
-        
-        session()->put('cart', $cart);
 
-        // Hitung total keseluruhan baru untuk dikirim ke JS
-        $total = 0;
-        foreach($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            session()->put('cart', $cart);
+
+            $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+
+            return response()->json([
+                'success'      => true,
+                'newQty'       => $cart[$id]['quantity'],
+                'itemSubtotal' => 'Rp ' . number_format($cart[$id]['price'] * $cart[$id]['quantity'], 0, ',', '.'),
+                'cartTotal'    => 'Rp ' . number_format($total, 0, ',', '.'),
+            ]);
         }
 
-        return response()->json([
-            'success' => true,
-            'newQty' => $cart[$id]['quantity'],
-            'itemSubtotal' => 'Rp ' . number_format($cart[$id]['price'] * $cart[$id]['quantity'], 0, ',', '.'),
-            'cartTotal' => 'Rp ' . number_format($total, 0, ',', '.')
-        ]);
+        return response()->json(['success' => false], 404);
     }
-
-    return response()->json(['success' => false], 404);
-}
 }

@@ -68,7 +68,7 @@ class JneService
     // ─── ALIAS getTariff (dipakai CheckoutController) ─────────
     public function getTariff(string $destCode, int $weight): array
     {
-        $originCode = config('jne.origin_code', 'DPK10000');
+        $originCode = config('jne.origin_code', 'CGK10000');
         $prices = $this->getPrice($originCode, $destCode, $weight);
         return ['price' => $prices];
     }

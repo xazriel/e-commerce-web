@@ -100,12 +100,14 @@ class JneController extends Controller
         ->limit(20)
         ->get()
         ->map(fn($d) => [
-            'id'   => $d->code,
-            'text' => $d->name . ', ' . $d->province
+            'id'       => $d->code,
+            'text'     => $d->name . ', ' . $d->province,
+            'city'     => $d->city,       // ✅ tambahan
+            'zip_code' => $d->zip_code,   // ✅ tambahan
         ]);
 
-return response()->json(['results' => $results]);
-    }
+    return response()->json(['results' => $results]);
+}
 
     // Tracking paket
     public function track(string $awb)

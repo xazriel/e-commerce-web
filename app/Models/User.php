@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -60,5 +61,11 @@ public function defaultAddress()
 {
     return $this->hasOne(UserAddress::class)->where('is_default', true);
 }
+
+public function orders()
+    {
+        // Pastikan mengarah ke model Order yang sudah kamu buat tadi
+        return $this->hasMany(Order::class);
+    }
 
 }

@@ -3,98 +3,127 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Waiting for Payment - Farhana</title>
+    <title>Menunggu Pembayaran - Farhana</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-[#FCFCFA] text-[#4A4A4A] antialiased">
+<body class="bg-[#FCFCFA] min-h-screen px-4 py-12">
+    <div class="max-w-lg mx-auto space-y-6">
 
-    <main class="max-w-md mx-auto px-6 py-24 text-center">
-        <h2 class="text-[12px] tracking-[0.5em] uppercase mb-12 text-[#8B864E]">Waiting for Payment</h2>
-        
-        <div class="bg-white p-10 border border-gray-100 shadow-sm mb-10 rounded-sm">
-            <div id="timer-container" class="mb-6">
-                <p class="text-[10px] bg-yellow-50 text-yellow-700 py-2 px-3 uppercase tracking-widest rounded-sm font-medium">
-                    Items are reserved for <span id="countdown" class="font-bold">02:00</span>
-                </p>
+        {{-- Header --}}
+        <div class="text-center">
+            <div class="text-[11px] font-bold tracking-[0.5em] uppercase mb-2">Farhana</div>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">Complete your payment</p>
+        </div>
+
+        {{-- Countdown --}}
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 text-center shadow-sm">
+            <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Selesaikan pembayaran dalam</p>
+            <div id="countdown" class="text-5xl font-bold text-[#5A5A00] tabular-nums">--:--</div>
+            <p class="text-[10px] text-gray-400 mt-3">Order <span class="font-bold text-gray-600">{{ $order->order_number }}</span></p>
+        </div>
+
+        {{-- Order Summary --}}
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm space-y-4">
+            <h3 class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Order Summary</h3>
+
+            {{-- Items --}}
+            @foreach($order->items as $item)
+            <div class="flex justify-between items-center text-[12px]">
+                <span class="text-gray-600">
+                    {{ $item->product->name ?? 'Produk' }}
+                    <span class="text-gray-400">× {{ $item->quantity }}</span>
+                </span>
+                <span class="font-medium">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
             </div>
+            @endforeach
 
-            <p class="text-[9px] text-gray-400 tracking-[0.3em] uppercase mb-8 italic">Scan QR to Complete Purchase</p>
-            
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ $order->order_number }}" 
-                 class="mx-auto mb-8 grayscale hover:grayscale-0 transition duration-500 rounded-lg shadow-sm" alt="QRIS">
-            
-            <div class="space-y-1">
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Total Amount</p>
-                <p class="text-[20px] font-light tracking-widest text-[#8B864E]">
-                    Rp {{ number_format($order->grand_total, 0, ',', '.') }}
-                </p>
+            <div class="border-t border-gray-50 pt-4 space-y-3">
+                <div class="flex justify-between text-[12px] text-gray-500">
+                    <span>Subtotal</span>
+                    <span>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-[12px] text-gray-500">
+                    <span>Ongkos Kirim</span>
+                    <span>Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-[12px] text-gray-500">
+                    <span>Kurir</span>
+                    <span class="font-medium">{{ $order->courier_name }}</span>
+                </div>
+                <div class="flex justify-between text-[12px] font-bold pt-2 border-t border-gray-50">
+                    <span class="uppercase tracking-wider text-[11px]">Total</span>
+                    <span class="text-lg">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
+                </div>
             </div>
         </div>
 
-        <div id="action-area">
-            <form action="{{ route('checkout.simulatePay', $order->id) }}" method="POST">
-                @csrf
-                <button type="submit" class="w-full bg-black text-white py-4 text-[9px] font-bold uppercase tracking-[0.3em] rounded-full hover:bg-gray-800 transition shadow-lg mb-6">
-                    Confirm Payment (Simulation)
-                </button>
-            </form>
+        {{-- Shipping Info --}}
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
+            <h3 class="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-4">Shipping To</h3>
+            <p class="text-[12px] font-bold">{{ $order->receiver_name }}</p>
+            <p class="text-[11px] text-gray-500 mt-1">{{ $order->receiver_phone }}</p>
+            <p class="text-[11px] text-gray-500 mt-1">{{ $order->receiver_address }}</p>
+            @if($order->receiver_city)
+            <p class="text-[11px] text-gray-400">{{ $order->receiver_city }} {{ $order->receiver_zip }}</p>
+            @endif
         </div>
-    </main>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Tentukan durasi dalam detik (2 menit = 120 detik)
-        // Kita gunakan 120 sebagai fallback jika ada masalah data
-        let duration = 120; 
+        {{-- Tombol Bayar --}}
+        <button id="pay-button"
+            class="w-full bg-[#5A5A00] text-white py-4 rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-black transition-all shadow-sm">
+            Bayar Sekarang
+        </button>
 
-        // Ambil data deadline dari server untuk cek apakah sebenarnya sudah expired
-        const deadlineStr = "{{ $order->payment_deadline }}"; 
-        
-        // Fungsi parsing manual untuk menghindari masalah timezone
-        function parseDateManual(dateStr) {
-            const t = dateStr.split(/[- :]/);
-            return new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-        }
+        {{-- Cancel --}}
+        <form action="{{ route('checkout.cancel', $order->order_number) }}" method="POST"
+            onsubmit="return confirm('Batalkan pesanan ini?')">
+            @csrf
+            @method('PATCH')
+            <button type="submit"
+                class="w-full border border-gray-200 text-gray-400 py-3 rounded-xl text-[11px] uppercase tracking-widest hover:border-red-200 hover:text-red-400 transition-all">
+                Batalkan Pesanan
+            </button>
+        </form>
 
-        const deadline = parseDateManual(deadlineStr).getTime();
-        const nowServer = new Date().getTime();
-        
-        // Hitung sisa waktu yang sebenarnya (dalam detik)
-        let timeLeft = Math.floor((deadline - nowServer) / 1000);
+        <p class="text-center text-[9px] text-gray-400 leading-relaxed px-4">
+            Klik "Bayar Sekarang" untuk membuka halaman pembayaran Midtrans yang aman.
+        </p>
+    </div>
 
-        // PROTEKSI: Jika timeLeft tiba-tiba ngaco (lebih dari 2 menit atau 120 detik)
-        // Kita paksa maksimal hanya 120 detik saja.
-        if (timeLeft > 120) {
-            timeLeft = 120;
-        }
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ $clientKey }}"></script>
 
-        const countdownDisplay = document.querySelector('#countdown');
+    <script>
+        const deadline = new Date("{{ $order->payment_deadline }}").getTime();
 
-        function updateTimer() {
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                countdownDisplay.textContent = "00:00";
-                
-                // Refresh halaman untuk memicu pembatalan di Controller
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+        function updateCountdown() {
+            const diff = deadline - new Date().getTime();
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = '00:00';
+                document.getElementById('pay-button').disabled = true;
+                document.getElementById('pay-button').classList.add('opacity-50', 'cursor-not-allowed');
                 return;
             }
-
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-
-            countdownDisplay.textContent = 
-                (minutes < 10 ? "0" + minutes : minutes) + ":" + 
-                (seconds < 10 ? "0" + seconds : seconds);
-            
-            timeLeft--;
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('countdown').textContent =
+                String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
         }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
 
-        updateTimer();
-        const timerInterval = setInterval(updateTimer, 1000);
-    });
-</script>
+        document.getElementById('pay-button').onclick = function () {
+            snap.pay('{{ $order->payment_token }}', {
+                onSuccess: () => window.location.href = '/checkout/success/{{ $order->order_number }}',
+                onPending: () => window.location.href = '/checkout/waiting/{{ $order->order_number }}',
+                onError:   () => alert('Pembayaran gagal. Silakan coba lagi.'),
+                onClose:   () => {}
+            });
+        };
+    </script>
 </body>
 </html>
