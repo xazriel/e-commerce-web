@@ -46,7 +46,7 @@
                         <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Kelola stok, varian, dan foto produk.</p>
                     </div>
                     
-                    <a href="{{ route('products.create') }}" 
+                    <a href="{{ route('admin.products.create') }}" 
                        class="inline-flex justify-center items-center bg-black text-white px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition shadow-xl shadow-gray-200 active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
@@ -113,13 +113,13 @@
                                     </td>
                                     <td class="px-8 py-5 text-right">
                                         <div class="flex justify-end items-center gap-3">
-                                            <a href="{{ route('products.edit', $product->id) }}" 
+                                            <a href="{{ route('admin.products.edit', $product->id) }}" 
                                                class="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-black hover:text-white transition-all shadow-sm border border-gray-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>
                                             </a>
-                                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Hapus produk {{ $product->name }}?')">
+                                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Hapus produk {{ $product->name }}?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-2.5 bg-red-50/50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-50">
@@ -168,3 +168,4 @@
         }
     </style>
 </x-app-layout>
+

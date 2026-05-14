@@ -46,22 +46,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/profile/address-update', [AddressController::class, 'update'])->name('profile.address.update');
 
-    Route::get('/profile/orders',                        [ProfileController::class, 'index'])->name('profile.orders');
-    Route::get('/profile/orders/{order_number}',         [ProfileController::class, 'orderDetail'])->name('profile.orders.detail');
+    Route::get('/profile/orders',                [ProfileController::class, 'index'])->name('profile.orders');
+    Route::get('/profile/orders/{order_number}', [ProfileController::class, 'orderDetail'])->name('profile.orders.detail');
 
-    // ← Route tracking yang dipanggil dashboard (satu route, satu nama)
-    Route::get('/profile/track/{awb}', [ProfileController::class, 'trackResi'])->name('tracking.resi');
-    Route::get('/profile/track-detail/{awb}', [ProfileController::class, 'trackResi'])
-    ->name('tracking.show');
+    Route::get('/profile/track/{awb}',        [ProfileController::class, 'trackResi'])->name('tracking.resi');
+    Route::get('/profile/track-detail/{awb}', [ProfileController::class, 'trackResi'])->name('tracking.show');
 
     Route::prefix('profile/addresses')->name('address.')->group(function () {
-    Route::get('/',             [AddressController::class, 'index'])->name('index');
-    Route::get('/create',       [AddressController::class, 'create'])->name('create');
-    Route::post('/',            [AddressController::class, 'store'])->name('store');
-    Route::get('/{id}/edit',    [AddressController::class, 'edit'])->name('edit');
-    Route::put('/{id}',         [AddressController::class, 'update'])->name('update');  
-    Route::post('/{id}/select', [AddressController::class, 'select'])->name('select');
-    Route::delete('/{id}',      [AddressController::class, 'destroy'])->name('destroy');
+        Route::get('/',             [AddressController::class, 'index'])->name('index');
+        Route::get('/create',       [AddressController::class, 'create'])->name('create');
+        Route::post('/',            [AddressController::class, 'store'])->name('store');
+        Route::get('/{id}/edit',    [AddressController::class, 'edit'])->name('edit');
+        Route::put('/{id}',         [AddressController::class, 'update'])->name('update');
+        Route::post('/{id}/select', [AddressController::class, 'select'])->name('select');
+        Route::delete('/{id}',      [AddressController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('checkout')->name('checkout.')->group(function () {
@@ -76,10 +74,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/api/shipping-cost', [CheckoutController::class, 'calculateShipping'])->name('api.shipping');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
-    })->name('admin.dashboard');
+    })->name('dashboard');
 
     Route::resource('categories',  CategoryController::class);
     Route::resource('products',    ProductController::class);
@@ -89,11 +88,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/product-images/{id}',            [ProductController::class, 'destroyImage'])->name('products.images.destroy');
     Route::patch('/product-images/{id}/set-primary', [ProductController::class, 'setPrimary'])->name('products.images.setPrimary');
 
-    Route::name('admin.')->group(function () {
-        Route::get('/orders',                         [AdminOrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{order_number}',          [AdminOrderController::class, 'show'])->name('orders.show');
-        Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    });
+    // ↓ export HARUS di atas /{order_number} agar tidak ditangkap sebagai wildcard
+    Route::get('/orders/export',                  [AdminOrderController::class, 'export'])->name('orders.export');
+    Route::get('/orders',                         [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order_number}',          [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
 /*

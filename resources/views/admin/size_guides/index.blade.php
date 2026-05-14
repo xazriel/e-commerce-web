@@ -15,7 +15,7 @@
                     <div class="h-1 w-12 bg-[#5A5A00] mt-4"></div>
                 </div>
                 
-            <a href="{{ route('size-guides.create') }}" 
+            <a href="{{ route('admin.size-guides.create') }}" 
             class="inline-flex items-center px-6 py-3 bg-[#2F3526] text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-[#6B705C] transition duration-300 shadow-lg">
                 <span class="mr-2">+</span> Tambah Template
             </a>
@@ -42,8 +42,8 @@
                         <div class="p-6">
                             <h4 class="text-sm font-bold text-gray-900 uppercase tracking-tight truncate mb-4">{{ $template->name }}</h4>
                             <div class="flex items-center justify-between border-t border-gray-50 pt-4">
-                                <a href="{{ route('size-guides.edit', $template->id) }}" class="text-[10px] font-bold uppercase tracking-widest text-blue-500 hover:text-blue-700 transition">Edit</a>
-                                <form action="{{ route('size-guides.destroy', $template->id) }}" method="POST" onsubmit="return confirm('Hapus?')">
+                                <a href="{{ route('admin.size-guides.edit', $template->id) }}" class="text-[10px] font-bold uppercase tracking-widest text-blue-500 hover:text-blue-700 transition">Edit</a>
+                                <form action="{{ route('admin.size-guides.destroy', $template->id) }}" method="POST" onsubmit="return confirm('Hapus?')">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-[10px] font-bold uppercase tracking-widest text-red-400 hover:text-red-600">Hapus</button>
                                 </form>

@@ -62,7 +62,7 @@
                     </div>
                 </div>
 
-                <form action="{{ route('sliders.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
+                <form action="{{ route('admin.sliders.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
                     @csrf
 
                     {{-- Nama Banner --}}
@@ -216,7 +216,7 @@
                                 <p class="text-[9px] text-[#6B705C] font-semibold">Diunggah: {{ $slider->created_at->format('d M Y') }}</p>
                             </div>
 
-                            <form action="{{ route('sliders.destroy', $slider) }}" method="POST"
+                            <form action="{{ route('admin.sliders.destroy', $slider) }}" method="POST"
                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus banner ini?')">
                                 @csrf
                                 @method('DELETE')

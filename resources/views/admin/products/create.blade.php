@@ -116,13 +116,13 @@
                     <h2 style="font-size: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0;">Tambah Produk Baru</h2>
                     <p style="font-size: 9px; color: #b8c4a0; text-transform: uppercase; letter-spacing: 0.1em; margin: 4px 0 0;">Isi semua informasi produk & varian dengan lengkap</p>
                 </div>
-                <a href="{{ route('products.index') }}"
+                <a href="{{ route('admin.products.index') }}"
                     style="font-size: 9px; background: rgba(255,255,255,0.12); color: #c8d4b0; padding: 6px 14px; border-radius: 20px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;">
                     ← Kembali
                 </a>
             </div>
 
-            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div style="display: flex; flex-direction: column; gap: 20px;">

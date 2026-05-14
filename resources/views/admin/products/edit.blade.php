@@ -111,13 +111,13 @@
                 <h2 style="font-size: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0;">Edit Produk</h2>
                 <p style="font-size: 9px; color: #b8c4a0; text-transform: uppercase; letter-spacing: 0.1em; margin: 4px 0 0;">{{ $product->name }}</p>
             </div>
-            <a href="{{ route('products.index') }}"
+            <a href="{{ route('admin.products.index') }}"
                 style="font-size: 9px; background: rgba(255,255,255,0.12); color: #c8d4b0; padding: 6px 14px; border-radius: 20px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;">
                 ← Kembali
             </a>
         </div>
 
-        <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" id="main-form">
+        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" id="main-form">
             @csrf
             @method('PUT')
 
@@ -358,7 +358,7 @@
 
                 {{-- Submit --}}
                 <div style="display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-top: 8px;">
-                    <a href="{{ route('products.index') }}"
+                    <a href="{{ route('admin.products.index') }}"
                         style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--olive); text-decoration: none;">
                         Batal
                     </a>
@@ -374,10 +374,10 @@
 
         {{-- Hidden Forms --}}
         @foreach($product->images as $img)
-            <form id="set-primary-{{ $img->id }}" action="{{ route('products.images.setPrimary', $img->id) }}" method="POST" class="hidden">
+            <form id="set-primary-{{ $img->id }}" action="{{ route('admin.products.images.setPrimary', $img->id) }}" method="POST" class="hidden">
                 @csrf @method('PATCH')
             </form>
-            <form id="delete-img-{{ $img->id }}" action="{{ route('products.images.destroy', $img->id) }}" method="POST" class="hidden">
+            <form id="delete-img-{{ $img->id }}" action="{{ route('admin.products.images.destroy', $img->id) }}" method="POST" class="hidden">
                 @csrf @method('DELETE')
             </form>
         @endforeach

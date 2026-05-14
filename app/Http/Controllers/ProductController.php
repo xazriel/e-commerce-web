@@ -102,7 +102,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Produk Berhasil Disimpan!');
+            return redirect()->route('admin.products.index')->with('success', 'Produk Berhasil Disimpan!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -196,7 +196,7 @@ class ProductController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
+            return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -212,7 +212,7 @@ class ProductController extends Controller
             }
         }
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus!');
     }
 
     public function setPrimary($id)

@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Jika user biasa, lempar ke halaman depan toko
-        return redirect()->intended(route('home'));
+        return redirect()->intended(route('dashboard'));
     }
 
     /**

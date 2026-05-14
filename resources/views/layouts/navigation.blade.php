@@ -26,7 +26,6 @@
                                 @if(Auth::user()->role === 'admin')
                                     <span class="bg-black text-white text-[7px] px-2 py-0.5 rounded-full tracking-tighter">ADMIN</span>
                                 @endif
-                                {{-- User icon --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
@@ -40,8 +39,9 @@
                         <x-slot name="content">
                             @if(Auth::user()->role === 'admin')
                                 <x-dropdown-link :href="route('admin.dashboard')">{{ __('Dashboard Admin') }}</x-dropdown-link>
-                                <x-dropdown-link :href="route('products.index')">{{ __('Katalog Produk') }}</x-dropdown-link>
-                                <x-dropdown-link :href="route('categories.index')">{{ __('Kategori') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.products.index')">{{ __('Katalog Produk') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.categories.index')">{{ __('Kategori') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.orders.index')">{{ __('Kelola Order') }}</x-dropdown-link>
                                 <hr class="border-gray-100">
                             @endif
                             <x-dropdown-link :href="route('dashboard')">{{ __('My Account') }}</x-dropdown-link>
@@ -102,8 +102,9 @@
                 <div class="space-y-1">
                     @if(Auth::user()->role === 'admin')
                         <x-responsive-nav-link :href="route('admin.dashboard')">{{ __('Dashboard Admin') }}</x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('products.index')">{{ __('Katalog Produk') }}</x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('categories.index')">{{ __('Kategori') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.products.index')">{{ __('Katalog Produk') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.categories.index')">{{ __('Kategori') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.orders.index')">{{ __('Kelola Order') }}</x-responsive-nav-link>
                     @endif
                     <x-responsive-nav-link :href="route('dashboard')">{{ __('My Account') }}</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('profile.edit')">{{ __('Settings') }}</x-responsive-nav-link>
@@ -129,5 +130,6 @@
                 </div>
             @endauth
         </div>
+    </div>
     @endif
-</nav>
+</nav>  

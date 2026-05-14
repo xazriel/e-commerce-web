@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     
-                    <a href="{{ route('categories.create') }}" 
+                    <a href="{{ route('admin.categories.create') }}" 
                        class="inline-flex justify-center items-center bg-black text-white px-5 py-3 rounded text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition shadow-lg shadow-gray-200 active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
@@ -79,14 +79,14 @@
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex justify-end items-center gap-4">
-                                            <a href="{{ route('categories.edit', $category->id) }}" 
+                                            <a href="{{ route('admin.categories.edit', $category->id) }}" 
                                                class="text-[10px] font-bold text-gray-800 uppercase tracking-tighter hover:underline decoration-2 underline-offset-4">
                                                 Edit
                                             </a>
                                             
                                             <span class="text-gray-200 text-xs">/</span>
 
-                                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Hapus kategori {{ $category->name }}?')">
+                                            <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Hapus kategori {{ $category->name }}?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-[10px] font-bold text-red-500 uppercase tracking-tighter hover:text-red-700 transition-colors">

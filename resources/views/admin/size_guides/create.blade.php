@@ -12,12 +12,12 @@
                     <h3 class="text-2xl font-bold text-gray-900 uppercase tracking-widest">New Template</h3>
                     <div class="h-1 w-12 bg-[#5A5A00] mt-4"></div>
                 </div>
-                <a href="{{ route('size-guides.index') }}" class="text-xs font-bold text-gray-500 hover:text-black transition uppercase tracking-widest">&larr; Back</a>
+                <a href="{{ route('admin.size-guides.index') }}" class="text-xs font-bold text-gray-500 hover:text-black transition uppercase tracking-widest">&larr; Back</a>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="p-8">
-                    <form action="{{ route('size-guides.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.size-guides.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                             <div class="space-y-6">

@@ -121,23 +121,32 @@
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Transaksi</p>
+
+                        <a href="{{ route('admin.orders.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Order
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
                            style="color: rgba(255,255,255,.35);">Katalog</p>
 
-                        <a href="{{ route('categories.index') }}"
-                           class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.categories.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Kategori
                         </a>
 
-                        <a href="{{ route('products.index') }}"
-                           class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.products.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Produk
                         </a>
 
-                        <a href="{{ route('sliders.index') }}"
-                           class="nav-link {{ request()->routeIs('sliders.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.sliders.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
                         </a>
                     </nav>
@@ -161,30 +170,29 @@
             <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
 
                 {{-- ── HEADER ── --}}
-               {{-- ── HEADER ── --}}
-<header class="flex-shrink-0 sticky top-0 z-30"
-        style="background: var(--white); border-bottom: 1px solid var(--light-gray);">
+                <header class="flex-shrink-0 sticky top-0 z-30"
+                        style="background: var(--white); border-bottom: 1px solid var(--light-gray);">
 
-    {{-- Hamburger admin mobile (di luar navigation agar tidak tumpang tindih) --}}
-    @auth
-        @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
-        <div class="absolute left-4 top-4 md:hidden z-50">
-            <button @click="mobileMenuOpen = true"
-                    class="p-2 rounded-xl transition-colors"
-                    style="color: var(--olive-tint);"
-                    onmouseover="this.style.background='var(--light-gray)'"
-                    onmouseout="this.style.background='transparent'">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-        </div>
-        @endif
-    @endauth
+                    {{-- Hamburger admin mobile --}}
+                    @auth
+                        @if(auth()->user()->role === 'admin' && !request()->routeIs('admin.dashboard'))
+                        <div class="absolute left-4 top-4 md:hidden z-50">
+                            <button @click="mobileMenuOpen = true"
+                                    class="p-2 rounded-xl transition-colors"
+                                    style="color: var(--olive-tint);"
+                                    onmouseover="this.style.background='var(--light-gray)'"
+                                    onmouseout="this.style.background='transparent'">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M4 6h16M4 12h16M4 18h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                        @endif
+                    @endauth
 
-    @include('layouts.navigation')
-</header>
+                    @include('layouts.navigation')
+                </header>
 
                 {{-- ── MAIN ── --}}
                 <main class="flex-1 overflow-y-auto focus:outline-none p-4 md:p-8"
@@ -252,21 +260,30 @@
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
+                           style="color: rgba(255,255,255,.35);">Transaksi</p>
+
+                        <a href="{{ route('admin.orders.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                            Kelola Order
+                        </a>
+
+                        <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
                            style="color: rgba(255,255,255,.35);">Katalog</p>
 
-                        <a href="{{ route('categories.index') }}"
-                           class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.categories.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Kategori
                         </a>
-                        <a href="{{ route('products.index') }}"
-                           class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.products.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Produk
                         </a>
-                        <a href="{{ route('sliders.index') }}"
-                           class="nav-link {{ request()->routeIs('sliders.*') ? 'active' : '' }}"
-                           style="{{ request()->routeIs('sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
+                        <a href="{{ route('admin.sliders.index') }}"
+                           class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
+                           style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
                             Kelola Banner
                         </a>
                     </nav>
