@@ -64,16 +64,20 @@
     @php
         $faqs = [
             [
-                'Apakah stok barang selalu ready?',
-                'Koleksi kami diproduksi secara terbatas untuk menjaga eksklusivitas. Jika item tersedia di katalog, maka unit tersebut siap dikirim.'
+                'Apakah produk dijual dalam satu set?',
+                'Beberapa produk dijual terpisah sesuai kategori masing-masing.'
             ],
             [
-                'Bisa kirim ke luar negeri?',
-                'Saat ini layanan kami mencakup seluruh wilayah Indonesia. Ekspansi internasional sedang dalam tahap persiapan.'
+                'Bagaimana cara melihat status pesanan?',
+                'Login ke akun Anda dan lihat detail pesanan melalui halaman profile/order.'
             ],
             [
-                'Bagaimana cara cek resi?',
-                'Informasi pelacakan akan dikirimkan secara otomatis ke email Anda dan tersedia di dashboard akun segera setelah paket diproses.'
+                'Kapan pengiriman dilakukan?',
+                'Pengiriman dilakukan pada hari operasional sesuai jadwal yang berlaku.'
+            ],
+            [
+                'Apakah Sabtu dan Minggu tetap melayani pengiriman?',
+                'Pesanan di luar jam operasional akan diproses pada hari kerja berikutnya.'
             ],
         ];
     @endphp

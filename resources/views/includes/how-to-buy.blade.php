@@ -58,7 +58,6 @@
         line-height: 1.7; margin: 0;
     }
 
-    /* Progress line that grows on hover */
     .htb-line {
         position: absolute;
         bottom: 1.5rem; left: 1.5rem;
@@ -67,6 +66,42 @@
         transition: width .45s cubic-bezier(.22,1,.36,1);
     }
     .htb-card:hover .htb-line { width: 32px; }
+
+    /* Payment Info Styling */
+    .payment-info-wrapper {
+        margin-top: 4rem;
+        border-top: 1px solid #F1F1F1;
+        padding-top: 3rem;
+    }
+    .payment-info-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        color: #2F3526;
+        margin-bottom: 1.5rem;
+    }
+    .payment-text {
+        font-size: 12px;
+        color: #6B705C;
+        line-height: 1.8;
+    }
+    .payment-list-simple {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 20px 0;
+    }
+    .payment-list-simple li {
+        position: relative;
+        padding-left: 15px;
+        margin-bottom: 5px;
+    }
+    .payment-list-simple li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #2F3526;
+    }
 </style>
 
 <div class="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
@@ -75,17 +110,17 @@
     <div style="text-align:center; margin-bottom: 3rem;">
         <span style="display:block; font-size:9px; font-weight:700; letter-spacing:.3em; text-transform:uppercase; color:#6B705C; margin-bottom:.4rem;">Shopping Guide</span>
         <h2 style="font-size:clamp(1.7rem,4vw,2.6rem); font-weight:300; letter-spacing:.08em; text-transform:uppercase; color:#2F3526; margin:0;">
-            How To <strong style="font-weight:900; color:#000;">Purchase</strong>
+            How To <strong style="font-weight:900; color:#000;">Buy</strong>
         </h2>
         <div style="width:36px; height:1.5px; background:#2F3526; margin:1.1rem auto 0;"></div>
     </div>
 
     @php
         $steps = [
-            ['01', 'Browse',   'Temukan koleksi yang sesuai dengan karakter Anda.'],
-            ['02', 'Secure',   'Lengkapi detail pengiriman untuk presisi kurir.'],
-            ['03', 'Payment',  'Transaksi aman melalui gerbang pembayaran terenkripsi.'],
-            ['04', 'Receive',  'Duduk manis, kami akan mengantar paket Anda ke tujuan.'],
+            ['01', 'Browse',   'Temukan koleksi Farhana yang sesuai dengan kebutuhan dan kenyamanan Anda.'],
+            ['02', 'Secure',   'Lengkapi detail pengiriman dengan benar sebelum melanjutkan pesanan.'],
+            ['03', 'Payment',  'Selesaikan pembayaran melalui metode pembayaran yang tersedia.'],
+            ['04', 'Receive',  'Pesanan akan segera kami proses dan kirimkan ke alamat tujuan Anda.'],
         ];
     @endphp
 
@@ -103,6 +138,21 @@
             <div class="htb-line"></div>
         </div>
         @endforeach
+    </div>
+
+    {{-- Payment Information --}}
+    <div class="payment-info-wrapper">
+        <h3 class="payment-info-title">PAYMENT INFORMATION</h3>
+        <div class="payment-text">
+            <p>Farhana menerima pembayaran melalui:</p>
+            <ul class="payment-list-simple">
+                <li>Transfer Bank</li>
+                <li>Virtual Account</li>
+                <li>E-Wallet</li>
+            </ul>
+            <p>Pesanan akan diproses setelah pembayaran berhasil dikonfirmasi.</p>
+            <p>Pembayaran yang tidak diselesaikan dalam batas waktu tertentu akan otomatis dibatalkan oleh sistem.</p>
+        </div>
     </div>
 
 </div>

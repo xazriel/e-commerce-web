@@ -29,69 +29,69 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
 
                 {{-- KELOLA PESANAN --}}
-                <a href="{{ route('admin.orders.index') }}" class="group bg-brand-black p-8 rounded-[2rem] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-black/20 flex flex-col justify-between min-h-[220px]">
-                    <div class="w-14 h-14 bg-brand-white/10 rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-white group-hover:text-brand-black">
-                        <svg class="w-6 h-6 text-brand-white group-hover:text-brand-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-brand-white text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Kelola Pesanan</p>
-                        <p class="text-brand-white/50 text-[9px] uppercase tracking-widest">Cek Transaksi</p>
-                    </div>
-                </a>
+<a href="{{ route('admin.orders.index') }}" class="group bg-brand-black p-8 rounded-[2rem] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-black/20 flex flex-col justify-between min-h-[220px]">
+    <div class="w-14 h-14 bg-brand-white/10 rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-white group-hover:text-brand-black">
+        <svg class="w-6 h-6 text-brand-white group-hover:text-brand-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+    </div>
+    <div>
+        <p class="text-brand-white text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Kelola Pesanan</p>
+        <p class="text-brand-white/50 text-[9px] uppercase tracking-widest">Cek Transaksi</p>
+    </div>
+</a>
 
-                {{-- DAFTAR PRODUK --}}
-                <a href="{{ route('admin.products.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
-                    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
-                        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Daftar Produk</p>
-                        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Update Stock & Harga</p>
-                    </div>
-                </a>
+{{-- 1. KELOLA KATEGORI --}}
+<a href="{{ route('admin.categories.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
+    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
+        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+    </div>
+    <div>
+        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Kelola Kategori</p>
+        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Pengaturan Menu</p>
+    </div>
+</a>
 
-                {{-- KELOLA KATEGORI --}}
-                <a href="{{ route('admin.categories.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
-                    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
-                        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Kelola Kategori</p>
-                        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Pengaturan Menu</p>
-                    </div>
-                </a>
+{{-- 2. SIZE GUIDES --}}
+<a href="{{ route('admin.size-guides.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
+    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-olive group-hover:text-brand-white">
+        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+    </div>
+    <div>
+        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Size Guides</p>
+        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Master Tabel Ukuran</p>
+    </div>
+</a>
 
-                {{-- SIZE GUIDES --}}
-                <a href="{{ route('admin.size-guides.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
-                    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-olive group-hover:text-brand-white">
-                        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Size Guides</p>
-                        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Master Tabel Ukuran</p>
-                    </div>
-                </a>
+{{-- 3. DAFTAR PRODUK --}}
+<a href="{{ route('admin.products.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
+    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
+        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+    </div>
+    <div>
+        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Daftar Produk</p>
+        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Update Stock & Harga</p>
+    </div>
+</a>
 
-                {{-- BANNER PROMO --}}
-                <a href="{{ route('admin.sliders.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
-                    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
-                        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Banner Promo</p>
-                        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Visual Marketing</p>
-                    </div>
-                </a>
+{{-- 4. BANNER PROMO --}}
+<a href="{{ route('admin.sliders.index') }}" class="group bg-brand-white p-8 rounded-[2rem] shadow-sm border border-brand-light/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-brand-primary/5 flex flex-col justify-between min-h-[220px]">
+    <div class="w-14 h-14 bg-brand-light rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-brand-primary group-hover:text-brand-white">
+        <svg class="w-6 h-6 text-brand-black group-hover:text-brand-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+    </div>
+    <div>
+        <p class="text-brand-black text-[11px] font-bold uppercase tracking-[0.2em] mb-2">Banner Promo</p>
+        <p class="text-brand-olive text-[9px] uppercase tracking-widest">Visual Marketing</p>
+    </div>
+</a>
 
             </div>
 

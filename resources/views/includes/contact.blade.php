@@ -109,7 +109,7 @@
         outline: none; color: #000;
         transition: border-color .3s ease;
     }
-    .fc-input::placeholder { color: rgba(47,53,38,.3); }
+    .fc-input::placeholder { color: rgba(47,53,38,.3); font-size: 12px; }
     .fc-input:focus { border-bottom-color: #2F3526; }
     textarea.fc-input { resize: none; line-height: 1.7; }
 
@@ -118,7 +118,7 @@
         justify-content: center; gap: 8px;
         width: 100%; padding: 14px 28px;
         background: #2F3526; color: #FFFFFF;
-        border: none; border-radius: 99px;
+        border: none; border-radius: 10px;
         font-family: Helvetica, Arial, sans-serif;
         font-size: 10px; font-weight: 700;
         letter-spacing: .28em; text-transform: uppercase;
@@ -145,8 +145,8 @@
         <div>
             <span class="fc-label">Contact Information</span>
             <p class="fc-tagline">
-                Punya pertanyaan seputar produk atau kolaborasi?<br>
-                Jangan ragu untuk menyapa kami kapan saja.
+                Have questions about products or collaborations?<br>
+                Feel free to reach out to us anytime.
             </p>
 
             <div class="fc-contact-list">
@@ -159,7 +159,7 @@
                     </div>
                     <div>
                         <p class="fc-detail-label">Our Studio</p>
-                        <p class="fc-detail-val">Jl. Raya Jakarta No. 123<br>Jakarta Selatan</p>
+                        <p class="fc-detail-val">Jalan pintu air 2, kav 6. Optima residence indonesia<br>Depok</p>
                     </div>
                 </div>
 
@@ -171,7 +171,7 @@
                     </div>
                     <div>
                         <p class="fc-detail-label">WhatsApp Only</p>
-                        <p class="fc-detail-val">+62 812 3456 7890</p>
+                        <p class="fc-detail-val">+62 822-6060-0099</p>
                     </div>
                 </div>
 
@@ -182,15 +182,15 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="fc-detail-label">Email Support</p>
-                        <p class="fc-detail-val">hello@farhanaofficial.com</p>
+                        <p class="fc-detail-label">Email</p>
+                        <p class="fc-detail-val">mgmt.farhana@gmail.com</p>
                     </div>
                 </div>
             </div>
 
             {{-- Social --}}
             <div class="fc-social">
-                <a href="#" class="fc-social-btn">
+                <a href="https://www.instagram.com/farhanas.id" class="fc-social-btn">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                         <circle cx="12" cy="12" r="4"/>
@@ -198,7 +198,7 @@
                     </svg>
                     Instagram
                 </a>
-                <a href="#" class="fc-social-btn">
+                <a href="https://www.tiktok.com/@farhanas.id" class="fc-social-btn">
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.69a8.24 8.24 0 004.84 1.56V6.79a4.85 4.85 0 01-1.08-.1z"/>
                     </svg>
@@ -210,7 +210,7 @@
         {{-- ── RIGHT: Form ── --}}
         <div class="fc-card">
             <h3 class="fc-card-title">Drop a Message</h3>
-            <p class="fc-card-sub">Kami biasanya membalas dalam 24 jam.</p>
+            <p class="fc-card-sub">We usually reply within 24 hours</p>
 
             <form action="#" method="POST" class="fc-form">
                 @csrf
@@ -218,29 +218,26 @@
                 <div class="fc-row">
                     <div class="fc-field">
                         <label class="fc-label" for="contact_first_name">First Name</label>
-                        <input class="fc-input" type="text" id="contact_first_name" name="first_name" placeholder="Farhana">
+                        <input class="fc-input" type="text" id="contact_first_name" name="first_name" placeholder="Enter first name">
                     </div>
                     <div class="fc-field">
                         <label class="fc-label" for="contact_last_name">Last Name</label>
-                        <input class="fc-input" type="text" id="contact_last_name" name="last_name" placeholder="Official">
+                        <input class="fc-input" type="text" id="contact_last_name" name="last_name" placeholder="Enter last name">
                     </div>
                 </div>
 
                 <div class="fc-field">
                     <label class="fc-label" for="contact_email">Email Address</label>
-                    <input class="fc-input" type="email" id="contact_email" name="email" placeholder="hello@email.com">
+                    <input class="fc-input" type="email" id="contact_email" name="email" placeholder="username@gmail.com">
                 </div>
 
                 <div class="fc-field">
                     <label class="fc-label" for="contact_message">Your Message</label>
-                    <textarea class="fc-input" id="contact_message" name="message" rows="4" placeholder="Tulis pesanmu di sini..."></textarea>
+                    <textarea class="fc-input" id="contact_message" name="message" rows="4" placeholder="Write your message..."></textarea>
                 </div>
 
                 <button type="submit" class="fc-submit">
                     Send Message
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
                 </button>
             </form>
         </div>

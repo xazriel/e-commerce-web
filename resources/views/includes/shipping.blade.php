@@ -81,30 +81,43 @@
             </div>
             <h3 class="sh-card-title">Layanan Pengiriman</h3>
             <p class="sh-card-desc">
-                Setiap helai pakaian dikemas dengan penuh perhatian. Kami bermitra dengan kurir premium untuk menjamin integritas paket Anda.
+                Setiap pesanan dipersiapkan dengan penuh perhatian untuk menjaga kualitas produk tetap sampai dengan baik ke tangan Anda.
             </p>
             <ul class="sh-list">
-                <li><span class="sh-bullet"></span>Dispatch jam 17:00 WIB</li>
-                <li><span class="sh-bullet"></span>Update resi maksimal H+1</li>
+                <li><span class="sh-bullet"></span>Pesanan diproses setelah pembayaran terkonfirmasi</li>
+                <li><span class="sh-bullet"></span>Resi akan diinformasikan maksimal H+1 setelah pengiriman</li>
+                <li><span class="sh-bullet"></span>Pengiriman dilakukan melalui jasa ekspedisi terpercaya</li>
+                <li><span class="sh-bullet"></span>Untuk pengiriman internasional, silakan hubungi Customer Service Farhana</li>
             </ul>
         </div>
 
-        {{-- Card: Retur --}}
-        <div class="sh-card">
-            <div class="sh-icon-box">
-                <svg width="20" height="20" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-            </div>
-            <h3 class="sh-card-title">Garansi & Retur</h3>
-            <p class="sh-card-desc">
-                Kepuasan Anda adalah esensi kami. Jika terdapat ketidaksesuaian, sistem retur kami dirancang untuk memudahkan Anda.
-            </p>
-            <ul class="sh-list">
-                <li><span class="sh-bullet"></span>Wajib video unboxing</li>
-                <li><span class="sh-bullet"></span>Batas penukaran 3 hari</li>
-            </ul>
-        </div>
+      {{-- Card: Retur --}}
+<div class="sh-card">
+    <div class="sh-icon-box">
+        <svg width="20" height="20" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+    </div>
+    <h3 class="sh-card-title">Garansi & Retur</h3>
+    <p class="sh-card-desc">
+        Penukaran hanya berlaku untuk kesalahan pengiriman atau produk rusak dengan ketentuan berikut:
+    </p>
+    <ul class="sh-list">
+        <li><span class="sh-bullet"></span>Wajib menyertakan video unboxing tanpa cut/edit</li>
+        <li><span class="sh-bullet"></span>Tag produk masih terpasang</li>
+        <li><span class="sh-bullet"></span>Maksimal pengajuan H+3 setelah produk diterima</li>
+        <li><span class="sh-bullet"></span>Ongkir pengembalian ditanggung customer</li>
+        <li><span class="sh-bullet"></span>Penukaran mengikuti ketersediaan stok</li>
+        <li><span class="sh-bullet"></span>Produk akan diproses setelah barang retur diterima dan diperiksa</li>
+    </ul>
+    
+    <p class="sh-card-desc" style="margin-top: 15px;">
+        Penukaran size atau warna karena ketidaksesuaian pilihan pribadi tidak dapat dilakukan.
+    </p>
+    <p class="sh-card-desc" style="font-style: margin-top: 10px;">
+        Semoga Allah Ta’ala meridhai muamalah kita.
+    </p>
+</div>
 
     </div>
 </div>
