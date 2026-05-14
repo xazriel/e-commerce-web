@@ -22,7 +22,7 @@ class CheckoutController extends Controller
         $this->jneService = $jneService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $activeOrder = Order::where('user_id', Auth::id())
                             ->where('status', 'pending')
@@ -34,28 +34,35 @@ class CheckoutController extends Controller
                              ->with('info', 'Selesaikan pembayaran pesanan Anda sebelumnya.');
         }
 
-        $cart = session()->get('cart', []);
+        // ✅ Bedakan sumber item: buy_now atau cart biasa
+        $isBuyNow = $request->query('mode') === 'buy_now';
+
+        if ($isBuyNow) {
+            $cart = session()->get('buy_now', []);
+        } else {
+            $cart = session()->get('cart', []);
+        }
 
         if (empty($cart)) {
             return redirect()->route('home')->with('error', 'Keranjang belanja kosong.');
         }
 
         $totalAmount = 0;
-       foreach ($cart as $variantId => $item) {
-        $variant    = ProductVariant::find($variantId);
-        $isPreorder = $item['is_preorder'] ?? false;
+        foreach ($cart as $variantId => $item) {
+            $variant    = ProductVariant::find($variantId);
+            $isPreorder = $item['is_preorder'] ?? false;
 
-        if (!$variant || (! $isPreorder && $variant->stock < $item['quantity'])) {
-            return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi.');
+            if (!$variant || (! $isPreorder && $variant->stock < $item['quantity'])) {
+                return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi.');
+            }
+            $totalAmount += $item['price'] * $item['quantity'];
         }
-        $totalAmount += $item['price'] * $item['quantity'];
-    }
 
         $user        = Auth::user();
         $addresses   = $user->addresses()->orderBy('is_default', 'desc')->get();
         $defaultAddr = $addresses->firstWhere('is_default', true) ?? $addresses->first();
 
-        return view('checkout.index', compact('cart', 'totalAmount', 'user', 'addresses', 'defaultAddr'));
+        return view('checkout.index', compact('cart', 'totalAmount', 'user', 'addresses', 'defaultAddr', 'isBuyNow'));
     }
 
     public function calculateShipping(Request $request)
@@ -100,7 +107,12 @@ class CheckoutController extends Controller
             'receiver_zip'     => 'nullable|string|max:10',
         ]);
 
-        $cart = session()->get('cart', []);
+        // ✅ Ambil dari session yang tepat sesuai mode
+        $isBuyNow = $request->boolean('buy_now_mode');
+        $cart     = $isBuyNow
+            ? session()->get('buy_now', [])
+            : session()->get('cart', []);
+
         if (empty($cart)) return redirect()->route('home');
 
         try {
@@ -130,38 +142,36 @@ class CheckoutController extends Controller
                 ]);
 
                 foreach ($cart as $variantId => $details) {
-                $variant    = ProductVariant::with('product')
-                                ->where('id', $variantId)
-                                ->lockForUpdate()
-                                ->first();
-                $isPreorder = $details['is_preorder'] ?? false;
+                    $variant    = ProductVariant::with('product')
+                                    ->where('id', $variantId)
+                                    ->lockForUpdate()
+                                    ->first();
+                    $isPreorder = $details['is_preorder'] ?? false;
 
-                if (!$variant || (! $isPreorder && $variant->stock < $details['quantity'])) {
-                    throw new \Exception("Maaf, stok {$details['name']} baru saja habis.");
+                    if (!$variant || (! $isPreorder && $variant->stock < $details['quantity'])) {
+                        throw new \Exception("Maaf, stok {$details['name']} baru saja habis.");
+                    }
+
+                    if ($isPreorder) {
+                        $order->is_preorder           = true;
+                        $order->preorder_release_date = $variant->product->release_date;
+                        $order->save();
+                    }
+
+                    $order->items()->create([
+                        'product_id' => $variant->product_id,
+                        'quantity'   => $details['quantity'],
+                        'price'      => $details['price'],
+                        'size'       => $variant->size,
+                        'color'      => $variant->color,
+                    ]);
+
+                    if (! $isPreorder) {
+                        $variant->decrement('stock', $details['quantity']);
+                    }
                 }
 
-                // Tandai order sebagai pre-order jika ada item pre-order
-                if ($isPreorder) {
-                    $order->is_preorder            = true;
-                    $order->preorder_release_date  = $variant->product->release_date;
-                    $order->save();
-                }
-
-                $order->items()->create([
-                    'product_id' => $variant->product_id,
-                    'quantity'   => $details['quantity'],
-                    'price'      => $details['price'],
-                    'size'       => $variant->size,
-                    'color'      => $variant->color,
-                ]);
-
-                // Pre-order: stok TIDAK dikurangi sekarang, dikurangi saat release oleh scheduler
-               if (! $isPreorder) {
-                    $variant->decrement('stock', $details['quantity']);
-                }
-            } // tutup foreach
-
-            $this->setupMidtrans(); // ini masih di dalam DB::transaction
+                $this->setupMidtrans();
 
                 $itemDetails = [];
                 foreach ($cart as $variantId => $item) {
@@ -202,7 +212,13 @@ class CheckoutController extends Controller
                 return $order;
             });
 
-            session()->forget('cart');
+            // ✅ Hapus session yang tepat
+            if ($isBuyNow) {
+                session()->forget('buy_now');
+            } else {
+                session()->forget('cart');
+            }
+
             return redirect()->route('checkout.waiting', $order->order_number);
 
         } catch (\Exception $e) {
@@ -289,10 +305,10 @@ class CheckoutController extends Controller
             }
 
             if ($status === 'success' && $order->status !== 'success') {
-            if (! $order->is_preorder) {
-                $this->generateAwb($order); // AWB hanya untuk order reguler
-            }
-            $order->update(['status' => 'success']);
+                if (! $order->is_preorder) {
+                    $this->generateAwb($order);
+                }
+                $order->update(['status' => 'success']);
             } elseif ($status === 'cancelled' && $order->status !== 'cancelled') {
                 $this->restoreStockAndCancel($order);
             } else {
@@ -319,7 +335,6 @@ class CheckoutController extends Controller
 
     private function parseServiceCode(string $raw): string
     {
-        // REG15 → REG, YES19 → YES, OKE19 → OKE, CTCYES → CTCYES
         preg_match('/^([A-Z]+)/', strtoupper($raw), $m);
         return $m[1] ?? 'REG';
     }
@@ -385,23 +400,23 @@ class CheckoutController extends Controller
     }
 
     private function restoreStockAndCancel(Order $order): void
-{
-    if ($order->status === 'cancelled') return;
+    {
+        if ($order->status === 'cancelled') return;
 
-    DB::transaction(function () use ($order) {
-        $order->update(['status' => 'cancelled']);
+        DB::transaction(function () use ($order) {
+            $order->update(['status' => 'cancelled']);
 
-        // Pre-order: stok belum pernah dikurangi, jadi tidak perlu dikembalikan
-        if ($order->is_preorder) return;
+            if ($order->is_preorder) return;
 
-        foreach ($order->items as $item) {
-            $variant = ProductVariant::where('product_id', $item->product_id)
-                ->where('color', $item->color)
-                ->where('size', $item->size)
-                ->first();
-            if ($variant) {
-                $variant->increment('stock', $item->quantity);
+            foreach ($order->items as $item) {
+                $variant = ProductVariant::where('product_id', $item->product_id)
+                    ->where('color', $item->color)
+                    ->where('size', $item->size)
+                    ->first();
+                if ($variant) {
+                    $variant->increment('stock', $item->quantity);
+                }
             }
-        }
-    });
-}}
+        });
+    }
+}

@@ -55,12 +55,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ->name('tracking.show');
 
     Route::prefix('profile/addresses')->name('address.')->group(function () {
-        Route::get('/',             [AddressController::class, 'index'])->name('index');
-        Route::get('/create',       [AddressController::class, 'create'])->name('create');
-        Route::post('/',            [AddressController::class, 'store'])->name('store');
-        Route::get('/{id}/edit',    [AddressController::class, 'edit'])->name('edit');
-        Route::post('/{id}/select', [AddressController::class, 'select'])->name('select');
-        Route::delete('/{id}',      [AddressController::class, 'destroy'])->name('destroy');
+    Route::get('/',             [AddressController::class, 'index'])->name('index');
+    Route::get('/create',       [AddressController::class, 'create'])->name('create');
+    Route::post('/',            [AddressController::class, 'store'])->name('store');
+    Route::get('/{id}/edit',    [AddressController::class, 'edit'])->name('edit');
+    Route::put('/{id}',         [AddressController::class, 'update'])->name('update');  
+    Route::post('/{id}/select', [AddressController::class, 'select'])->name('select');
+    Route::delete('/{id}',      [AddressController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('checkout')->name('checkout.')->group(function () {

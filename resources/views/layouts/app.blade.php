@@ -7,6 +7,8 @@
 
         <title>{{ config('app.name', 'Farhana Web') }}</title>
 
+        <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
+
         <style>
             [x-cloak] { display: none !important; }
 

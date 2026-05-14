@@ -69,6 +69,45 @@ class AddressController extends Controller
         return redirect()->back()->with('success', 'Alamat utama diperbarui.');
     }
 
+    public function edit($id)
+{
+    $address = Auth::user()->addresses()->findOrFail($id);
+    return response()->json($address);
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'recipient_name' => 'required|string|max:255',
+        'phone'          => 'required|string|max:20',
+        'address'        => 'required|string',
+        'destination_id' => 'required|string',
+        'address_label'  => 'nullable|string|max:255',
+        'city_name'      => 'nullable|string|max:255',
+        'zip_code'       => 'nullable|string|max:10',
+    ]);
+
+    $address = Auth::user()->addresses()->findOrFail($id);
+
+    $address->update([
+        'recipient_name' => $request->recipient_name,
+        'phone'          => $request->phone,
+        'address'        => $request->address,
+        'destination_id' => $request->destination_id,
+        'address_label'  => $request->address_label,
+        'city_name'      => $request->city_name,
+        'zip_code'       => $request->zip_code,
+        'postal_code'    => $request->zip_code,
+    ]);
+
+    if ($request->boolean('is_default')) {
+        Auth::user()->addresses()->where('id', '!=', $id)->update(['is_default' => false]);
+        $address->update(['is_default' => true]);
+    }
+
+    return response()->json(['success' => true, 'address' => $address->fresh()]);
+    }
+
     public function destroy($id)
     {
         $address = Auth::user()->addresses()->findOrFail($id);

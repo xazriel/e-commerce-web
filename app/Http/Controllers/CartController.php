@@ -20,8 +20,8 @@ class CartController extends Controller
 
     /**
      * Menambah produk ke keranjang.
-     * Jika buy_now=1 → redirect ke checkout.
-     * Jika tidak       → redirect ke cart.index.
+     * Jika buy_now=1 → simpan ke session('buy_now') TERPISAH → redirect ke checkout.
+     * Jika tidak       → simpan ke session('cart') → redirect ke cart.index.
      */
     public function add(Request $request, $id)
     {
@@ -68,49 +68,65 @@ class CartController extends Controller
                 : ($product->images->first()->image_path ?? null);
         }
 
-        // 5. Masukkan ke session cart
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$variantId])) {
-    if (! $isPreorder && $variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
-        return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
-    }
-    $cart[$variantId]['quantity'] += $quantityToAdd;
-} else {
-    $cart[$variantId] = [
-        'product_id'   => $product->id,
-        'name'         => $product->name,
-        'variant_id'   => $variant->id,
-        'quantity'     => $quantityToAdd,
-        'price'        => $product->price,
-        'size'         => $variant->size,
-        'color'        => $variant->color,
-        'image'        => $imageToDisplay,
-        'slug'         => $product->slug,
-        'is_preorder'  => $isPreorder,                              // ← tambahkan
-        'release_date' => $product->release_date?->toDateTimeString(), // ← tambahkan
-    ];
-}
-        session()->put('cart', $cart);
-
-        Log::info('CART.ADD STEP 3: cart saved', ['buy_now' => $request->input('buy_now')]);
-
-        // 6. Arahkan sesuai tipe tombol
+        // 5. Cek buy_now DULU sebelum menyentuh session cart
         if ($request->input('buy_now') == '1') {
-            Log::info('CART.ADD STEP 4: buy_now detected');
+            Log::info('CART.ADD: buy_now detected');
 
             if (!auth()->check()) {
-                Log::info('CART.ADD STEP 4a: not logged in, redirect to login');
+                Log::info('CART.ADD: not logged in, redirect to login');
                 session()->put('url.intended', route('checkout.index'));
                 return redirect()->route('login')
                     ->with('info', 'Login dulu untuk melanjutkan checkout.');
             }
 
-            Log::info('CART.ADD STEP 4b: logged in, redirect to checkout', ['user' => auth()->id()]);
-            return redirect()->route('checkout.index');
+            // Simpan ke session TERPISAH — cart tidak disentuh sama sekali
+            session()->put('buy_now', [
+                $variantId => [
+                    'product_id'   => $product->id,
+                    'name'         => $product->name,
+                    'variant_id'   => $variant->id,
+                    'quantity'     => $quantityToAdd,
+                    'price'        => $product->price,
+                    'size'         => $variant->size,
+                    'color'        => $variant->color,
+                    'image'        => $imageToDisplay,
+                    'slug'         => $product->slug,
+                    'is_preorder'  => $isPreorder,
+                    'release_date' => $product->release_date?->toDateTimeString(),
+                ]
+            ]);
+
+            Log::info('CART.ADD: buy_now session saved, redirecting to checkout');
+            return redirect()->route('checkout.index', ['mode' => 'buy_now']);
         }
 
-        Log::info('CART.ADD STEP 5: redirect to cart.index');
+        // 6. Bukan buy_now → masuk ke cart seperti biasa
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$variantId])) {
+            if (! $isPreorder && $variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
+                return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
+            }
+            $cart[$variantId]['quantity'] += $quantityToAdd;
+        } else {
+            $cart[$variantId] = [
+                'product_id'   => $product->id,
+                'name'         => $product->name,
+                'variant_id'   => $variant->id,
+                'quantity'     => $quantityToAdd,
+                'price'        => $product->price,
+                'size'         => $variant->size,
+                'color'        => $variant->color,
+                'image'        => $imageToDisplay,
+                'slug'         => $product->slug,
+                'is_preorder'  => $isPreorder,
+                'release_date' => $product->release_date?->toDateTimeString(),
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        Log::info('CART.ADD: item added to cart, redirecting to cart.index');
         return redirect()->route('cart.index')
             ->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
@@ -141,16 +157,16 @@ class CartController extends Controller
             $variant = ProductVariant::find($id);
 
             if ($request->action == 'increase') {
-            $isPreorder = $cart[$id]['is_preorder'] ?? false;
+                $isPreorder = $cart[$id]['is_preorder'] ?? false;
 
-            if ($variant && ($isPreorder || $variant->stock > $cart[$id]['quantity'])) {
-                $cart[$id]['quantity']++;
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Stok tidak mencukupi.',
-                ], 400);
-            }
+                if ($variant && ($isPreorder || $variant->stock > $cart[$id]['quantity'])) {
+                    $cart[$id]['quantity']++;
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok tidak mencukupi.',
+                    ], 400);
+                }
 
             } elseif ($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
                 $cart[$id]['quantity']--;

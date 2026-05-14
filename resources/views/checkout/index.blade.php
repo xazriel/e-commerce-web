@@ -25,7 +25,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Focus resets ── */
         input:focus, textarea:focus, select:focus, button:focus {
             outline: none !important;
             box-shadow: none !important;
@@ -36,7 +35,6 @@
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* ── Page load animation ── */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -152,7 +150,7 @@
             background: var(--light-gray);
         }
 
-        /* ── Address card ── */
+        /* ── Address display card ── */
         .addr-display {
             background: var(--white);
             border: 1px solid var(--light-gray);
@@ -217,10 +215,7 @@
             color: var(--white);
             flex-shrink: 0;
         }
-        .option-badge.light {
-            background: var(--light-gray);
-            color: var(--primary);
-        }
+        .option-badge.light { background: var(--light-gray); color: var(--primary); }
         .option-title {
             font-size: 11px;
             font-weight: 700;
@@ -232,7 +227,6 @@
         .option-desc { font-size: 10px; color: var(--olive-tint); }
         .option-price { font-size: 13px; font-weight: 700; color: var(--black); margin-right: 12px; }
 
-        /* Radio custom */
         .radio-ring {
             width: 18px; height: 18px;
             border-radius: 50%;
@@ -251,7 +245,6 @@
         }
         .option-card.selected .radio-fill { opacity: 1; }
 
-        /* ── Empty courier state ── */
         .courier-empty {
             border: 1.5px dashed var(--light-gray);
             border-radius: 16px;
@@ -264,10 +257,7 @@
         }
 
         /* ── Sidebar ── */
-        .sidebar {
-            position: sticky;
-            top: 88px;
-        }
+        .sidebar { position: sticky; top: 88px; }
         .sidebar-card {
             background: var(--primary);
             border-radius: 24px;
@@ -282,8 +272,6 @@
             margin-bottom: 24px;
             font-weight: 600;
         }
-
-        /* Cart items */
         .cart-item { display: flex; gap: 14px; margin-bottom: 20px; }
         .cart-img {
             width: 52px; height: 64px;
@@ -303,14 +291,8 @@
             margin-bottom: 4px;
         }
         .cart-variant { font-size: 10px; color: rgba(255,255,255,.45); }
-        .cart-price {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--white);
-            margin-top: 6px;
-        }
+        .cart-price { font-size: 11px; font-weight: 700; color: var(--white); margin-top: 6px; }
 
-        /* Totals */
         .totals-row {
             display: flex;
             justify-content: space-between;
@@ -320,16 +302,8 @@
         }
         .totals-row span:first-child { color: rgba(255,255,255,.5); }
         .totals-row span:last-child { color: rgba(255,255,255,.85); font-weight: 500; }
-        .totals-divider {
-            height: 1px;
-            background: rgba(255,255,255,.1);
-            margin: 16px 0;
-        }
-        .totals-grand {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }
+        .totals-divider { height: 1px; background: rgba(255,255,255,.1); margin: 16px 0; }
+        .totals-grand { display: flex; justify-content: space-between; align-items: baseline; }
         .totals-grand-label {
             font-size: 9px;
             letter-spacing: .2em;
@@ -343,7 +317,6 @@
             letter-spacing: -.02em;
         }
 
-        /* ── CTA Button ── */
         .btn-submit {
             width: 100%;
             margin-top: 28px;
@@ -356,18 +329,12 @@
             font-weight: 800;
             letter-spacing: .25em;
             text-transform: uppercase;
-            border-radius: 50px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all .25s;
         }
-        .btn-submit:hover:not(:disabled) {
-            background: var(--black);
-            color: var(--white);
-        }
-        .btn-submit:disabled {
-            opacity: .3;
-            cursor: not-allowed;
-        }
+        .btn-submit:hover:not(:disabled) { background: var(--black); color: var(--white); }
+        .btn-submit:disabled { opacity: .3; cursor: not-allowed; }
         .btn-notice {
             font-size: 9px;
             color: rgba(255,255,255,.3);
@@ -377,12 +344,10 @@
             letter-spacing: .03em;
         }
 
-        /* ── Scrollbar ── */
         .custom-scrollbar::-webkit-scrollbar { width: 2px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); }
 
-        /* ── Skeleton ── */
         @keyframes shimmer {
             0%   { background-position: -600px 0; }
             100% { background-position: 600px 0; }
@@ -396,8 +361,17 @@
             border-radius: 4px;
         }
 
-        /* ── Modal ── */
-        .modal-overlay { display: none; }
+        /* ══ MODAL ══ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,.6);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
         .modal-overlay.active { display: flex; }
         .modal-wrap {
             background: var(--white);
@@ -417,7 +391,30 @@
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
+            gap: 12px;
         }
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .modal-back-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.12);
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            color: rgba(255,255,255,.8);
+            flex-shrink: 0;
+            transition: background .2s, color .2s;
+        }
+        .modal-back-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
         .modal-header-title {
             font-size: 10px;
             font-weight: 700;
@@ -432,10 +429,11 @@
             cursor: pointer;
             transition: color .2s;
             padding: 0;
+            flex-shrink: 0;
         }
         .modal-close:hover { color: var(--white); }
 
-        /* Addr list item */
+        /* Address list items */
         .addr-item {
             border: 1px solid var(--light-gray);
             border-radius: 14px;
@@ -445,12 +443,13 @@
             margin-bottom: 10px;
         }
         .addr-item:hover { border-color: var(--olive-tint); box-shadow: 0 3px 12px rgba(47,53,38,.07); }
-        .addr-item-selected {
+        .addr-item.addr-item-selected {
             border-color: var(--primary) !important;
             background: rgba(47,53,38,.04);
         }
-        .addr-item-selected .addr-ring { border-color: var(--primary) !important; }
-        .addr-item-selected .addr-dot  { opacity: 1 !important; }
+        .addr-item.addr-item-selected .addr-ring { border-color: var(--primary) !important; }
+        .addr-item.addr-item-selected .addr-dot  { opacity: 1 !important; }
+
         .addr-ring {
             width: 18px; height: 18px;
             border-radius: 50%;
@@ -479,6 +478,39 @@
         .addr-rec-name  { font-size: 12px; font-weight: 700; color: var(--black); }
         .addr-rec-meta  { font-size: 10px; color: var(--olive-tint); margin-top: 3px; line-height: 1.6; }
 
+        /* Action buttons in addr-item */
+        .addr-action-btns {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--light-gray);
+        }
+        .addr-action-btn {
+            font-size: 9px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: inherit;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid;
+            transition: all .2s;
+        }
+        .addr-action-btn.edit {
+            color: var(--primary);
+            border-color: rgba(47,53,38,.3);
+            background: none;
+        }
+        .addr-action-btn.edit:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .addr-action-btn.delete {
+            color: #dc2626;
+            border-color: rgba(220,38,38,.25);
+            background: none;
+        }
+        .addr-action-btn.delete:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
         .modal-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--light-gray);
@@ -500,7 +532,7 @@
         }
         .btn-add-addr:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Form inputs (modal) */
+        /* Form (add & edit) */
         .form-group {
             background: var(--bg);
             border: 1px solid var(--light-gray);
@@ -551,18 +583,29 @@
             color: var(--black);
             font-size: 12px;
         }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 52px;
-        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow { height: 52px; }
 
-        /* Modal body scroll */
         .modal-body {
             flex: 1;
             overflow-y: auto;
             padding: 24px;
         }
-        .modal-body.custom-scrollbar::-webkit-scrollbar { width: 2px; }
-        .modal-body.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--light-gray); }
+        .modal-body::-webkit-scrollbar { width: 2px; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--light-gray); }
+
+        /* Error box in form */
+        .form-error-box {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 11px;
+            color: #dc2626;
+        }
+
+        /* Loading spinner for delete / save */
+        .addr-action-btn:disabled { opacity: .5; cursor: not-allowed; }
 
         /* Toast */
         .toast {
@@ -588,13 +631,21 @@
 @endif
 
 {{-- ══════════════════════════════════════════════════════
-     MODAL: SELECT / ADD ADDRESS
+     MODAL: ADDRESS CRUD
 ══════════════════════════════════════════════════════ --}}
-<div id="address-modal" class="modal-overlay fixed inset-0 z-[200] bg-black/60 items-center justify-center p-4">
+<div id="address-modal" class="modal-overlay">
     <div class="modal-wrap">
 
+        {{-- Header --}}
         <div class="modal-header">
-            <span id="modal-title" class="modal-header-title">Select Delivery Address</span>
+            <div class="modal-header-left">
+                <button id="modal-back-btn" type="button" class="modal-back-btn" onclick="showListPanel()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <span id="modal-title" class="modal-header-title">Select Delivery Address</span>
+            </div>
             <button type="button" onclick="closeAddressModal()" class="modal-close">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
@@ -602,11 +653,12 @@
             </button>
         </div>
 
-        {{-- Panel 1: List --}}
-        <div id="panel-list" class="flex flex-col flex-1 overflow-hidden">
-            <div class="modal-body custom-scrollbar">
+        {{-- ── PANEL 1: LIST ── --}}
+        <div id="panel-list" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+            <div class="modal-body">
                 @forelse($addresses as $addr)
                 <div class="addr-item {{ $addr->is_default ? 'addr-item-selected' : '' }}"
+                    id="addr-item-{{ $addr->id }}"
                     data-id="{{ $addr->id }}"
                     data-name="{{ $addr->recipient_name }}"
                     data-phone="{{ $addr->phone }}"
@@ -614,13 +666,18 @@
                     data-destination="{{ $addr->destination_id }}"
                     data-city="{{ $addr->city_name }}"
                     data-zip="{{ $addr->zip_code ?? $addr->postal_code }}"
-                    data-label="{{ $addr->address_label ?? ($addr->city_name . ($addr->province_name ? ', '.$addr->province_name : '')) }}">
+                    data-label="{{ $addr->address_label ?? ($addr->city_name . ($addr->province_name ? ', '.$addr->province_name : '')) }}"
+                    onclick="selectAddress({{ $addr->id }}, event)">
+
                     <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
                         <div style="flex:1; min-width:0;">
                             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
                                 <span class="addr-rec-name">{{ $addr->recipient_name }}</span>
                                 @if($addr->is_default)
                                 <span class="addr-badge">Default</span>
+                                @endif
+                                @if($addr->address_label)
+                                <span style="font-size:8px; background:var(--bg); color:var(--olive-tint); padding:2px 8px; border-radius:20px; letter-spacing:.06em; text-transform:uppercase; font-weight:600;">{{ $addr->address_label }}</span>
                                 @endif
                             </div>
                             <div class="addr-rec-meta">
@@ -632,9 +689,24 @@
                             <p style="font-size:10px; color:#d97706; margin-top:6px;">⚠ Lokasi belum lengkap — perlu dipilih ulang.</p>
                             @endif
                         </div>
-                        <div class="addr-ring {{ $addr->is_default ? 'border-[#2F3526]' : '' }}">
-                            <div class="addr-dot {{ $addr->is_default ? '' : '' }}" style="{{ $addr->is_default ? 'opacity:1' : 'opacity:0' }}"></div>
+                        <div class="addr-ring">
+                            <div class="addr-dot" style="{{ $addr->is_default ? 'opacity:1' : 'opacity:0' }}"></div>
                         </div>
+                    </div>
+
+                    {{-- Action buttons — stop propagation so it doesn't trigger select --}}
+                    <div class="addr-action-btns" onclick="event.stopPropagation()">
+                        <button type="button"
+                            class="addr-action-btn edit"
+                            onclick="openEditPanel({{ $addr->id }})">
+                            ✏ Edit
+                        </button>
+                        <button type="button"
+                            class="addr-action-btn delete"
+                            id="del-btn-{{ $addr->id }}"
+                            onclick="deleteAddress({{ $addr->id }}, this)">
+                            🗑 Hapus
+                        </button>
                     </div>
                 </div>
                 @empty
@@ -642,51 +714,71 @@
                 @endforelse
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="showNewAddressPanel()" class="btn-add-addr">+ Add New Address</button>
+                <button type="button" onclick="openNewPanel()" class="btn-add-addr">+ Add New Address</button>
             </div>
         </div>
 
-        {{-- Panel 2: New address --}}
-        <div id="panel-new" class="hidden flex-col flex-1 overflow-hidden">
-            <div class="modal-body custom-scrollbar" style="display:flex; flex-direction:column; gap:14px;">
+        {{-- ── PANEL 2: ADD / EDIT FORM ── --}}
+        <div id="panel-form" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+
+                {{-- Hidden: tracks whether we're editing --}}
+                <input type="hidden" id="form_address_id" value="">
+
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                     <div class="form-group">
-                        <label class="form-lbl">Full Name</label>
-                        <input type="text" id="new_name" class="form-fld" placeholder="Nama penerima">
+                        <label class="form-lbl">Nama Penerima *</label>
+                        <input type="text" id="form_name" class="form-fld" placeholder="Nama lengkap">
                     </div>
                     <div class="form-group">
-                        <label class="form-lbl">Phone</label>
-                        <input type="text" id="new_phone" class="form-fld" placeholder="08xxxxxxxxxx">
+                        <label class="form-lbl">No. HP *</label>
+                        <input type="text" id="form_phone" class="form-fld" placeholder="08xxxxxxxxxx">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-lbl">Label Alamat</label>
+                    <input type="text" id="form_label" class="form-fld" placeholder="Rumah, Kantor, dll.">
+                </div>
+
                 <div>
-                    <label class="form-lbl" style="margin-bottom:8px; display:block;">Sub-district, District, City</label>
-                    <select id="new_destination" style="width:100%;">
-                        <option value="">Search location...</option>
+                    <label class="form-lbl" style="margin-bottom:8px; display:block;">Kota / Kecamatan *</label>
+                    <select id="form_destination" style="width:100%;">
+                        <option value="">Cari kota atau kecamatan...</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-lbl">Detailed Address</label>
-                    <textarea id="new_address" rows="3" class="form-fld" style="resize:none;" placeholder="Jalan, nomor rumah, RT/RW, dll."></textarea>
+                    <label class="form-lbl">Alamat Lengkap *</label>
+                    <textarea id="form_address" rows="3" class="form-fld" style="resize:none;" placeholder="Jalan, nomor rumah, RT/RW, dll."></textarea>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-lbl">Kode Pos</label>
+                    <input type="text" id="form_zip" class="form-fld" placeholder="12345">
+                </div>
+
                 <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                    <input type="checkbox" id="new_is_default" style="accent-color:var(--primary); width:15px; height:15px;">
-                    <span style="font-size:11px; color:var(--olive-tint);">Set as default address</span>
+                    <input type="checkbox" id="form_is_default" style="accent-color:var(--primary); width:15px; height:15px;">
+                    <span style="font-size:11px; color:var(--olive-tint);">Jadikan alamat utama</span>
                 </label>
+
+                <div id="form-error-box" class="form-error-box"></div>
             </div>
+
             <div class="modal-footer" style="display:flex; gap:10px;">
                 <button type="button" onclick="showListPanel()"
                     style="flex:1; padding:14px; border:1px solid var(--light-gray); border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; background:none; color:var(--olive-tint); transition:all .2s;">
-                    ← Back
+                    ← Kembali
                 </button>
-                <button type="button" id="btn-save-new-addr"
+                <button type="button" id="btn-save-addr"
                     style="flex:2; padding:14px; background:var(--primary); color:var(--white); border:none; border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; cursor:pointer; transition:background .2s;">
-                    Save Address
+                    Simpan Alamat
                 </button>
             </div>
         </div>
 
-    </div>
+    </div>{{-- /.modal-wrap --}}
 </div>
 
 {{-- ══════════════════════════════════════════════════════
@@ -699,7 +791,13 @@
         </svg>
         Cart
     </a>
-    <div class="header-logo">Farhana</div>
+    <div class="header-logo">
+        <a href="{{ route('home') }}">
+            <img src="{{ Storage::url('LOGO-FARHANA-NEW-TRANSPARENT_WHITE.png') }}"
+                 alt="Farhana"
+                 class="h-14 md:h-20 w-auto object-contain">
+        </a>
+    </div>
     <div class="header-spacer"></div>
 </header>
 
@@ -707,18 +805,15 @@
 <div class="progress-bar fade-up delay-1">
     <div class="progress-steps">
         <div class="progress-step">
-            <div class="dot"></div>
-            Cart
+            <div class="dot"></div>Cart
         </div>
         <div class="progress-line"></div>
         <div class="progress-step active">
-            <div class="dot"></div>
-            Checkout
+            <div class="dot"></div>Checkout
         </div>
         <div class="progress-line"></div>
         <div class="progress-step">
-            <div class="dot"></div>
-            Confirm
+            <div class="dot"></div>Confirm
         </div>
     </div>
 </div>
@@ -726,6 +821,10 @@
 <main>
     <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form">
         @csrf
+
+        @if(isset($isBuyNow) && $isBuyNow)
+            <input type="hidden" name="buy_now_mode" value="1">
+        @endif
 
         {{-- Hidden fields --}}
         <input type="hidden" name="email"            value="{{ $user->email }}">
@@ -746,7 +845,7 @@
 
                 {{-- ── 01 SHIPPING ADDRESS ── --}}
                 <div class="section fade-up delay-2">
-                    <div class="section-label">01 — Shipping Address</div>
+                    <div class="section-label">Shipping Address</div>
 
                     @if($defaultAddr)
                     <div class="addr-display">
@@ -777,7 +876,7 @@
 
                 {{-- ── 02 SHIPPING METHOD ── --}}
                 <div class="section fade-up delay-3">
-                    <div class="section-label">02 — Shipping Method</div>
+                    <div class="section-label">Shipping Method</div>
                     <div id="courier_list">
                         <div class="courier-empty">Select location to calculate shipping</div>
                     </div>
@@ -785,17 +884,17 @@
 
                 {{-- ── 03 PAYMENT METHOD ── --}}
                 <div class="section fade-up delay-4">
-                    <div class="section-label">03 — Payment Method</div>
+                    <div class="section-label">Payment Method</div>
                     <div>
                         @php
                         $payments = [
-                            ['id' => 'bca_va',     'name' => 'BCA Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BCA',     'icon' => 'BCA'],
-                            ['id' => 'bni_va',     'name' => 'BNI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BNI',     'icon' => 'BNI'],
-                            ['id' => 'bri_va',     'name' => 'BRI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BRI',     'icon' => 'BRI'],
-                            ['id' => 'mandiri_va', 'name' => 'Mandiri Virtual Account', 'desc' => 'ATM / m-Banking / Livin Mandiri',     'icon' => 'MND'],
-                            ['id' => 'permata_va', 'name' => 'Permata Virtual Account', 'desc' => 'ATM / m-Banking Permata',             'icon' => 'PRM'],
-                            ['id' => 'gopay',      'name' => 'GoPay',                   'desc' => 'Aplikasi Gojek atau GoPay',           'icon' => 'GP'],
-                            ['id' => 'shopeepay',  'name' => 'ShopeePay',               'desc' => 'Aplikasi Shopee',                     'icon' => 'SP'],
+                            ['id' => 'bca_va',     'name' => 'BCA Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BCA',      'icon' => 'BCA'],
+                            ['id' => 'bni_va',     'name' => 'BNI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BNI',      'icon' => 'BNI'],
+                            ['id' => 'bri_va',     'name' => 'BRI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BRI',      'icon' => 'BRI'],
+                            ['id' => 'mandiri_va', 'name' => 'Mandiri Virtual Account', 'desc' => 'ATM / m-Banking / Livin Mandiri',      'icon' => 'MND'],
+                            ['id' => 'permata_va', 'name' => 'Permata Virtual Account', 'desc' => 'ATM / m-Banking Permata',              'icon' => 'PRM'],
+                            ['id' => 'gopay',      'name' => 'GoPay',                   'desc' => 'Aplikasi Gojek atau GoPay',            'icon' => 'GP'],
+                            ['id' => 'shopeepay',  'name' => 'ShopeePay',               'desc' => 'Aplikasi Shopee',                      'icon' => 'SP'],
                             ['id' => 'qris',       'name' => 'QRIS',                    'desc' => 'Scan QR dari e-wallet atau m-banking', 'icon' => 'QR'],
                         ];
                         @endphp
@@ -810,16 +909,14 @@
                                         <div class="option-desc">{{ $pay['desc'] }}</div>
                                     </div>
                                 </div>
-                                <div class="radio-ring">
-                                    <div class="radio-fill"></div>
-                                </div>
+                                <div class="radio-ring"><div class="radio-fill"></div></div>
                             </div>
                         </label>
                         @endforeach
                     </div>
                 </div>
 
-            </div>
+            </div>{{-- /LEFT --}}
 
             {{-- ── SIDEBAR ── --}}
             <aside class="sidebar fade-up delay-3">
@@ -872,79 +969,220 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function () {
+
     const subtotal     = {{ $totalAmount }};
+    const CSRF         = '{{ csrf_token() }}';
     const isProduction = {{ app()->isProduction() ? 'true' : 'false' }};
     const excludedServices = isProduction
         ? ['JTR250', 'JTR<150', 'JTR<130', 'PELIKAN', 'POPBOX', 'CTCSPS', 'SPS']
         : [];
     const serviceLabels = {
-        'REG':    { label: 'Reguler',         desc: 'Estimasi 2–3 hari kerja' },
-        'YES':    { label: 'YES (Esok Sampai)',desc: 'Estimasi 1 hari kerja' },
-        'OKE':    { label: 'OKE (Ekonomis)',   desc: 'Estimasi 3–5 hari kerja' },
-        'CTC':    { label: 'City Courier',     desc: 'Pengiriman dalam kota' },
-        'CTCYES': { label: 'City Courier YES', desc: 'Estimasi 1 hari kerja dalam kota' },
-        'CTCOKE': { label: 'City Courier OKE', desc: 'Ekonomis dalam kota' },
-        'JTR':    { label: 'JNE Trucking',     desc: 'Estimasi 3–4 hari kerja' },
+        'REG':    { label: 'Reguler',          desc: 'Estimasi 2–3 hari kerja' },
+        'YES':    { label: 'YES (Esok Sampai)', desc: 'Estimasi 1 hari kerja' },
+        'OKE':    { label: 'OKE (Ekonomis)',    desc: 'Estimasi 3–5 hari kerja' },
+        'CTC':    { label: 'City Courier',      desc: 'Pengiriman dalam kota' },
+        'CTCYES': { label: 'City Courier YES',  desc: 'Estimasi 1 hari kerja dalam kota' },
+        'CTCOKE': { label: 'City Courier OKE',  desc: 'Ekonomis dalam kota' },
+        'JTR':    { label: 'JNE Trucking',      desc: 'Estimasi 3–4 hari kerja' },
     };
 
-    // ── Select2 ───────────────────────────────────────────
-    function makeSelect2(selector, parentSelector) {
-        const opts = {
+    // ══════════════════════════════════════════════════════
+    // SELECT2 — form destination
+    // ══════════════════════════════════════════════════════
+    function initSelect2() {
+        $('#form_destination').select2({
+            dropdownParent: $('#address-modal'),
             ajax: {
                 url: "{{ route('api.locations') }}",
-                dataType: 'json', delay: 250,
+                dataType: 'json',
+                delay: 250,
                 data: p => ({ q: p.term }),
                 processResults: data => ({
-                    results: data.results.map(i => ({ id: i.id, text: i.text, city: i.city, zip_code: i.zip_code }))
+                    results: (data.results ?? []).map(i => ({
+                        id:       i.id,
+                        text:     i.text,
+                        city:     i.city,
+                        zip_code: i.zip_code
+                    }))
                 }),
                 cache: true
             },
-            placeholder: "Type sub-district or city...",
+            placeholder: 'Cari kota atau kecamatan...',
             minimumInputLength: 3
-        };
-        if (parentSelector) opts.dropdownParent = $(parentSelector);
-        $(selector).select2(opts);
+        });
     }
-    makeSelect2('#new_destination', '#address-modal');
+    initSelect2();
 
-    // ── Modal ─────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════
+    // MODAL — open / close
+    // ══════════════════════════════════════════════════════
     window.openAddressModal = function () {
         showListPanel();
         $('#address-modal').addClass('active');
+        document.body.style.overflow = 'hidden';
     };
     window.closeAddressModal = function () {
         $('#address-modal').removeClass('active');
+        document.body.style.overflow = '';
     };
     $('#address-modal').on('click', function (e) {
         if ($(e.target).is('#address-modal')) closeAddressModal();
     });
 
+    // ══════════════════════════════════════════════════════
+    // PANEL SWITCHING
+    // ══════════════════════════════════════════════════════
     window.showListPanel = function () {
-        $('#panel-list').removeClass('hidden').css('display', 'flex').addClass('flex-col overflow-hidden');
-        $('#panel-new').addClass('hidden').css('display', 'none');
+        $('#panel-list').css('display', 'flex');
+        $('#panel-form').css('display', 'none');
         $('#modal-title').text('Select Delivery Address');
+        $('#modal-back-btn').css('display', 'none');
     };
-    window.showNewAddressPanel = function () {
-        $('#panel-list').addClass('hidden').css('display', 'none');
-        $('#panel-new').removeClass('hidden').css('display', 'flex').addClass('flex-col overflow-hidden');
+
+    window.openNewPanel = function () {
+        // Reset form fields
+        $('#form_address_id').val('');
+        $('#form_name, #form_phone, #form_label, #form_address, #form_zip').val('');
+        $('#form_is_default').prop('checked', false);
+        // Reset select2
+        $('#form_destination').val(null).trigger('change');
+        hideFormError();
+
         $('#modal-title').text('Add New Address');
-        $('#new_name, #new_phone, #new_address').val('');
-        $('#new_is_default').prop('checked', false);
-        if ($('#new_destination').data('select2')) {
-            $('#new_destination').val(null).trigger('change');
+        $('#modal-back-btn').css('display', 'flex');
+        $('#panel-list').css('display', 'none');
+        $('#panel-form').css('display', 'flex');
+        $('#btn-save-addr').text('Simpan Alamat');
+    };
+
+    window.openEditPanel = async function (id) {
+        // Show panel first (optimistic) with loading state
+        $('#form_address_id').val(id);
+        $('#form_name, #form_phone, #form_label, #form_address, #form_zip').val('');
+        $('#form_is_default').prop('checked', false);
+        $('#form_destination').val(null).trigger('change');
+        hideFormError();
+
+        $('#modal-title').text('Edit Alamat');
+        $('#modal-back-btn').css('display', 'flex');
+        $('#panel-list').css('display', 'none');
+        $('#panel-form').css('display', 'flex');
+        $('#btn-save-addr').text('Simpan Perubahan');
+
+        try {
+            const res  = await fetch(`/profile/addresses/${id}/edit`, {
+                headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+            });
+            if (!res.ok) throw new Error('Gagal memuat data.');
+            const addr = await res.json();
+
+            $('#form_name').val(addr.recipient_name ?? '');
+            $('#form_phone').val(addr.phone ?? '');
+            $('#form_label').val(addr.address_label ?? '');
+            $('#form_address').val(addr.address ?? '');
+            $('#form_zip').val(addr.zip_code ?? addr.postal_code ?? '');
+            $('#form_is_default').prop('checked', !!addr.is_default);
+
+            // Pre-fill select2 with existing city
+            if (addr.destination_id && addr.city_name) {
+                const opt = new Option(addr.city_name, addr.destination_id, true, true);
+                $('#form_destination').append(opt).trigger('change');
+            }
+        } catch (e) {
+            showFormError('Gagal memuat data alamat. Coba lagi.');
         }
     };
 
-    // ── Select address ────────────────────────────────────
-    $(document).on('click', '.addr-item', function () {
-        const d = $(this).data();
+    // ══════════════════════════════════════════════════════
+    // SAVE — handles both add & edit
+    // ══════════════════════════════════════════════════════
+    $('#btn-save-addr').on('click', async function () {
+        const id       = $('#form_address_id').val();
+        const isEdit   = id !== '';
+        const name     = $('#form_name').val().trim();
+        const phone    = $('#form_phone').val().trim();
+        const address  = $('#form_address').val().trim();
+        const destData = $('#form_destination').select2('data')[0];
+        const label    = $('#form_label').val().trim();
+        const zip      = $('#form_zip').val().trim();
+        const isDef    = $('#form_is_default').is(':checked');
+
+        // Client-side validation
+        if (!name || !phone || !address || !destData || !destData.id) {
+            showFormError('Nama penerima, HP, kota/kecamatan, dan alamat wajib diisi.');
+            return;
+        }
+
+        const cityName = destData.city || destData.text.split(',').pop()?.trim() || destData.text;
+        const btn      = $('#btn-save-addr').text('Menyimpan...').prop('disabled', true);
+        hideFormError();
+
+        const url    = isEdit ? `/profile/addresses/${id}` : '{{ route("address.store") }}';
+        const method = isEdit ? 'PUT' : 'POST';
+
+        const body = new URLSearchParams({
+            _token:          CSRF,
+            recipient_name:  name,
+            phone:           phone,
+            address:         address,
+            destination_id:  destData.id,
+            city_name:       cityName,
+            address_label:   label,
+            zip_code:        zip,
+            postal_code:     zip,
+            is_default:      isDef ? '1' : '0',
+        });
+        if (!isEdit) body.append('from_checkout', '1');
+
+        try {
+            const res  = await fetch(url, {
+                method,
+                body,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept':           'application/json'
+                }
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                // Laravel validation errors come as { errors: { field: ['msg'] } }
+                const msg = data.message
+                    ?? (data.errors ? Object.values(data.errors).flat().join(' ') : null)
+                    ?? 'Terjadi kesalahan.';
+                showFormError(msg);
+                return;
+            }
+
+            // Reload to sync server state cleanly
+            window.location.reload();
+
+        } catch (e) {
+            showFormError('Koneksi gagal. Coba lagi.');
+        } finally {
+            btn.text(isEdit ? 'Simpan Perubahan' : 'Simpan Alamat').prop('disabled', false);
+        }
+    });
+
+    // ══════════════════════════════════════════════════════
+    // SELECT address (click card)
+    // ══════════════════════════════════════════════════════
+    window.selectAddress = function (id, e) {
+        // Ignore clicks that bubble up from action buttons
+        if ($(e.target).closest('.addr-action-btns').length) return;
+
+        const card = $(`#addr-item-${id}`);
+        const d    = card.data();
+
+        // Update UI
         $('.addr-item').removeClass('addr-item-selected');
         $('.addr-dot').css('opacity', 0);
         $('.addr-ring').css('border-color', '');
-        $(this).addClass('addr-item-selected');
-        $(this).find('.addr-dot').css('opacity', 1);
-        $(this).find('.addr-ring').css('border-color', 'var(--primary)');
+        card.addClass('addr-item-selected');
+        card.find('.addr-dot').css('opacity', 1);
+        card.find('.addr-ring').css('border-color', 'var(--primary)');
 
+        // Update hidden form fields
         $('#hidden_receiver_name').val(d.name);
         $('#hidden_receiver_phone').val(d.phone);
         $('#hidden_receiver_address').val(d.address);
@@ -952,68 +1190,97 @@ $(document).ready(function () {
         $('#hidden_receiver_city').val(d.city || '');
         $('#hidden_receiver_zip').val(d.zip || '');
 
+        // Update display
         $('#display-name').text(d.name);
         $('#display-phone').text(d.phone);
         $('#display-address').text(d.address);
         $('#display-location').text(d.label || d.city);
 
+        // Persist as default on server (fire-and-forget)
+        fetch(`/profile/addresses/${id}/select`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `_token=${CSRF}`
+        });
+
         if (d.destination) {
             fetchShippingRates(d.destination);
         } else {
             $('#courier_list').html(`
-                <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:4px; padding:20px; text-align:center;">
-                    <p style="font-size:11px; color:#d97706;">Alamat ini belum punya kode lokasi JNE.</p>
-                    <p style="font-size:10px; color:#b45309; margin-top:4px;">Pilih alamat lain atau tambah alamat baru.</p>
+                <div style="background:#fffbeb;border:1.5px solid #fcd34d;border-radius:14px;padding:20px;text-align:center;">
+                    <p style="font-size:11px;color:#d97706;">Alamat ini belum punya kode lokasi JNE.</p>
+                    <p style="font-size:10px;color:#b45309;margin-top:4px;">Pilih alamat lain atau tambah alamat baru.</p>
                 </div>`);
         }
 
-        setTimeout(() => closeAddressModal(), 250);
-    });
+        setTimeout(() => closeAddressModal(), 220);
+    };
 
-    // ── Save new address ──────────────────────────────────
-    $('#btn-save-new-addr').on('click', function () {
-        const name   = $('#new_name').val().trim();
-        const phone  = $('#new_phone').val().trim();
-        const detail = $('#new_address').val().trim();
-        const dest   = $('#new_destination').select2('data')[0];
+    // ══════════════════════════════════════════════════════
+    // DELETE address
+    // ══════════════════════════════════════════════════════
+    window.deleteAddress = async function (id, btn) {
+        if (!confirm('Hapus alamat ini? Tindakan tidak bisa dibatalkan.')) return;
 
-        if (!name || !phone || !detail || !dest) {
-            alert('Mohon lengkapi semua field alamat.');
-            return;
-        }
+        $(btn).text('Menghapus...').prop('disabled', true);
 
-        const btn = $(this).text('Saving...').prop('disabled', true);
+        try {
+            const res = await fetch(`/profile/addresses/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `_token=${CSRF}`
+            });
 
-        $.ajax({
-            url:  "{{ route('address.store') }}",
-            type: 'POST',
-            data: {
-                _token:         "{{ csrf_token() }}",
-                recipient_name: name,
-                phone:          phone,
-                address:        detail,
-                destination_id: dest.id,
-                address_label:  dest.text,
-                city_name:      dest.city || '',
-                zip_code:       dest.zip_code || '',
-                postal_code:    dest.zip_code || '',
-                is_default:     $('#new_is_default').is(':checked') ? 1 : 0,
-                from_checkout:  1,
-            },
-            success: () => window.location.reload(),
-            error: function (xhr) {
-                btn.text('Save Address').prop('disabled', false);
-                const errors = xhr.responseJSON?.errors;
-                alert(errors ? Object.values(errors).flat().join('\n') : 'Gagal menyimpan alamat.');
+            if (res.ok) {
+                // Remove card from DOM with animation
+                const card = $(`#addr-item-${id}`);
+                card.css({ transition: 'opacity .25s, transform .25s', opacity: 0, transform: 'scale(.97)' });
+                setTimeout(() => {
+                    card.remove();
+                    // If no more cards, show empty state
+                    if ($('.addr-item').length === 0) {
+                        $('.modal-body').first().html(`
+                            <div style="padding:40px;text-align:center;font-size:11px;color:var(--olive-tint);">Belum ada alamat tersimpan.</div>
+                        `);
+                        // Reset main display
+                        $('#display-name').text('{{ $user->name }}');
+                        $('#display-phone').text('—');
+                        $('#display-address').text('Belum ada alamat').css('color', '#d97706');
+                        $('#display-location').text('');
+                        $('#hidden_destination_id, #hidden_receiver_name, #hidden_receiver_phone, #hidden_receiver_address').val('');
+                    }
+                    // If deleted card was selected default, reload to get new default
+                    window.location.reload();
+                }, 250);
+            } else {
+                $(btn).text('🗑 Hapus').prop('disabled', false);
+                alert('Gagal menghapus alamat.');
             }
-        });
-    });
+        } catch (e) {
+            $(btn).text('🗑 Hapus').prop('disabled', false);
+            alert('Koneksi gagal. Coba lagi.');
+        }
+    };
 
-    // ── Init shipping ─────────────────────────────────────
+    // ══════════════════════════════════════════════════════
+    // FORM ERROR helpers
+    // ══════════════════════════════════════════════════════
+    function showFormError(msg) {
+        $('#form-error-box').text(msg).css('display', 'block');
+    }
+    function hideFormError() {
+        $('#form-error-box').css('display', 'none').text('');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SHIPPING
+    // ══════════════════════════════════════════════════════
     const initDest = $('#hidden_destination_id').val();
     if (initDest) fetchShippingRates(initDest);
 
-    // ── Fetch shipping ────────────────────────────────────
     function fetchShippingRates(destId) {
         if (!destId) return;
 
@@ -1023,12 +1290,12 @@ $(document).ready(function () {
         checkFormValidity();
 
         $('#courier_list').html(`
-            <div class="skeleton" style="height:68px; margin-bottom:8px;"></div>
-            <div class="skeleton" style="height:68px; margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:68px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:68px;margin-bottom:8px;"></div>
             <div class="skeleton" style="height:68px;"></div>`);
 
         $.post("{{ route('api.shipping') }}", {
-            _token: "{{ csrf_token() }}",
+            _token: CSRF,
             destination_id: destId,
             weight: 1
         }, function (res) {
@@ -1043,9 +1310,9 @@ $(document).ready(function () {
                         const key  = Object.keys(serviceLabels).find(k => c.service_code.startsWith(k));
                         const info = key ? serviceLabels[key] : null;
                         const name = info ? info.label : c.courier_service_name;
-                        const desc = info ? info.desc : (c.duration && c.duration !== 'null-null null' ? c.duration : 'Standard delivery');
+                        const desc = info ? info.desc  : (c.duration && c.duration !== 'null-null null' ? c.duration : 'Standard delivery');
                         html += `
-                        <label style="cursor:pointer; display:block;">
+                        <label style="cursor:pointer;display:block;">
                             <input type="radio" name="shipping_option" value="${c.price}"
                                 data-courier="JNE ${c.courier_service_name}"
                                 data-service-code="${c.service_code}"
@@ -1058,32 +1325,31 @@ $(document).ready(function () {
                                         <div class="option-desc">${desc}</div>
                                     </div>
                                 </div>
-                                <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="display:flex;align-items:center;gap:12px;">
                                     <span class="option-price">Rp ${c.price.toLocaleString('id-ID')}</span>
-                                    <div class="radio-ring">
-                                        <div class="radio-fill"></div>
-                                    </div>
+                                    <div class="radio-ring"><div class="radio-fill"></div></div>
                                 </div>
                             </div>
                         </label>`;
                     });
                     $('#courier_list').html(html);
                 } else {
-                    $('#courier_list').html('<div class="courier-empty" style="color:#f87171; border-color:#fca5a5;">Shipping unavailable for this area.</div>');
+                    $('#courier_list').html('<div class="courier-empty" style="color:#f87171;border-color:#fca5a5;">Shipping unavailable for this area.</div>');
                 }
             } else {
-                $('#courier_list').html('<div class="courier-empty" style="color:#fb923c; border-color:#fed7aa;">Could not load shipping rates.</div>');
+                $('#courier_list').html('<div class="courier-empty" style="color:#fb923c;border-color:#fed7aa;">Could not load shipping rates.</div>');
             }
             $('#shipping_cost_display').text('Select method');
         }).fail(() => {
-            $('#courier_list').html('<div class="courier-empty" style="color:#f87171; border-color:#fca5a5;">Connection error. Please try again.</div>');
+            $('#courier_list').html('<div class="courier-empty" style="color:#f87171;border-color:#fca5a5;">Connection error. Please try again.</div>');
         });
     }
 
     // ── Pick courier ──────────────────────────────────────
     $(document).on('change', 'input[name="shipping_option"]', function () {
         const cost = parseInt($(this).val());
-        $('#shipping_cost_display').text('Rp ' + cost.toLocaleString('id-ID'))
+        $('#shipping_cost_display')
+            .text('Rp ' + cost.toLocaleString('id-ID'))
             .css({ fontStyle: 'normal', color: 'rgba(255,255,255,.85)', fontSize: '11px' });
         $('#grand_total_display').text('Rp ' + (subtotal + cost).toLocaleString('id-ID'));
         $('#hidden_shipping_cost').val(cost);
@@ -1106,15 +1372,15 @@ $(document).ready(function () {
         checkFormValidity();
     });
 
-    // ── Validity ──────────────────────────────────────────
+    // ── Validity check ────────────────────────────────────
     function checkFormValidity() {
         const ok = $('#hidden_destination_id').val() !== ''
                 && $('#hidden_shipping_cost').val() !== ''
                 && $('input[name="shipping_option"]:checked').length > 0
                 && $('input[name="payment_method"]:checked').length > 0;
-
         $('#btn-place-order').prop('disabled', !ok);
     }
+
 });
 </script>
 </body>

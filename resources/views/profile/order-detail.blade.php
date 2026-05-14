@@ -118,7 +118,7 @@
             {{-- CTA --}}
             <div class="pt-20 flex flex-col items-center gap-8 text-center border-t border-gray-50">
                 <a href="{{ route('dashboard') }}" 
-                   style="background-color: #5A5A00;" 
+                   style="background-color: #2F3526;"
                    class="group relative inline-flex items-center justify-center px-16 py-4 text-white hover:opacity-90 transition-all w-full md:w-auto shadow-sm">
                     <span class="relative text-[10px] uppercase tracking-[0.4em] font-black">Continue Shopping</span>
                 </a>
