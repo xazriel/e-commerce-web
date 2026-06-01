@@ -1,66 +1,146 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Farhana Web — Exclusive Moslem Wear
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Farhana Web adalah platform e-commerce minimalis kelas premium yang dirancang khusus untuk butik busana muslimah eksklusif. Aplikasi ini dibangun di atas kerangka kerja **Laravel** dengan perpaduan teknologi interaktif modern seperti **Alpine.js**, **Tailwind CSS**, dan **Swiper.js** untuk menghadirkan pengalaman berbelanja yang mewah, cepat, dan responsif.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎨 Fitur Utama Aplikasi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. 🛍️ Pengalaman Belanja Storefront (B2C)
+- **Katalog Produk Dinamis**:
+  - Filter kategori real-time (Standard, Kids, Khiban, Defect).
+  - Sistem pencarian produk instan terintegrasi.
+- **Visual & Galeri Premium**:
+  - Banner dinamis beranda dengan dukungan gambar desktop, gambar ramah mobile, atau video latar belakang autoplays.
+  - **Image-to-Color Gallery Mapping**: Memilih warna varian tertentu akan langsung menggeser galeri foto produk ke gambar yang sesuai dengan warna tersebut.
+  - Slider interaktif dengan fitur swipe ramah sentuhan (Swiper.js).
+- **Sistem Pembelian Cerdas**:
+  - **Dynamic Price Calculation**: Harga produk utama otomatis bertambah jika varian ukuran/warna memiliki harga tambahan (*additional price*).
+  - **Dynamic Stock Badge**: Tampilan status stok yang akurat (*Tersedia*, *Stok Menipis*, *Habis Terjual*) yang berubah secara real-time mengikuti kombinasi warna & ukuran terpilih.
+  - Pilihan **Size Guide Template** instan berbentuk modal pop-up berdasarkan kategori tipe produk (Abaya, Khimar, Kids, Khiban, General).
+- **Countdown & Pre-Order**:
+  - Penanda badge khusus untuk barang *Pre-Order* atau *Limited Edition*.
+  - Hitung mundur (*countdown timer*) otomatis di halaman detail produk menuju tanggal rilis resmi.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. ⚠️ Kategori Produk Defect & Harga Coret
+- **Katalog Defect Terpusat**: Produk defect (memiliki cacat minor/major) dikelompokkan secara khusus tanpa mengotori katalog utama.
+- **Badge Kelas Defect**: Penanda kelas defect (`Minor` atau `Major`) di atas gambar katalog dan halaman detail.
+- **Fitur Harga Coret (Strikethrough Price)**: Menampilkan harga asli sebelum diskon dengan garis coret (`line-through`) bersandingan dengan harga jual aktif secara estetis guna meningkatkan konversi pembelian.
 
-## Learning Laravel
+### 3. 💳 Pembayaran & Logistik Terintegrasi
+- **Keranjang Belanja (Cart)**: Tambah, ubah jumlah barang, dan hapus item belanjaan dengan pembaruan harga otomatis.
+- **API Lokasi JNE**: Fitur pencarian lokasi tujuan pengiriman otomatis terintegrasi dengan database kecamatan di Indonesia.
+- **Gerbang Pembayaran (Midtrans)**: Proses checkout terintegrasi langsung dengan Midtrans Payment Gateway untuk pembayaran aman via e-wallet, virtual account, maupun transfer bank.
+- **Airwaybill & JNE Integration**: Pembuatan resi AWB otomatis ke sistem JNE saat transaksi sukses, lengkap dengan modul **Pelacakan Resi (JNE Tracking Service)** langsung di dasbor profil pelanggan.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. 👔 Dasbor Admin (Back-Office)
+Dasbor lengkap bagi administrator untuk mengelola seluruh ekosistem toko:
+- **Kategori**: Tambah dan edit kategori beserta klasifikasi tipenya (Standard, Kids, Khiban, Defect).
+- **Produk**: Manajemen produk lengkap (nama, deskripsi, harga dasar, tag kustom, status preorder/limited, template size guide, pembuatan varian tak terbatas, unggah banyak foto sekaligus, dan pemetaan warna pada setiap foto).
+- **Slider Banner**: Kelola banner beranda (unggah video mp4, gambar desktop, gambar mobile, deskripsi, dan judul).
+- **Size Guide Templates**: Kelola master data panduan ukuran dan gambar diagramnya.
+- **Order Management**: Kelola pesanan masuk, pantau status pembayaran, update nomor resi pengiriman, hingga fitur **Ekspor Laporan ke Excel**.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📂 Arsitektur Database (Model & Hubungan)
 
-## Laravel Sponsors
+Proyek ini memiliki 12 model utama Eloquent:
+1. **User**: Autentikasi pengguna, hak akses (`admin` / `customer`).
+2. **UserAddress**: Menyimpan beberapa alamat pengiriman pelanggan.
+3. **Category**: Pengelompokan produk dengan tipe khusus (Standard, Kids, Khiban, Defect).
+4. **Product**: Data utama produk termasuk harga dasar, status rilis, dan tag.
+5. **ProductImage**: File foto produk dengan relasi opsional ke warna tertentu (untuk fitur pemetaan warna).
+6. **ProductVariant**: Kombinasi warna, ukuran, stok, dan harga tambahan per varian.
+7. **SizeGuideTemplate**: Template panduan ukuran berdasarkan tipe kategori.
+8. **Slider**: Konten slider promosi beranda.
+9. **Order**: Transaksi utama, status pembayaran (pending/success/expire), info logistik (kurir, tarif, alamat, resi JNE).
+10. **OrderItem**: Detail produk dan varian yang dibeli dalam satu transaksi.
+11. **JneDestination**: Data kodifikasi tujuan pengiriman JNE.
+12. **Tag**: Tag kustom produk.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Persyaratan Sistem
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **PHP**: `^8.1`
+- **Composer**
+- **Node.js & NPM**
+- **MySQL / MariaDB**
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Panduan Instalasi Lokal
 
-## Code of Conduct
+### 1. Kloning Repositori
+```bash
+git clone https://github.com/your-username/farhana-web.git
+cd farhana-web
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Pasang Dependency
+```bash
+composer install
+npm install
+```
 
-## Security Vulnerabilities
+### 3. Konfigurasi Lingkungan (`.env`)
+Salin file `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
+Buat kunci aplikasi baru:
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Sesuaikan detail koneksi database di file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=farhana_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## License
+Konfigurasikan juga kredensial Midtrans & JNE jika ingin mengaktifkan modul pembayaran & ekspedisi:
+```env
+MIDTRANS_MERCHANT_ID=your_merchant_id
+MIDTRANS_CLIENT_KEY=your_client_key
+MIDTRANS_SERVER_KEY=your_server_key
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+JNE_API_URL=https://api.jne.co.id
+JNE_USERNAME=your_username
+JNE_API_KEY=your_api_key
+```
+
+### 4. Jalankan Migrasi & Seeders
+Jalankan migrasi tabel database beserta data awal (seeder):
+```bash
+php artisan migrate --seed
+```
+Hubungkan folder penyimpanan file storage agar dapat diakses publik:
+```bash
+php artisan storage:link
+```
+
+### 5. Jalankan Aplikasi
+Jalankan compiler aset Vite di satu terminal:
+```bash
+npm run dev
+```
+Jalankan server lokal Laravel di terminal lain:
+```bash
+php artisan serve
+```
+Akses aplikasi melalui peramban di alamat: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## 🧪 Simulasi Transaksi (Developer Mode)
+Untuk keperluan pengembangan tanpa harus melakukan pembayaran Midtrans sungguhan, gunakan rute simulasi transaksi berikut untuk mengubah pesanan menjadi sukses dan mengeluarkan nomor resi JNE otomatis:
+```
+http://127.0.0.1:8000/dev/simulate-payment/{NOMOR_ORDER}
+```
+*Catatan: Pastikan untuk menonaktifkan rute simulasi ini sebelum naik ke server produksi.*
