@@ -345,7 +345,7 @@
 
 </div>
 
-<script src="https://app.midtrans.com/snap/snap.js"
+<script src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
     data-client-key="{{ $clientKey }}"></script>
 
 <script>

@@ -100,7 +100,7 @@ class CheckoutController extends Controller
             'shipping_cost'    => 'required|numeric',
             'courier_name'     => 'required|string',
             'service_code'     => 'required|string',
-            'payment_method'   => 'required|string',
+            'payment_method'   => 'nullable|string',
             'receiver_city'    => 'nullable|string|max:100',
             'receiver_zip'     => 'nullable|string|max:10',
         ]);
@@ -126,7 +126,7 @@ class CheckoutController extends Controller
                     'shipping_cost'    => $request->shipping_cost,
                     'grand_total'      => $grandTotal,
                     'status'           => 'pending',
-                    'payment_method'   => $request->payment_method,
+                    'payment_method'   => $request->payment_method ?? 'midtrans',
                     'receiver_name'    => $request->receiver_name,
                     'receiver_phone'   => $request->receiver_phone,
                     'receiver_address' => $request->receiver_address,
@@ -315,15 +315,28 @@ class CheckoutController extends Controller
                 $status = 'pending';
             }
 
+            $paymentType = $payload['payment_type'] ?? null;
+            if ($paymentType === 'bank_transfer' && !empty($payload['va_numbers'][0]['bank'])) {
+                $paymentType = 'bank_transfer_' . $payload['va_numbers'][0]['bank'];
+            }
+
             if ($status === 'success' && $order->status !== 'success') {
                 if (!$order->is_preorder) {
                     $this->generateAwb($order);
                 }
-                $order->update(['status' => 'success']);
+                $updateData = ['status' => 'success'];
+                if ($paymentType) {
+                    $updateData['payment_method'] = $paymentType;
+                }
+                $order->update($updateData);
             } elseif ($status === 'cancelled' && $order->status !== 'cancelled') {
                 $this->restoreStockAndCancel($order);
             } else {
-                $order->update(['status' => $status]);
+                $updateData = ['status' => $status];
+                if ($paymentType) {
+                    $updateData['payment_method'] = $paymentType;
+                }
+                $order->update($updateData);
             }
 
         } catch (\Exception $e) {

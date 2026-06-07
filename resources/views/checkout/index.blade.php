@@ -887,34 +887,18 @@
                 {{-- ── 03 PAYMENT METHOD ── --}}
                 <div class="section fade-up delay-4">
                     <div class="section-label">Payment Method</div>
-                    <div>
-                        @php
-                        $payments = [
-                            ['id' => 'bca_va',     'name' => 'BCA Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BCA',      'icon' => 'BCA'],
-                            ['id' => 'bni_va',     'name' => 'BNI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BNI',      'icon' => 'BNI'],
-                            ['id' => 'bri_va',     'name' => 'BRI Virtual Account',     'desc' => 'ATM / m-Banking / i-Banking BRI',      'icon' => 'BRI'],
-                            ['id' => 'mandiri_va', 'name' => 'Mandiri Virtual Account', 'desc' => 'ATM / m-Banking / Livin Mandiri',      'icon' => 'MND'],
-                            ['id' => 'permata_va', 'name' => 'Permata Virtual Account', 'desc' => 'ATM / m-Banking Permata',              'icon' => 'PRM'],
-                            ['id' => 'gopay',      'name' => 'GoPay',                   'desc' => 'Aplikasi Gojek atau GoPay',            'icon' => 'GP'],
-                            ['id' => 'shopeepay',  'name' => 'ShopeePay',               'desc' => 'Aplikasi Shopee',                      'icon' => 'SP'],
-                            ['id' => 'qris',       'name' => 'QRIS',                    'desc' => 'Scan QR dari e-wallet atau m-banking', 'icon' => 'QR'],
-                        ];
-                        @endphp
-                        @foreach($payments as $pay)
-                        <label style="cursor:pointer; display:block;">
-                            <input type="radio" name="payment_method" value="{{ $pay['id'] }}" class="hidden payment-radio" required>
-                            <div class="option-card payment-card">
-                                <div class="option-card-left">
-                                    <div class="option-badge light">{{ $pay['icon'] }}</div>
-                                    <div>
-                                        <div class="option-title">{{ $pay['name'] }}</div>
-                                        <div class="option-desc">{{ $pay['desc'] }}</div>
-                                    </div>
-                                </div>
-                                <div class="radio-ring"><div class="radio-fill"></div></div>
+                    <div style="background: var(--white); border: 1px solid var(--light-gray); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 42px; height: 42px; background: rgba(47, 53, 38, 0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary);">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
                             </div>
-                        </label>
-                        @endforeach
+                            <div>
+                                <h4 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--black); margin-bottom: 2px;">Midtrans Secure Payment Gateway</h4>
+                                <p style="font-size: 10px; color: var(--olive-tint); line-height: 1.5;">Anda dapat memilih berbagai metode pembayaran setelah menekan tombol pesanan.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -975,9 +959,8 @@ $(document).ready(function () {
     const subtotal     = {{ $totalAmount }};
     const CSRF         = '{{ csrf_token() }}';
     const isProduction = {{ app()->isProduction() ? 'true' : 'false' }};
-    const excludedServices = isProduction
-        ? ['JTR250', 'JTR<150', 'JTR<130', 'PELIKAN', 'POPBOX', 'CTCSPS', 'SPS']
-        : [];
+    const jneLogoUrl   = '{{ Storage::url("jne logo.png") }}';
+    const excludedServices = ['JTR250', 'JTR<150', 'JTR<130', 'PELIKAN', 'POPBOX', 'CTCSPS', 'SPS'];
     const serviceLabels = {
         'REG':    { label: 'Reguler',          desc: 'Estimasi 2–3 hari kerja' },
         'YES':    { label: 'YES (Esok Sampai)', desc: 'Estimasi 1 hari kerja' },
@@ -1323,7 +1306,9 @@ $(document).ready(function () {
                                 class="hidden courier-radio">
                             <div class="option-card courier-card">
                                 <div class="option-card-left">
-                                    <div class="option-badge" style="border-radius:10px;">JNE</div>
+                                    <div class="option-badge" style="border-radius:10px; background:#fff; border:1px solid var(--light-gray); overflow:hidden; padding:4px;">
+                                        <img src="${jneLogoUrl}" alt="JNE" style="width:100%; height:100%; object-fit:contain;">
+                                    </div>
                                     <div>
                                         <div class="option-title">${name}</div>
                                         <div class="option-desc">${desc}</div>
@@ -1367,21 +1352,11 @@ $(document).ready(function () {
         checkFormValidity();
     });
 
-    // ── Pick payment ──────────────────────────────────────
-    $(document).on('change', 'input[name="payment_method"]', function () {
-        $('.payment-card').removeClass('selected');
-        $('.payment-card .radio-fill').css('opacity', 0);
-        $(this).closest('label').find('.payment-card').addClass('selected');
-        $(this).closest('label').find('.radio-fill').css('opacity', 1);
-        checkFormValidity();
-    });
-
     // ── Validity check ────────────────────────────────────
     function checkFormValidity() {
         const ok = $('#hidden_destination_id').val() !== ''
                 && $('#hidden_shipping_cost').val() !== ''
-                && $('input[name="shipping_option"]:checked').length > 0
-                && $('input[name="payment_method"]:checked').length > 0;
+                && $('input[name="shipping_option"]:checked').length > 0;
         $('#btn-place-order').prop('disabled', !ok);
     }
 
