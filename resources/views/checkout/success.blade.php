@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pembayaran Berhasil - Farhana</title>
+    <title>Payment Successful - Farhana</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -327,8 +327,8 @@
                     <path d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
-            <h1 class="hero-title">Pembayaran Berhasil</h1>
-            <p class="hero-sub">Terima kasih telah berbelanja di Farhana</p>
+            <h1 class="hero-title">Payment Successful</h1>
+            <p class="hero-sub">Thank you for shopping at Farhana</p>
         </div>
 
         {{-- Body --}}
@@ -336,7 +336,7 @@
 
             {{-- Order detail --}}
             <div class="fade-up delay-2">
-                <div class="section-label">Detail Pesanan</div>
+                <div class="section-label">Order Details</div>
 
                 <div class="info-row">
                     <span class="info-row-label">No. Order</span>
@@ -354,12 +354,12 @@
                 </div>
 
                 <div class="info-row">
-                    <span class="info-row-label">Kurir</span>
+                    <span class="info-row-label">Courier</span>
                     <span class="info-row-val">{{ $order->courier_name }}</span>
                 </div>
 
                 <div class="info-row" style="margin-bottom:0;">
-                    <span class="info-row-label">No. Resi JNE</span>
+                    <span class="info-row-label">JNE Tracking Number</span>
                     <span class="info-row-val">
                         @if($order->tracking_number)
                         <a href="{{ route('tracking.show', $order->tracking_number) }}" class="resi-link">
@@ -369,7 +369,7 @@
                             </svg>
                         </a>
                         @else
-                        <span class="resi-pending">Sedang diproses…</span>
+                        <span class="resi-pending">Processing…</span>
                         @endif
                     </span>
                 </div>
@@ -379,21 +379,21 @@
 
             {{-- Total --}}
             <div class="total-row fade-up delay-3">
-                <span class="total-label">Total Pembayaran</span>
+                <span class="total-label">Total Payment</span>
                 <span class="total-val">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
             </div>
 
             {{-- Notice resi --}}
             @if(!$order->tracking_number)
             <div class="notice fade-up delay-3">
-                <p>Nomor resi JNE sedang diproses oleh tim kami. Cek halaman pesananmu untuk update terbaru.</p>
+                <p>JNE tracking number is being processed by our team. Check your orders page for the latest updates.</p>
             </div>
             @endif
 
             {{-- Buttons --}}
             <div class="btn-wrap fade-up delay-4">
-                <a href="{{ route('profile.orders') }}" class="btn-primary">Lihat Pesanan Saya</a>
-                <a href="{{ route('home') }}" class="btn-secondary">Lanjut Belanja</a>
+                <a href="{{ route('profile.orders') }}" class="btn-primary">View My Orders</a>
+                <a href="{{ route('home') }}" class="btn-secondary">Continue Shopping</a>
             </div>
 
         </div>

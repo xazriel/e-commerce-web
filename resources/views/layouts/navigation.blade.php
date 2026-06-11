@@ -38,10 +38,10 @@
 
                         <x-slot name="content">
                             @if(Auth::user()->role === 'admin')
-                                <x-dropdown-link :href="route('admin.dashboard')">{{ __('Dashboard Admin') }}</x-dropdown-link>
-                                <x-dropdown-link :href="route('admin.products.index')">{{ __('Katalog Produk') }}</x-dropdown-link>
-                                <x-dropdown-link :href="route('admin.categories.index')">{{ __('Kategori') }}</x-dropdown-link>
-                                <x-dropdown-link :href="route('admin.orders.index')">{{ __('Kelola Order') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.dashboard')">{{ __('Admin Dashboard') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.products.index')">{{ __('Product Catalog') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.categories.index')">{{ __('Categories') }}</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.orders.index')">{{ __('Manage Orders') }}</x-dropdown-link>
                                 <hr class="border-gray-100">
                             @endif
                             <x-dropdown-link :href="route('dashboard')">{{ __('My Account') }}</x-dropdown-link>
@@ -101,10 +101,10 @@
                 </div>
                 <div class="space-y-1">
                     @if(Auth::user()->role === 'admin')
-                        <x-responsive-nav-link :href="route('admin.dashboard')">{{ __('Dashboard Admin') }}</x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.products.index')">{{ __('Katalog Produk') }}</x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.categories.index')">{{ __('Kategori') }}</x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('admin.orders.index')">{{ __('Kelola Order') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.dashboard')">{{ __('Admin Dashboard') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.products.index')">{{ __('Product Catalog') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.categories.index')">{{ __('Categories') }}</x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.orders.index')">{{ __('Manage Orders') }}</x-responsive-nav-link>
                     @endif
                     <x-responsive-nav-link :href="route('dashboard')">{{ __('My Account') }}</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('profile.edit')">{{ __('Settings') }}</x-responsive-nav-link>

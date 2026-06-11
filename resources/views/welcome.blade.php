@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -156,7 +156,7 @@
 <body class="antialiased bg-white text-gray-900" x-data="{ openModal: null }">
 
     {{-- WhatsApp FAB --}}
-    <a href="https://wa.me/6282260600099?text=Halo%20Farhana,%20saya%20ingin%20bertanya%20tentang%20produk%20Anda."
+    <a href="https://wa.me/6282260600099?text=Hello%20Farhana,%20I'd%20like%20to%20ask%20about%20your%20products."
        class="wa-fab" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -347,7 +347,7 @@
                         <div class="absolute inset-0 bg-black/20"></div>
                         <div class="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-white px-4">
                             <h2 class="text-xs tracking-[0.6em] uppercase mb-6">{{ $slider->title }}</h2>
-                            <h1 class="text-5xl md:text-6xl font-extralight tracking-widest uppercase mb-8">Koleksi Eksklusif</h1>
+                            <h1 class="text-5xl md:text-6xl font-extralight tracking-widest uppercase mb-8">Exclusive Collection</h1>
                             <a href="#koleksi" class="mt-10 inline-block px-10 py-4 border border-[#6B705C] text-[10px] tracking-[0.4em] uppercase text-white hover:bg-[#6B705C] transition duration-500">Shop Now</a>
                         </div>
                     </div>
@@ -432,9 +432,9 @@
                 <div>
                     <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
                     <p class="text-[11px] text-white/80 leading-loose tracking-widest uppercase">
-                        Farhana hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
-                        Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
-                        Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya.
+                        Farhana is present through a simplicity that feels calm, elegant, and meaningful.
+                        We believe that modesty is not just a way of dressing, but also a way of carrying oneself with faith, serenity, and beauty that is not excessive.
+                        Each collection is designed with attention to detail, comfort, and elegant silhouettes to accompany Muslim women in every step.
                         <br><br>
                         Luxury in Modesty.<br>
                         Elegance with Iman.

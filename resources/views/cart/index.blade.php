@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <meta name="theme-color" content="#2F3526">
-    <title>Keranjang — Farhana</title>
+    <title>Cart — Farhana</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -333,7 +333,7 @@
     {{-- Navbar --}}
     <header class="navbar" role="banner">
         <div class="navbar-inner">
-            <a href="{{ route('home') }}" class="back-btn" aria-label="Kembali belanja">
+            <a href="{{ route('home') }}" class="back-btn" aria-label="Continue shopping">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"/>
                 </svg>
@@ -354,31 +354,44 @@
             <h1 class="page-title">Cart</h1>
             <div class="page-head-line"></div>
             <span class="item-count">
-                <span id="cart-count-head">{{ count(session('cart') ?? []) }}</span> items
+                <span id="cart-count-head">{{ count($cart ?? []) }}</span> items
             </span>
         </div>
 
-        @if(session('cart') && count(session('cart')) > 0)
+        @if($cart && count($cart) > 0)
 
             {{-- Table Header (desktop only) --}}
             <div class="cart-head">
                 <span></span>
-                <span>Produk</span>
-                <span class="col-qty">Jumlah</span>
+                <span>Product</span>
+                <span class="col-qty">Quantity</span>
                 <span class="col-sub">Subtotal</span>
-                <span class="col-act">Hapus</span>
+                <span class="col-act">Remove</span>
             </div>
 
             {{-- Cart Items --}}
             <div class="cart-table" id="cart-container">
-                @php $total = 0; @endphp
-                @foreach(session('cart') as $id => $details)
-                    @php $total += $details['price'] * $details['quantity']; @endphp
+                @php 
+                    $total = 0;
+                    $hasSoldOutItems = false;
+                @endphp
+                @foreach($cart as $id => $details)
+                    @php 
+                        $total += $details['price'] * $details['quantity']; 
+                        $variant = \App\Models\ProductVariant::find($id);
+                        $isSoldOut = false;
+                        if ($variant) {
+                            $isSoldOut = !$variant->product->is_preorder && $variant->stock <= 0;
+                        }
+                        if ($isSoldOut) {
+                            $hasSoldOutItems = true;
+                        }
+                    @endphp
 
                     <div class="cart-row" id="item-row-{{ $id }}">
 
                         {{-- Image --}}
-                        <div class="col-img">
+                        <div class="col-img {{ $isSoldOut ? 'opacity-60 grayscale' : '' }}" style="{{ $isSoldOut ? 'filter: grayscale(100%);' : '' }}">
                             <div class="prod-img">
                                 @if(!empty($details['image']))
                                     <img src="{{ asset('storage/' . $details['image']) }}"
@@ -388,26 +401,30 @@
                         </div>
 
                         {{-- Info --}}
-                        <div class="col-info">
+                        <div class="col-info {{ $isSoldOut ? 'opacity-60' : '' }}">
                             <p class="prod-name">{{ $details['name'] }}</p>
                             <p class="prod-meta">{{ $details['color'] }} / {{ $details['size'] }}</p>
                             <p class="prod-price">Rp {{ number_format($details['price'], 0, ',', '.') }}</p>
                             @if(!empty($details['is_preorder']) && $details['is_preorder'])
                                 <span class="preorder-tag">Pre-Order</span>
                             @endif
+                            @if($isSoldOut)
+                                <span class="sold-out-tag" style="display: inline-block; margin-top: .4rem; font-size: 8px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; padding: 2px 8px; background: #C0392B; color: #FFFFFF;">Sold Out</span>
+                            @endif
                         </div>
 
                         {{-- Quantity --}}
                         <div class="col-qty">
-                            <div class="qty-wrap" data-id="{{ $id }}">
+                            <div class="qty-wrap {{ $isSoldOut ? 'opacity-40' : '' }}" data-id="{{ $id }}" style="{{ $isSoldOut ? 'pointer-events: none;' : '' }}">
                                 <button type="button" class="qty-btn btn-update"
                                         data-action="decrease"
-                                        aria-label="Kurangi"
-                                        {{ $details['quantity'] <= 1 ? 'disabled' : '' }}>−</button>
+                                        aria-label="Decrease"
+                                        {{ $isSoldOut || $details['quantity'] <= 1 ? 'disabled' : '' }}>−</button>
                                 <span class="qty-val" id="qty-val-{{ $id }}">{{ $details['quantity'] }}</span>
                                 <button type="button" class="qty-btn btn-update"
                                         data-action="increase"
-                                        aria-label="Tambah">+</button>
+                                        aria-label="Increase"
+                                        {{ $isSoldOut ? 'disabled' : '' }}>+</button>
                             </div>
                         </div>
 
@@ -422,7 +439,7 @@
                         <div class="col-act">
                             <form action="{{ route('cart.remove', $id) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="remove-btn" aria-label="Hapus produk">Hapus</button>
+                                <button type="submit" class="remove-btn" aria-label="Remove product">Remove</button>
                             </form>
                         </div>
 
@@ -438,17 +455,24 @@
                         <span class="summary-val" id="cart-total">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                     <div class="summary-row">
-                        <span class="summary-label">Ongkos kirim</span>
-                        <span class="summary-val" style="color:var(--o60);font-style:italic">Dihitung saat checkout</span>
+                        <span class="summary-label">Shipping</span>
+                        <span class="summary-val" style="color:var(--o60);font-style:italic">Calculated at checkout</span>
                     </div>
                     <div class="summary-total-row">
                         <span class="summary-total-label">Total</span>
                         <span class="summary-total-val" id="cart-total-big">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
 
-                    <a href="{{ route('checkout.index') }}" class="btn-checkout">Checkout</a>
-                    <a href="{{ route('home') }}" class="btn-continue">Lanjut Belanja</a>
-                    <p class="summary-note">Pajak & ongkir dihitung saat checkout</p>
+                    @if($hasSoldOutItems)
+                        <div class="sold-out-warning" style="background: #FDEDEC; border: 1px solid #FADBD8; color: #C0392B; padding: 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; margin-bottom: 1.2rem;">
+                            Remove sold out items before checkout
+                        </div>
+                        <button class="btn-checkout" style="opacity: 0.4; cursor: not-allowed;" disabled onclick="showToast('Please remove sold out items from your cart.')">Checkout</button>
+                    @else
+                        <a href="{{ route('checkout.index') }}" class="btn-checkout">Checkout</a>
+                    @endif
+                    <a href="{{ route('home') }}" class="btn-continue">Continue Shopping</a>
+                    <p class="summary-note">Taxes & shipping calculated at checkout</p>
                 </div>
             </div>
 
@@ -461,8 +485,8 @@
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
-                <p class="empty-text">Keranjang belanja kosong.</p>
-                <a href="{{ route('home') }}" class="btn-shop">Mulai Belanja</a>
+                <p class="empty-text">Your shopping cart is empty.</p>
+                <a href="{{ route('home') }}" class="btn-shop">Start Shopping</a>
             </div>
 
         @endif
@@ -510,7 +534,7 @@
                     }
                 })
                 .catch(err => {
-                    const msg = err.response?.data?.message || 'Gagal memperbarui keranjang.';
+                    const msg = err.response?.data?.message || 'Failed to update cart.';
                     showToast(msg);
                 })
                 .finally(() => row.classList.remove('updating'));

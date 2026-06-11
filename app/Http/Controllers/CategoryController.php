@@ -31,14 +31,16 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-            'type' => 'nullable|string|in:standard,kids,khiban,defect',
+            'name'         => 'required|string|max:255|unique:categories,name',
+            'type'         => 'nullable|string|in:standard,kids,khiban,defect',
+            'custom_sizes' => 'nullable|string',
         ]);
 
         Category::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'type' => $request->type ?? 'standard',
+            'name'         => $request->name,
+            'slug'         => Str::slug($request->name),
+            'type'         => $request->type ?? 'standard',
+            'custom_sizes' => $request->custom_sizes,
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan!');
@@ -60,14 +62,16 @@ class CategoryController extends Controller
     {
         $request->validate([
             // Validasi unik, namun mengabaikan ID kategori yang sedang diedit agar tidak error
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-            'type' => 'nullable|string|in:standard,kids,khiban,defect',
+            'name'         => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'type'         => 'nullable|string|in:standard,kids,khiban,defect',
+            'custom_sizes' => 'nullable|string',
         ]);
 
         $category->update([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'type' => $request->type ?? 'standard',
+            'name'         => $request->name,
+            'slug'         => Str::slug($request->name),
+            'type'         => $request->type ?? 'standard',
+            'custom_sizes' => $request->custom_sizes,
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui!');

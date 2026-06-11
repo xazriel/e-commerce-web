@@ -139,6 +139,7 @@
                                     <option value="{{ $cat->id }}"
                                         data-slug="{{ Str::slug($cat->name) }}"
                                         data-type="{{ $cat->type }}"
+                                        data-sizes="{{ $cat->custom_sizes ? implode(',', array_map('trim', explode(',', $cat->custom_sizes))) : '' }}"
                                         {{ $product->category_id == $cat->id ? 'selected' : '' }}>
                                         {{ $cat->name }}
                                     </option>
@@ -432,6 +433,11 @@
         const selectedOption = categorySelect.options[categorySelect.selectedIndex];
         const slug = selectedOption.getAttribute('data-slug') || '';
         const type = selectedOption.getAttribute('data-type') || '';
+        const customSizesAttr = selectedOption ? selectedOption.getAttribute('data-sizes') : '';
+        
+        if (customSizesAttr) {
+            return customSizesAttr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        }
         
         if (type === 'kids' || slug.includes('kids') || slug.includes('anak')) {
             return KIDS_SIZES;

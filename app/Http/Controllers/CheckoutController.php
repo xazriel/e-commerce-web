@@ -38,7 +38,7 @@ class CheckoutController extends Controller
         if ($isBuyNow) {
             $cart = session()->get('buy_now', []);
         } else {
-            $cart = session()->get('cart', []);
+            $cart = \App\Services\CartService::getCart();
         }
 
         if (empty($cart)) {
@@ -108,7 +108,7 @@ class CheckoutController extends Controller
         $isBuyNow = $request->boolean('buy_now_mode');
         $cart     = $isBuyNow
             ? session()->get('buy_now', [])
-            : session()->get('cart', []);
+            : \App\Services\CartService::getCart();
 
         if (empty($cart)) return redirect()->route('home');
 
@@ -212,7 +212,7 @@ class CheckoutController extends Controller
             if ($isBuyNow) {
                 session()->forget('buy_now');
             } else {
-                session()->forget('cart');
+                \App\Services\CartService::clear();
             }
 
             return redirect()->route('checkout.waiting', $order->order_number);

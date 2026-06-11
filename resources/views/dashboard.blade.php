@@ -102,7 +102,9 @@
         .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
 
         .modal-backdrop {
-            background: transparent;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         /* Tracking modal premium styles */
@@ -356,7 +358,7 @@
         {{-- ── TRACKING MODAL — di luar max-w container agar fixed bisa full screen ── --}}
         <div x-show="modalOpen"
              x-cloak
-             class="modal-backdrop fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4 sm:p-6"
+             class="modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
@@ -377,7 +379,7 @@
                 {{-- ── Modal Header ── --}}
                 <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center flex-shrink-0">
                     <div>
-                        <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--olive-tint);">Lacak Pengiriman</p>
+                        <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--olive-tint);">Track Shipment</p>
                         <p class="text-[11px] mt-1 text-gray-400 uppercase tracking-widest font-mono">
                             AWB: <span class="text-black font-bold" x-text="activeAwb"></span>
                         </p>
@@ -394,7 +396,7 @@
                     {{-- Loading --}}
                     <div x-show="loading" class="py-20 flex flex-col items-center gap-4">
                         <div class="spinner"></div>
-                        <p class="text-[10px] uppercase tracking-[.3em] opacity-40">Menghubungi Logistik...</p>
+                        <p class="text-[10px] uppercase tracking-[.3em] opacity-40">Connecting to Logistics...</p>
                     </div>
 
                     {{-- ── Tracking Data ── --}}
@@ -404,7 +406,7 @@
                         <div class="rounded-3xl p-6" style="background:#F9F9F8;">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
-                                    <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Status Saat Ini</p>
+                                    <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Current Status</p>
                                     <p class="text-base font-bold leading-snug" style="color:var(--primary);" x-text="trackingData?.status"></p>
                                     <p class="text-[11px] mt-1 text-gray-500" x-text="trackingData?.last"></p>
                                 </div>
@@ -421,26 +423,26 @@
                             </div>
 
                             {{-- Info Grid --}}
-                            <div class="track-info-grid" x-show="trackingData?.shipper || trackingData?.receiver">
+                             <div class="track-info-grid" x-show="trackingData?.shipper || trackingData?.receiver">
                                 <div x-show="trackingData?.shipper">
-                                    <p class="track-info-label">Pengirim</p>
+                                    <p class="track-info-label">Shipper</p>
                                     <p class="track-info-val" x-text="trackingData?.shipper"></p>
                                     <p class="track-info-sub" x-text="trackingData?.shipperCity"></p>
                                 </div>
                                 <div x-show="trackingData?.receiver">
-                                    <p class="track-info-label">Penerima</p>
+                                    <p class="track-info-label">Receiver</p>
                                     <p class="track-info-val" x-text="trackingData?.receiver"></p>
                                     <p class="track-info-sub" x-text="trackingData?.receiverCity"></p>
                                 </div>
                                 <div x-show="trackingData?.service">
-                                    <p class="track-info-label">Layanan</p>
+                                    <p class="track-info-label">Service</p>
                                     <p class="track-info-val">
                                         <span style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:11px;font-style:italic;margin-right:4px;">JNE</span>
                                         <span x-text="trackingData?.service"></span>
                                     </p>
                                 </div>
                                 <div x-show="trackingData?.estimate">
-                                    <p class="track-info-label">Estimasi Tiba</p>
+                                    <p class="track-info-label">Estimated Delivery</p>
                                     <p class="track-info-val" x-text="trackingData?.estimate"></p>
                                 </div>
                             </div>
@@ -449,8 +451,8 @@
                         {{-- Timeline History --}}
                         <div x-show="trackingData?.history?.length > 0">
                             <div class="flex items-center justify-between mb-5">
-                                <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--primary);">Riwayat Perjalanan</p>
-                                <span class="text-[10px] text-gray-400">Diperbarui baru saja</span>
+                                <p class="text-[9px] uppercase tracking-[.35em] font-black" style="color:var(--primary);">Shipping History</p>
+                                <span class="text-[10px] text-gray-400">Updated just now</span>
                             </div>
                             <div class="track-timeline-wrap space-y-6">
                                 <div class="track-timeline-line"></div>
@@ -480,7 +482,7 @@
                                                       x-text="h.date"></span>
                                             </div>
                                             <template x-if="index === 0">
-                                                <span style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:#f5f5f4;color:#78716c;padding:2px 8px;border-radius:4px;margin-top:4px;display:inline-block;">Posisi Terakhir</span>
+                                                <span style="font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:#f5f5f4;color:#78716c;padding:2px 8px;border-radius:4px;margin-top:4px;display:inline-block;">Last Position</span>
                                             </template>
                                         </div>
                                     </div>
@@ -496,7 +498,7 @@
                             <svg style="width:32px;height:32px;color:#d1d5db" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                         </div>
                         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-400"
-                           x-text="errorMessage || 'Data tidak ditemukan'"></p>
+                           x-text="errorMessage || 'Data not found'"></p>
                     </div>
 
                 </div>{{-- end modal body --}}
@@ -505,7 +507,7 @@
                 <div class="px-8 py-5 flex-shrink-0" style="border-top: 1px solid #F3F4F6;">
                     <button @click="modalOpen = false"
                             class="btn-primary w-full py-4 text-[10px] font-bold uppercase tracking-widest">
-                        Tutup
+                        Close
                     </button>
                 </div>
 
@@ -549,10 +551,10 @@
                             history:     result.history    || [],
                         };
                     } else {
-                        this.errorMessage = result.message || 'Data tidak ditemukan.';
+                        this.errorMessage = result.message || 'Data not found.';
                     }
                 } catch (err) {
-                    this.errorMessage = 'Gagal terhubung ke sistem tracking.';
+                    this.errorMessage = 'Failed to connect to tracking system.';
                 } finally {
                     this.loading = false;
                 }

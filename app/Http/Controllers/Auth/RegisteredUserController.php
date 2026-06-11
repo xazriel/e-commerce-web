@@ -45,6 +45,9 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Merge cart session to DB
+        \App\Services\CartService::mergeSessionToDb(auth()->id());
+
         return redirect(route('dashboard', absolute: false));
     }
 }

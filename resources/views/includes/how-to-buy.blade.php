@@ -117,10 +117,10 @@
 
     @php
         $steps = [
-            ['01', 'Browse',   'Temukan koleksi Farhana yang sesuai dengan kebutuhan dan kenyamanan Anda.'],
-            ['02', 'Secure',   'Lengkapi detail pengiriman dengan benar sebelum melanjutkan pesanan.'],
-            ['03', 'Payment',  'Selesaikan pembayaran melalui metode pembayaran yang tersedia.'],
-            ['04', 'Receive',  'Pesanan akan segera kami proses dan kirimkan ke alamat tujuan Anda.'],
+            ['01', 'Browse',   'Discover Farhana collections that suit your needs and comfort.'],
+            ['02', 'Secure',   'Complete shipping details accurately before proceeding with your order.'],
+            ['03', 'Payment',  'Complete payment through the available payment methods.'],
+            ['04', 'Receive',  'We will immediately process and ship your order to your destination address.'],
         ];
     @endphp
 
@@ -144,14 +144,14 @@
     <div class="payment-info-wrapper">
         <h3 class="payment-info-title">PAYMENT INFORMATION</h3>
         <div class="payment-text">
-            <p>Farhana menerima pembayaran melalui:</p>
+            <p>Farhana accepts payments via:</p>
             <ul class="payment-list-simple">
-                <li>Transfer Bank</li>
+                <li>Bank Transfer</li>
                 <li>Virtual Account</li>
                 <li>E-Wallet</li>
             </ul>
-            <p>Pesanan akan diproses setelah pembayaran berhasil dikonfirmasi.</p>
-            <p>Pembayaran yang tidak diselesaikan dalam batas waktu tertentu akan otomatis dibatalkan oleh sistem.</p>
+            <p>Orders will be processed after payment is successfully confirmed.</p>
+            <p>Payments not completed within the specified time limit will be automatically cancelled by the system.</p>
         </div>
     </div>
 

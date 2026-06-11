@@ -28,6 +28,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Merge cart session to DB
+        \App\Services\CartService::mergeSessionToDb(auth()->id());
+
         // LOGIKA REDIRECT CUSTOM
         if ($request->user()->is_admin) {
             return redirect()->intended(route('admin.dashboard'));

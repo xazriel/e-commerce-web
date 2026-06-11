@@ -79,15 +79,15 @@
                     <path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 012-2m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                 </svg>
             </div>
-            <h3 class="sh-card-title">Layanan Pengiriman</h3>
+            <h3 class="sh-card-title">Shipping Services</h3>
             <p class="sh-card-desc">
-                Setiap pesanan dipersiapkan dengan penuh perhatian untuk menjaga kualitas produk tetap sampai dengan baik ke tangan Anda.
+                Every order is prepared with care to ensure product quality remains intact upon arrival.
             </p>
             <ul class="sh-list">
-                <li><span class="sh-bullet"></span>Pesanan diproses setelah pembayaran terkonfirmasi</li>
-                <li><span class="sh-bullet"></span>Resi akan diinformasikan maksimal H+1 setelah pengiriman</li>
-                <li><span class="sh-bullet"></span>Pengiriman dilakukan melalui jasa ekspedisi terpercaya</li>
-                <li><span class="sh-bullet"></span>Untuk pengiriman internasional, silakan hubungi Customer Service Farhana</li>
+                <li><span class="sh-bullet"></span>Orders are processed after payment is confirmed</li>
+                <li><span class="sh-bullet"></span>Tracking number will be shared maximum 1 day after shipment</li>
+                <li><span class="sh-bullet"></span>Shipment is done via trusted courier services</li>
+                <li><span class="sh-bullet"></span>For international shipping, please contact Farhana Customer Service</li>
             </ul>
         </div>
 
@@ -98,24 +98,24 @@
             <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
         </svg>
     </div>
-    <h3 class="sh-card-title">Garansi & Retur</h3>
+    <h3 class="sh-card-title">Warranty & Returns</h3>
     <p class="sh-card-desc">
-        Penukaran hanya berlaku untuk kesalahan pengiriman atau produk rusak dengan ketentuan berikut:
+        Exchanges are only applicable for incorrect shipment or damaged products under the following conditions:
     </p>
     <ul class="sh-list">
-        <li><span class="sh-bullet"></span>Wajib menyertakan video unboxing tanpa cut/edit</li>
-        <li><span class="sh-bullet"></span>Tag produk masih terpasang</li>
-        <li><span class="sh-bullet"></span>Maksimal pengajuan H+3 setelah produk diterima</li>
-        <li><span class="sh-bullet"></span>Ongkir pengembalian ditanggung customer</li>
-        <li><span class="sh-bullet"></span>Penukaran mengikuti ketersediaan stok</li>
-        <li><span class="sh-bullet"></span>Produk akan diproses setelah barang retur diterima dan diperiksa</li>
+        <li><span class="sh-bullet"></span>Must include an unboxing video without cuts or edits</li>
+        <li><span class="sh-bullet"></span>Product tags must still be attached</li>
+        <li><span class="sh-bullet"></span>Submission maximum 3 days after product delivery</li>
+        <li><span class="sh-bullet"></span>Return shipping cost is covered by customer</li>
+        <li><span class="sh-bullet"></span>Exchanges depend on stock availability</li>
+        <li><span class="sh-bullet"></span>Product will be processed after return items are received and inspected</li>
     </ul>
     
     <p class="sh-card-desc" style="margin-top: 15px;">
-        Penukaran size atau warna karena ketidaksesuaian pilihan pribadi tidak dapat dilakukan.
+        Exchanges of size or color due to personal preference errors cannot be accepted.
     </p>
     <p class="sh-card-desc" style="font-style: margin-top: 10px;">
-        Semoga Allah Ta’ala meridhai muamalah kita.
+        May Allah Ta'ala bless our transaction.
     </p>
 </div>
 

@@ -141,7 +141,10 @@
                                     <label class="field-label">Kategori</label>
                                     <select name="category_id" id="category_select" onchange="updateAllSizeSelectors(); toggleDefectFields();" class="form-input">
                                         @foreach($categories as $cat)
-                                            <option value="{{ $cat->id }}" data-type="{{ $cat->type }}" data-slug="{{ Str::slug($cat->name) }}">{{ $cat->name }}</option>
+                                            <option value="{{ $cat->id }}" 
+                                                    data-type="{{ $cat->type }}" 
+                                                    data-slug="{{ Str::slug($cat->name) }}"
+                                                    data-sizes="{{ $cat->custom_sizes ? implode(',', array_map('trim', explode(',', $cat->custom_sizes))) : '' }}">{{ $cat->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -352,15 +355,21 @@
                 const selectedOption = categorySelect.options[categorySelect.selectedIndex];
                 const slug = selectedOption ? selectedOption.getAttribute('data-slug') : '';
                 const type = selectedOption ? selectedOption.getAttribute('data-type') : 'standard';
+                const customSizesAttr = selectedOption ? selectedOption.getAttribute('data-sizes') : '';
 
-                const isKids = type === 'kids' || (slug && (slug.includes('kids') || slug.includes('anak')));
-                const isKhiban = type === 'khiban' || (slug && slug.includes('khiban'));
+                let currentSizes = [];
+                if (customSizesAttr) {
+                    currentSizes = customSizesAttr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                } else {
+                    const isKids = type === 'kids' || (slug && (slug.includes('kids') || slug.includes('anak')));
+                    const isKhiban = type === 'khiban' || (slug && slug.includes('khiban'));
 
-                let currentSizes = sizes.standard;
-                if (isKids) {
-                    currentSizes = sizes.kids;
-                } else if (isKhiban) {
-                    currentSizes = sizes.khiban;
+                    currentSizes = sizes.standard;
+                    if (isKids) {
+                        currentSizes = sizes.kids;
+                    } else if (isKhiban) {
+                        currentSizes = sizes.khiban;
+                    }
                 }
 
                 document.querySelectorAll('.size-selector').forEach(select => {

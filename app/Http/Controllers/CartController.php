@@ -14,7 +14,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = \App\Services\CartService::getCart();
         return view('cart.index', compact('cart'));
     }
 
@@ -104,30 +104,22 @@ class CartController extends Controller
         }
 
         // 6. Bukan buy_now → masuk ke cart seperti biasa
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$variantId])) {
-            if (! $isPreorder && $variant->stock < ($cart[$variantId]['quantity'] + $quantityToAdd)) {
-                return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
-            }
-            $cart[$variantId]['quantity'] += $quantityToAdd;
+        $currentQty = 0;
+        if (auth()->check()) {
+            $dbItem = \App\Models\CartItem::where('user_id', auth()->id())
+                ->where('product_variant_id', $variantId)
+                ->first();
+            $currentQty = $dbItem ? $dbItem->quantity : 0;
         } else {
-            $cart[$variantId] = [
-                'product_id'   => $product->id,
-                'name'         => $product->name,
-                'variant_id'   => $variant->id,
-                'quantity'     => $quantityToAdd,
-                'price'        => $finalPrice, // ← FIX
-                'size'         => $variant->size,
-                'color'        => $variant->color,
-                'image'        => $imageToDisplay,
-                'slug'         => $product->slug,
-                'is_preorder'  => $isPreorder,
-                'release_date' => $product->release_date?->toDateTimeString(),
-            ];
+            $cart = session()->get('cart', []);
+            $currentQty = isset($cart[$variantId]) ? $cart[$variantId]['quantity'] : 0;
         }
 
-        session()->put('cart', $cart);
+        if (!$isPreorder && $variant->stock < ($currentQty + $quantityToAdd)) {
+            return redirect()->back()->with('error', 'Total di keranjang melebihi stok.');
+        }
+
+        \App\Services\CartService::add($variantId, $quantityToAdd);
 
         Log::info('CART.ADD: item added to cart, redirecting to cart.index');
         return redirect()->route('cart.index')
@@ -139,13 +131,7 @@ class CartController extends Controller
      */
     public function remove($id)
     {
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
-        }
-
+        \App\Services\CartService::remove($id);
         return redirect()->back()->with('success', 'Produk dihapus dari keranjang.');
     }
 
@@ -154,37 +140,28 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cart = session()->get('cart');
+        $res = \App\Services\CartService::update($id, $request->action);
 
-        if (isset($cart[$id])) {
-            $variant = ProductVariant::find($id);
-
-            if ($request->action == 'increase') {
-                $isPreorder = $cart[$id]['is_preorder'] ?? false;
-
-                if ($variant && ($isPreorder || $variant->stock > $cart[$id]['quantity'])) {
-                    $cart[$id]['quantity']++;
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Stok tidak mencukupi.',
-                    ], 400);
-                }
-
-            } elseif ($request->action == 'decrease' && $cart[$id]['quantity'] > 1) {
-                $cart[$id]['quantity']--;
+        if ($res) {
+            if (!$res['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $res['message'],
+                ], 400);
             }
 
-            session()->put('cart', $cart);
-
+            $cart = \App\Services\CartService::getCart();
             $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+            $item = $cart[$id] ?? null;
 
-            return response()->json([
-                'success'      => true,
-                'newQty'       => $cart[$id]['quantity'],
-                'itemSubtotal' => 'Rp ' . number_format($cart[$id]['price'] * $cart[$id]['quantity'], 0, ',', '.'),
-                'cartTotal'    => 'Rp ' . number_format($total, 0, ',', '.'),
-            ]);
+            if ($item) {
+                return response()->json([
+                    'success'      => true,
+                    'newQty'       => $res['quantity'],
+                    'itemSubtotal' => 'Rp ' . number_format($item['price'] * $res['quantity'], 0, ',', '.'),
+                    'cartTotal'    => 'Rp ' . number_format($total, 0, ',', '.'),
+                ]);
+            }
         }
 
         return response()->json(['success' => false], 404);

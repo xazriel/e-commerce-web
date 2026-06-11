@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -688,7 +688,7 @@
                                 {{ $addr->city_name }}{{ $addr->province_name ? ', '.$addr->province_name : '' }}
                             </div>
                             @if(!$addr->destination_id)
-                            <p style="font-size:10px; color:#d97706; margin-top:6px;">⚠ Lokasi belum lengkap — perlu dipilih ulang.</p>
+                            <p style="font-size:10px; color:#d97706; margin-top:6px;">⚠ Location incomplete — please re-select.</p>
                             @endif
                         </div>
                         <div class="addr-ring">
@@ -707,12 +707,12 @@
                             class="addr-action-btn delete"
                             id="del-btn-{{ $addr->id }}"
                             onclick="deleteAddress({{ $addr->id }}, this)">
-                            🗑 Hapus
+                            🗑 Remove
                         </button>
                     </div>
                 </div>
                 @empty
-                <div style="padding:40px; text-align:center; font-size:11px; color:var(--olive-tint);">Belum ada alamat tersimpan.</div>
+                <div style="padding:40px; text-align:center; font-size:11px; color:var(--olive-tint);">No addresses saved yet.</div>
                 @endforelse
             </div>
             <div class="modal-footer">
@@ -729,40 +729,40 @@
 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                     <div class="form-group">
-                        <label class="form-lbl">Nama Penerima *</label>
-                        <input type="text" id="form_name" class="form-fld" placeholder="Nama lengkap">
+                        <label class="form-lbl">Recipient Name *</label>
+                        <input type="text" id="form_name" class="form-fld" placeholder="Full name">
                     </div>
                     <div class="form-group">
-                        <label class="form-lbl">No. HP *</label>
+                        <label class="form-lbl">Phone Number *</label>
                         <input type="text" id="form_phone" class="form-fld" placeholder="08xxxxxxxxxx">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-lbl">Label Alamat</label>
-                    <input type="text" id="form_label" class="form-fld" placeholder="Rumah, Kantor, dll.">
+                    <label class="form-lbl">Address Label</label>
+                    <input type="text" id="form_label" class="form-fld" placeholder="Home, Office, etc.">
                 </div>
 
                 <div>
-                    <label class="form-lbl" style="margin-bottom:8px; display:block;">Kota / Kecamatan *</label>
+                    <label class="form-lbl" style="margin-bottom:8px; display:block;">City / District *</label>
                     <select id="form_destination" style="width:100%;">
-                        <option value="">Cari kota atau kecamatan...</option>
+                        <option value="">Search city or district...</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-lbl">Alamat Lengkap *</label>
-                    <textarea id="form_address" rows="3" class="form-fld" style="resize:none;" placeholder="Jalan, nomor rumah, RT/RW, dll."></textarea>
+                    <label class="form-lbl">Full Address *</label>
+                    <textarea id="form_address" rows="3" class="form-fld" style="resize:none;" placeholder="Street name, house number, neighborhood unit, etc."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-lbl">Kode Pos</label>
+                    <label class="form-lbl">Postal Code</label>
                     <input type="text" id="form_zip" class="form-fld" placeholder="12345">
                 </div>
 
                 <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
                     <input type="checkbox" id="form_is_default" style="accent-color:var(--primary); width:15px; height:15px;">
-                    <span style="font-size:11px; color:var(--olive-tint);">Jadikan alamat utama</span>
+                    <span style="font-size:11px; color:var(--olive-tint);">Set as primary address</span>
                 </label>
 
                 <div id="form-error-box" class="form-error-box"></div>
@@ -771,11 +771,11 @@
             <div class="modal-footer" style="display:flex; gap:10px;">
                 <button type="button" onclick="showListPanel()"
                     style="flex:1; padding:14px; border:1px solid var(--light-gray); border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; background:none; color:var(--olive-tint); transition:all .2s;">
-                    ← Kembali
+                    ← Back
                 </button>
                 <button type="button" id="btn-save-addr"
                     style="flex:2; padding:14px; background:var(--primary); color:var(--white); border:none; border-radius:50px; font-family:inherit; font-size:9px; letter-spacing:.18em; text-transform:uppercase; font-weight:800; cursor:pointer; transition:background .2s;">
-                    Simpan Alamat
+                    Save Address
                 </button>
             </div>
         </div>
@@ -867,7 +867,7 @@
                             <div class="addr-name" id="display-name">{{ $user->name }}</div>
                             <div class="addr-meta">
                                 <span id="display-phone">{{ $user->phone ?? '—' }}</span><br>
-                                <span id="display-address" style="color:#d97706;">Belum ada alamat — klik Change untuk menambah.</span><br>
+                                <span id="display-address" style="color:#d97706;">No address set yet — click Change to add one.</span><br>
                                 <span id="display-location"></span>
                             </div>
                         </div>
@@ -896,7 +896,7 @@
                             </div>
                             <div>
                                 <h4 style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--black); margin-bottom: 2px;">Midtrans Secure Payment Gateway</h4>
-                                <p style="font-size: 10px; color: var(--olive-tint); line-height: 1.5;">Anda dapat memilih berbagai metode pembayaran setelah menekan tombol pesanan.</p>
+                                <p style="font-size: 10px; color: var(--olive-tint); line-height: 1.5;">You can choose various payment methods after placing your order.</p>
                             </div>
                         </div>
                     </div>
@@ -962,13 +962,13 @@ $(document).ready(function () {
     const jneLogoUrl   = '{{ Storage::url("jne logo.png") }}';
     const excludedServices = ['JTR250', 'JTR<150', 'JTR<130', 'PELIKAN', 'POPBOX', 'CTCSPS', 'SPS'];
     const serviceLabels = {
-        'REG':    { label: 'Reguler',          desc: 'Estimasi 2–3 hari kerja' },
-        'YES':    { label: 'YES (Esok Sampai)', desc: 'Estimasi 1 hari kerja' },
-        'OKE':    { label: 'OKE (Ekonomis)',    desc: 'Estimasi 3–5 hari kerja' },
-        'CTC':    { label: 'City Courier',      desc: 'Pengiriman dalam kota' },
-        'CTCYES': { label: 'City Courier YES',  desc: 'Estimasi 1 hari kerja dalam kota' },
-        'CTCOKE': { label: 'City Courier OKE',  desc: 'Ekonomis dalam kota' },
-        'JTR':    { label: 'JNE Trucking',      desc: 'Estimasi 3–4 hari kerja' },
+        'REG':    { label: 'Regular',          desc: 'Estimated 2–3 business days' },
+        'YES':    { label: 'YES (Next Day)',   desc: 'Estimated 1 business day' },
+        'OKE':    { label: 'OKE (Economy)',    desc: 'Estimated 3–5 business days' },
+        'CTC':    { label: 'City Courier',      desc: 'Local delivery' },
+        'CTCYES': { label: 'City Courier YES',  desc: 'Estimated 1 business day local' },
+        'CTCOKE': { label: 'City Courier OKE',  desc: 'Economy local' },
+        'JTR':    { label: 'JNE Trucking',      desc: 'Estimated 3–4 business days' },
     };
 
     // ══════════════════════════════════════════════════════
@@ -992,7 +992,7 @@ $(document).ready(function () {
                 }),
                 cache: true
             },
-            placeholder: 'Cari kota atau kecamatan...',
+            placeholder: 'Search city or district...',
             minimumInputLength: 3
         });
     }
@@ -1037,7 +1037,7 @@ $(document).ready(function () {
         $('#modal-back-btn').css('display', 'flex');
         $('#panel-list').css('display', 'none');
         $('#panel-form').css('display', 'flex');
-        $('#btn-save-addr').text('Simpan Alamat');
+        $('#btn-save-addr').text('Save Address');
     };
 
     window.openEditPanel = async function (id) {
@@ -1048,17 +1048,17 @@ $(document).ready(function () {
         $('#form_destination').val(null).trigger('change');
         hideFormError();
 
-        $('#modal-title').text('Edit Alamat');
+        $('#modal-title').text('Edit Address');
         $('#modal-back-btn').css('display', 'flex');
         $('#panel-list').css('display', 'none');
         $('#panel-form').css('display', 'flex');
-        $('#btn-save-addr').text('Simpan Perubahan');
+        $('#btn-save-addr').text('Save Changes');
 
         try {
             const res  = await fetch(`/profile/addresses/${id}/edit`, {
                 headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
             });
-            if (!res.ok) throw new Error('Gagal memuat data.');
+            if (!res.ok) throw new Error('Failed to load data.');
             const addr = await res.json();
 
             $('#form_name').val(addr.recipient_name ?? '');
@@ -1074,7 +1074,7 @@ $(document).ready(function () {
                 $('#form_destination').append(opt).trigger('change');
             }
         } catch (e) {
-            showFormError('Gagal memuat data alamat. Coba lagi.');
+            showFormError('Failed to load address data. Try again.');
         }
     };
 
@@ -1094,12 +1094,12 @@ $(document).ready(function () {
 
         // Client-side validation
         if (!name || !phone || !address || !destData || !destData.id) {
-            showFormError('Nama penerima, HP, kota/kecamatan, dan alamat wajib diisi.');
+            showFormError('Recipient name, phone, city/district, and address are required.');
             return;
         }
 
         const cityName = destData.city || destData.text.split(',').pop()?.trim() || destData.text;
-        const btn      = $('#btn-save-addr').text('Menyimpan...').prop('disabled', true);
+        const btn      = $('#btn-save-addr').text('Saving...').prop('disabled', true);
         hideFormError();
 
         const url    = isEdit ? `/profile/addresses/${id}` : '{{ route("address.store") }}';
@@ -1134,7 +1134,7 @@ $(document).ready(function () {
                 // Laravel validation errors come as { errors: { field: ['msg'] } }
                 const msg = data.message
                     ?? (data.errors ? Object.values(data.errors).flat().join(' ') : null)
-                    ?? 'Terjadi kesalahan.';
+                    ?? 'An error occurred.';
                 showFormError(msg);
                 return;
             }
@@ -1143,9 +1143,9 @@ $(document).ready(function () {
             window.location.reload();
 
         } catch (e) {
-            showFormError('Koneksi gagal. Coba lagi.');
+            showFormError('Connection failed. Try again.');
         } finally {
-            btn.text(isEdit ? 'Simpan Perubahan' : 'Simpan Alamat').prop('disabled', false);
+            btn.text(isEdit ? 'Save Changes' : 'Save Address').prop('disabled', false);
         }
     });
 
@@ -1193,8 +1193,8 @@ $(document).ready(function () {
         } else {
             $('#courier_list').html(`
                 <div style="background:#fffbeb;border:1.5px solid #fcd34d;border-radius:14px;padding:20px;text-align:center;">
-                    <p style="font-size:11px;color:#d97706;">Alamat ini belum punya kode lokasi JNE.</p>
-                    <p style="font-size:10px;color:#b45309;margin-top:4px;">Pilih alamat lain atau tambah alamat baru.</p>
+                    <p style="font-size:11px;color:#d97706;">This address does not have a JNE location code.</p>
+                    <p style="font-size:10px;color:#b45309;margin-top:4px;">Please select another address or add a new one.</p>
                 </div>`);
         }
 
@@ -1205,9 +1205,9 @@ $(document).ready(function () {
     // DELETE address
     // ══════════════════════════════════════════════════════
     window.deleteAddress = async function (id, btn) {
-        if (!confirm('Hapus alamat ini? Tindakan tidak bisa dibatalkan.')) return;
+        if (!confirm('Remove this address? This action cannot be undone.')) return;
 
-        $(btn).text('Menghapus...').prop('disabled', true);
+        $(btn).text('Removing...').prop('disabled', true);
 
         try {
            const res = await fetch(`/profile/addresses/${id}`, {
@@ -1230,12 +1230,12 @@ $(document).ready(function () {
                     // If no more cards, show empty state
                     if ($('.addr-item').length === 0) {
                         $('.modal-body').first().html(`
-                            <div style="padding:40px;text-align:center;font-size:11px;color:var(--olive-tint);">Belum ada alamat tersimpan.</div>
+                            <div style="padding:40px;text-align:center;font-size:11px;color:var(--olive-tint);">No addresses saved yet.</div>
                         `);
                         // Reset main display
                         $('#display-name').text('{{ $user->name }}');
                         $('#display-phone').text('—');
-                        $('#display-address').text('Belum ada alamat').css('color', '#d97706');
+                        $('#display-address').text('No address set yet').css('color', '#d97706');
                         $('#display-location').text('');
                         $('#hidden_destination_id, #hidden_receiver_name, #hidden_receiver_phone, #hidden_receiver_address').val('');
                     }
@@ -1243,12 +1243,12 @@ $(document).ready(function () {
                     window.location.reload();
                 }, 250);
             } else {
-                $(btn).text('🗑 Hapus').prop('disabled', false);
-                alert('Gagal menghapus alamat.');
+                $(btn).text('🗑 Remove').prop('disabled', false);
+                alert('Failed to delete address.');
             }
         } catch (e) {
-            $(btn).text('🗑 Hapus').prop('disabled', false);
-            alert('Koneksi gagal. Coba lagi.');
+            $(btn).text('🗑 Remove').prop('disabled', false);
+            alert('Connection failed. Try again.');
         }
     };
 

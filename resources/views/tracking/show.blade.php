@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lacak Paket {{ $awb }} - Farhana</title>
+    <title>Track Package {{ $awb }} - Farhana</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -39,9 +39,9 @@
             <span class="text-[14px] font-black tracking-[0.6em] uppercase border-b-2 border-current pb-1">Farhana</span>
         </a>
         <div class="pt-4">
-            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Lacak Pengiriman</h1>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Track Shipment</h1>
             <p class="text-sm text-gray-500 mt-2 tracking-wide">
-                No. Resi: <span class="font-bold text-black bg-yellow-100 px-2 py-0.5 rounded">{{ $awb }}</span>
+                Tracking Number: <span class="font-bold text-black bg-yellow-100 px-2 py-0.5 rounded">{{ $awb }}</span>
             </p>
         </div>
     </div>
@@ -57,9 +57,9 @@
     <div class="bg-white rounded-[2rem] p-8 md:p-10 border border-gray-100 premium-shadow">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
             <div>
-                <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400 font-bold">Status Saat Ini</span>
+                <span class="text-[11px] uppercase tracking-[0.2em] text-gray-400 font-bold">Current Status</span>
                 <h2 class="text-xl md:text-2xl font-bold mt-1 leading-tight text-gray-900">
-                    {{ $cnote['last_status'] ?? 'Sedang diproses' }}
+                    {{ $cnote['last_status'] ?? 'Processing' }}
                 </h2>
             </div>
             <div class="flex-shrink-0">
@@ -75,35 +75,35 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-t border-gray-100">
             <div class="space-y-1">
-                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Informasi Pengirim</p>
+                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Shipper Information</p>
                 <p class="text-lg font-bold">{{ $detail['cnote_shipper_name'] ?? '-' }}</p>
                 <p class="text-sm text-gray-500">{{ $detail['cnote_shipper_city'] ?? '-' }}</p>
             </div>
             <div class="space-y-1">
-                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Tujuan Penerima</p>
+                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Recipient Destination</p>
                 <p class="text-lg font-bold">{{ $cnote['cnote_receiver_name'] ?? '-' }}</p>
                 <p class="text-sm text-gray-500">{{ $cnote['city_name'] ?? '-' }}</p>
             </div>
             <div class="space-y-1">
-                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Layanan</p>
+                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Service</p>
                 <p class="text-lg font-bold flex items-center">
                     <span class="bg-gray-100 px-2 py-1 rounded text-sm mr-2 italic">JNE</span>
                     {{ $cnote['cnote_services_code'] ?? '-' }}
                 </p>
             </div>
             <div class="space-y-1">
-                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Estimasi Tiba</p>
-                <p class="text-lg font-bold text-stone-700">{{ $cnote['estimate_delivery'] ?? 'Menghitung...' }}</p>
+                <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Estimated Delivery</p>
+                <p class="text-lg font-bold text-stone-700">{{ $cnote['estimate_delivery'] ?? 'Calculating...' }}</p>
             </div>
 
             @if(isset($cnote['cnote_pod_date']) && $cnote['cnote_pod_date'])
             <div class="col-span-1 md:col-span-2 bg-stone-50 p-6 rounded-2xl border border-stone-100 mt-4">
-                <p class="text-[11px] uppercase tracking-wider text-stone-400 font-bold">Diterima Pada</p>
+                <p class="text-[11px] uppercase tracking-wider text-stone-400 font-bold">Received At</p>
                 <p class="text-xl font-black text-stone-800">
                     {{ \Carbon\Carbon::parse($cnote['cnote_pod_date'])->translatedFormat('d F Y, H:i') }}
                 </p>
                 @if(isset($cnote['cnote_pod_receiver']))
-                <p class="text-sm mt-1 text-stone-600 italic">Diterima oleh: <span class="font-bold uppercase">{{ $cnote['cnote_pod_receiver'] }}</span></p>
+                 <p class="text-sm mt-1 text-stone-600 italic">Received by: <span class="font-bold uppercase">{{ $cnote['cnote_pod_receiver'] }}</span></p>
                 @endif
             </div>
             @endif
@@ -115,8 +115,8 @@
     @if(count($history) > 0)
     <div class="bg-white rounded-[2rem] p-8 md:p-10 border border-gray-100 premium-shadow">
         <div class="flex items-center justify-between mb-10">
-            <h3 class="text-sm font-black uppercase tracking-[0.3em] text-gray-800">Riwayat Perjalanan</h3>
-            <span class="text-[10px] text-gray-400 font-medium">Terakhir diperbarui: {{ now()->format('H:i') }}</span>
+            <h3 class="text-sm font-black uppercase tracking-[0.3em] text-gray-800">Shipping History</h3>
+            <span class="text-[10px] text-gray-400 font-medium">Last updated: {{ now()->format('H:i') }}</span>
         </div>
         
         <div class="relative pl-4 md:pl-8">
@@ -149,7 +149,7 @@
                             <span class="text-[11px] font-bold text-stone-400 whitespace-nowrap">{{ $h['date'] }}</span>
                         </div>
                         @if($i === 0)
-                            <span class="text-[10px] font-black uppercase tracking-widest text-stone-500 bg-stone-100 px-2 py-0.5 rounded">Posisi Terakhir</span>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-stone-500 bg-stone-100 px-2 py-0.5 rounded">Last Position</span>
                         @endif
                     </div>
                 </div>
@@ -166,8 +166,8 @@
             <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
         </div>
         <div class="space-y-1">
-            <h3 class="text-lg font-bold text-gray-800">Data Belum Tersedia</h3>
-            <p class="text-sm text-gray-400 max-w-xs mx-auto">Sistem JNE sedang memperbarui data kamu. Coba cek lagi dalam beberapa menit.</p>
+            <h3 class="text-lg font-bold text-gray-800">Data Not Available</h3>
+            <p class="text-sm text-gray-400 max-w-xs mx-auto">The JNE system is updating your data. Please check back in a few minutes.</p>
         </div>
     </div>
     @endif
@@ -176,7 +176,7 @@
         <a href="{{ route('profile.orders') }}"
             class="flex items-center justify-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-stone-400 hover:text-stone-800 transition-all duration-300">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Kembali ke Pesanan
+            Back to Orders
         </a>
     </div>
 

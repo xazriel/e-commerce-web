@@ -1,6 +1,6 @@
 @php
-    // Ambil data keranjang dari session
-    $cart = session()->get('cart', []);
+    // Ambil data keranjang dari CartService
+    $cart = \App\Services\CartService::getCart();
     
     // Hitung total kuantitas (misal: 2 Hijab + 1 Gamis = 3)
     $totalCount = 0;

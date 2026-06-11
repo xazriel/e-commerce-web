@@ -111,7 +111,7 @@
                     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mb-3"
-                           style="color: rgba(255,255,255,.35);">Utama</p>
+                           style="color: rgba(255,255,255,.35);">Main</p>
 
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
@@ -120,39 +120,39 @@
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Transaksi</p>
+                           style="color: rgba(255,255,255,.35);">Transactions</p>
 
                         <a href="{{ route('admin.orders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Order
+                            Manage Orders
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Katalog</p>
+                           style="color: rgba(255,255,255,.35);">Catalog</p>
 
                         <a href="{{ route('admin.categories.index') }}"
                            class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Kategori
+                            Manage Categories
                         </a>
 
                         <a href="{{ route('admin.products.index') }}"
                            class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Produk
+                            Manage Products
                         </a>
 
                         <a href="{{ route('admin.sliders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Banner
+                            Manage Banners
                         </a>
 
                         <a href="{{ route('admin.size-guides.index') }}"
                            class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Size Guide
+                            Manage Size Guides
                         </a>
                     </nav>
 
@@ -256,7 +256,7 @@
                     {{-- Drawer nav --}}
                     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mb-3"
-                           style="color: rgba(255,255,255,.35);">Utama</p>
+                           style="color: rgba(255,255,255,.35);">Main</p>
 
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
@@ -265,36 +265,36 @@
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Transaksi</p>
+                           style="color: rgba(255,255,255,.35);">Transactions</p>
 
                         <a href="{{ route('admin.orders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.orders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Order
+                            Manage Orders
                         </a>
 
                         <p class="text-[8px] font-black uppercase tracking-[.35em] px-3 mt-6 mb-3"
-                           style="color: rgba(255,255,255,.35);">Katalog</p>
+                           style="color: rgba(255,255,255,.35);">Catalog</p>
 
                         <a href="{{ route('admin.categories.index') }}"
                            class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.categories.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Kategori
+                            Manage Categories
                         </a>
                         <a href="{{ route('admin.products.index') }}"
                            class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.products.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Produk
+                            Manage Products
                         </a>
                         <a href="{{ route('admin.sliders.index') }}"
                            class="nav-link {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.sliders.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Banner
+                            Manage Banners
                         </a>
                         <a href="{{ route('admin.size-guides.index') }}"
                            class="nav-link {{ request()->routeIs('admin.size-guides.*') ? 'active' : '' }}"
                            style="{{ request()->routeIs('admin.size-guides.*') ? '' : 'color: rgba(255,255,255,.6);' }}">
-                            Kelola Size Guide
+                            Manage Size Guides
                         </a>
                     </nav>
 

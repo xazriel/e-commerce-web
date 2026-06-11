@@ -23,6 +23,11 @@
                             <option value="defect">Defect (Minor, Major)</option>
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Custom Sizes (Opsional)</label>
+                        <input type="text" name="custom_sizes" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black" placeholder="Contoh: S, M, L atau Mini, Midi (pisahkan dengan koma)">
+                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika ingin menggunakan ukuran default dari Tipe Kategori yang dipilih.</p>
+                    </div>
                     <div class="flex justify-end gap-2">
                         <a href="{{ route('admin.categories.index') }}" class="bg-gray-200 px-4 py-2 rounded-md">Batal</a>
                         <button type="submit" class="bg-black text-white px-4 py-2 rounded-md">Simpan Kategori</button>

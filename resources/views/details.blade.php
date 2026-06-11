@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
@@ -408,7 +408,7 @@
     </template>
 
     {{-- WhatsApp FAB --}}
-    <a href="https://wa.me/628123456789?text=Halo%20Farhana,%20saya%20tertarik%20dengan%20produk%20{{ urlencode($product->name) }}"
+    <a href="https://wa.me/628123456789?text=Hello%20Farhana,%20I'm%20interested%20in%20product%20{{ urlencode($product->name) }}"
        class="wa-fab" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -416,7 +416,7 @@
     {{-- Navbar --}}
     <header class="navbar" role="banner">
         <div class="navbar-inner">
-            <a href="{{ route('home') }}" class="back-btn" aria-label="Kembali ke koleksi">
+            <a href="{{ route('home') }}" class="back-btn" aria-label="Back to collection">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"/>
                 </svg>
@@ -440,15 +440,15 @@
         <div class="product-grid">
 
             {{-- ── GALLERY ── --}}
-            <div aria-label="Galeri produk">
+            <div aria-label="Product gallery">
                 <div id="swipeArea" class="gallery-hero" role="img" aria-label="{{ $product->name }}">
-                    <button type="button" class="g-arrow prev" onclick="navigate(-1)" aria-label="Foto sebelumnya">
+                    <button type="button" class="g-arrow prev" onclick="navigate(-1)" aria-label="Previous photo">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                     </button>
                     <img id="mainImage"
                          src="{{ asset('storage/' . ($product->images->where('is_primary', true)->first()->image_path ?? $product->images->first()->image_path)) }}"
                          alt="{{ $product->name }}" loading="eager">
-                    <button type="button" class="g-arrow next" onclick="navigate(1)" aria-label="Foto berikutnya">
+                    <button type="button" class="g-arrow next" onclick="navigate(1)" aria-label="Next photo">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
                 </div>
@@ -466,7 +466,7 @@
                                 data-index="{{ $i }}"
                                 data-color="{{ strtolower(trim($img->color ?? '')) }}"
                                 onclick="goToImage({{ $i }})"
-                                aria-label="Foto {{ $i + 1 }}">
+                                aria-label="Photo {{ $i + 1 }}">
                             <img src="{{ asset('storage/' . $img->image_path) }}" alt="Thumbnail {{ $i + 1 }}" loading="lazy">
                         </button>
                     @endforeach
@@ -508,12 +508,12 @@
                     {{-- Countdown --}}
                     @if($product->is_preorder && $product->release_date)
                         <div id="cdWrap" data-expire="{{ $product->release_date }}" class="countdown-wrap hidden" role="timer">
-                            <p class="cd-label">Pre-Order Berakhir Dalam</p>
+                            <p class="cd-label">Pre-Order Ends In</p>
                             <div class="cd-row">
-                                <div class="cd-unit"><span id="cdD" class="cd-num">00</span><span class="cd-lbl">Hari</span></div>
-                                <div class="cd-unit"><span id="cdH" class="cd-num">00</span><span class="cd-lbl">Jam</span></div>
-                                <div class="cd-unit"><span id="cdM" class="cd-num">00</span><span class="cd-lbl">Menit</span></div>
-                                <div class="cd-unit"><span id="cdS" class="cd-num">00</span><span class="cd-lbl">Detik</span></div>
+                                <div class="cd-unit"><span id="cdD" class="cd-num">00</span><span class="cd-lbl">Days</span></div>
+                                <div class="cd-unit"><span id="cdH" class="cd-num">00</span><span class="cd-lbl">Hours</span></div>
+                                <div class="cd-unit"><span id="cdM" class="cd-num">00</span><span class="cd-lbl">Minutes</span></div>
+                                <div class="cd-unit"><span id="cdS" class="cd-num">00</span><span class="cd-lbl">Seconds</span></div>
                             </div>
                         </div>
                     @endif
@@ -536,15 +536,15 @@
                         @if($hasColor)
                         <div class="form-sec" id="colorSection">
                             <div class="form-sec-head">
-                                <span class="sec-label" id="colorLabel">Pilih Warna</span>
+                                <span class="sec-label" id="colorLabel">Select Color</span>
                                 <span id="colorHint" class="inline-hint" aria-live="polite">
                                     <svg class="v-msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                                     </svg>
-                                    <span class="hint-text">Pilih warna dulu</span>
+                                    <span class="hint-text">Select color first</span>
                                 </span>
                             </div>
-                            <div class="v-opts" role="group" aria-label="Pilihan warna" id="colorOpts">
+                            <div class="v-opts" role="group" aria-label="Color options" id="colorOpts">
                                 @foreach($uniqueColors as $color)
                                     <label class="v-opt">
                                         <input type="radio" name="color" value="{{ $color }}"
@@ -559,20 +559,20 @@
                         {{-- SIZE SECTION --}}
                         <div class="form-sec" id="sizeSection">
                             <div class="form-sec-head">
-                                <span class="sec-label" id="sizeLabel">Pilih Ukuran</span>
+                                <span class="sec-label" id="sizeLabel">Select Size</span>
                                 <div style="display:flex;align-items:center;gap:.75rem">
                                     <span id="sizeHint" class="inline-hint" aria-live="polite">
                                         <svg class="v-msg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                                         </svg>
-                                        <span class="hint-text">Pilih ukuran dulu</span>
+                                        <span class="hint-text">Select size first</span>
                                     </span>
                                     @if($product->sizeGuide)
-                                        <button type="button" class="guide-btn" onclick="openModal('guideModal')">Panduan Ukuran</button>
+                                        <button type="button" class="guide-btn" onclick="openModal('guideModal')">Size Guide</button>
                                     @endif
                                 </div>
                             </div>
-                            <div class="v-opts" id="sizeContainer" role="group" aria-label="Pilihan ukuran">
+                            <div class="v-opts" id="sizeContainer" role="group" aria-label="Size options">
                                 @foreach($uniqueSizes as $size)
                                     <label class="v-opt sz-opt" data-size="{{ $size }}" onclick="onSizeLabelClick(event, this)">
                                         <input type="radio" name="size" value="{{ $size }}"
@@ -587,16 +587,16 @@
                         {{-- Quantity --}}
                         <div class="form-sec">
                             <div class="form-sec-head">
-                                <span class="sec-label">Jumlah</span>
+                                <span class="sec-label">Quantity</span>
                                 <span id="stockBadge" class="stock-badge" aria-live="polite">
                                     <span class="stock-dot"></span>
-                                    <span id="stockText">{{ $hasColor ? 'Pilih warna & ukuran' : 'Pilih ukuran' }}</span>
+                                    <span id="stockText">{{ $hasColor ? 'Select color & size' : 'Select size' }}</span>
                                 </span>
                             </div>
-                            <div class="qty-wrap" role="group" aria-label="Jumlah">
-                                <button type="button" class="qty-btn" id="qtyMinus" onclick="adjustQty(-1)" aria-label="Kurangi">−</button>
-                                <input type="number" id="qtyInput" name="quantity" value="1" min="1" class="qty-input" readonly aria-label="Jumlah">
-                                <button type="button" class="qty-btn" id="qtyPlus" onclick="adjustQty(1)" aria-label="Tambah">+</button>
+                            <div class="qty-wrap" role="group" aria-label="Quantity">
+                                <button type="button" class="qty-btn" id="qtyMinus" onclick="adjustQty(-1)" aria-label="Decrease">−</button>
+                                <input type="number" id="qtyInput" name="quantity" value="1" min="1" class="qty-input" readonly aria-label="Quantity">
+                                <button type="button" class="qty-btn" id="qtyPlus" onclick="adjustQty(1)" aria-label="Increase">+</button>
                             </div>
                         </div>
 
@@ -612,17 +612,17 @@
 
                         <div class="btn-row" id="btnRow">
                             <button type="button" class="btn btn-outline" id="btnCart" onclick="handleOrder('add')">
-                                {{ $product->is_preorder ? 'Pre-Order Sekarang' : 'Tambah ke Keranjang' }}
+                                {{ $product->is_preorder ? 'Pre-Order Now' : 'Add to Cart' }}
                             </button>
                             <button type="button" class="btn btn-primary" id="btnBuy" onclick="handleOrder('buy')">
-                                Beli Sekarang
+                                Buy Now
                             </button>
                         </div>
                     </form>
 
                     {{-- Description --}}
                     <div class="desc-block">
-                        <p class="desc-title">Deskripsi</p>
+                        <p class="desc-title">Description</p>
                         <div class="desc-body">{!! nl2br(e($product->description)) !!}</div>
                     </div>
 
@@ -632,7 +632,7 @@
 
         {{-- RELATED --}}
         @if(isset($relatedProducts) && $relatedProducts->count() > 0)
-            <section class="related-sec" aria-label="Produk serupa">
+            <section class="related-sec" aria-label="Related products">
                 <h2 class="related-h">You May Also Like</h2>
                 <div class="related-scroll">
                     <div class="related-track">
@@ -665,7 +665,7 @@
              class="footer-modal-overlay"
              style="display:none;">
             <div @click.away="footerModal = null" class="footer-modal-box">
-                <button @click="footerModal = null" class="footer-modal-close" aria-label="Tutup">
+                <button @click="footerModal = null" class="footer-modal-close" aria-label="Close">
                     <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -684,9 +684,9 @@
                 <div>
                     <h4 class="text-[10px] font-bold tracking-[0.3em] uppercase mb-6">About Farhana</h4>
                     <p class="text-[11px] text-white/80 leading-loose tracking-widest uppercase">
-                        Farhana hadir melalui kesederhanaan yang terasa tenang, anggun, dan bermakna.
-                        Kami percaya bahwa modesty bukan sekadar cara berpakaian, tetapi juga cara membawa diri dengan iman, ketenangan, dan keindahan yang tidak berlebihan.
-                        Setiap koleksi dirancang dengan perhatian pada detail, kenyamanan, dan siluet yang elegan untuk menemani perempuan muslimah dalam setiap langkahnya.
+                        Farhana is present through a simplicity that feels calm, elegant, and meaningful.
+                        We believe that modesty is not just a way of dressing, but also a way of carrying oneself with faith, serenity, and beauty that is not excessive.
+                        Each collection is designed with attention to detail, comfort, and elegant silhouettes to accompany Muslim women in every step.
                         <br><br>
                         Luxury in Modesty.<br>
                         Elegance with Iman.
@@ -740,12 +740,12 @@
              onclick="if(event.target===this)closeModal('guideModal')">
             <div class="modal-box">
                 <div class="modal-head">
-                    <p class="modal-title" id="guideTitle">Panduan Ukuran</p>
-                    <button type="button" class="modal-close" onclick="closeModal('guideModal')" aria-label="Tutup">&times;</button>
+                    <p class="modal-title" id="guideTitle">Size Guide</p>
+                    <button type="button" class="modal-close" onclick="closeModal('guideModal')" aria-label="Close">&times;</button>
                 </div>
                 <div class="modal-body">
                     <img src="{{ asset('storage/' . $product->sizeGuide->image) }}"
-                         alt="Panduan Ukuran {{ $product->name }}" loading="lazy">
+                         alt="Size Guide {{ $product->name }}" loading="lazy">
                 </div>
             </div>
         </div>
@@ -904,7 +904,7 @@
         if (inp && inp.disabled) {
             event.preventDefault();
             _highlightSection('colorSection');
-            showColorHint('Pilih warna dulu');
+            showColorHint('Select color first');
             scrollToSection('colorSection');
             return;
         }
@@ -979,13 +979,13 @@
         badge.className = 'stock-badge';
         if (stock <= 0) {
             badge.classList.add('stock-out');
-            txt.textContent = 'Habis Terjual';
+            txt.textContent = 'Out of Stock';
         } else if (stock <= 3) {
             badge.classList.add('stock-low');
-            txt.textContent = `Sisa ${stock} pcs`;
+            txt.textContent = `Only ${stock} left`;
         } else {
             badge.classList.add('stock-ok');
-            txt.textContent = `${stock} Tersedia`;
+            txt.textContent = `${stock} Available`;
         }
         const outOfStock = stock <= 0;
         document.getElementById('qtyMinus').disabled = outOfStock;
@@ -999,7 +999,7 @@
         const badge = document.getElementById('stockBadge');
         const txt   = document.getElementById('stockText');
         badge.className = 'stock-badge';
-        txt.textContent = hasColor ? 'Pilih warna & ukuran' : 'Pilih ukuran';
+        txt.textContent = hasColor ? 'Select color & size' : 'Select size';
         document.getElementById('qtyPlus').disabled  = false;
         document.getElementById('qtyMinus').disabled = true;
         document.getElementById('btnCart').disabled  = false;
@@ -1015,7 +1015,7 @@
         if (val < 1) val = 1;
         if (maxStock > 0 && val > maxStock) {
             val = maxStock;
-            showBanner(`Stok hanya tersedia ${maxStock} pcs.`);
+            showBanner(`Only ${maxStock} items available.`);
         }
         inp.value = val;
         document.getElementById('qtyMinus').disabled = val <= 1;
@@ -1044,9 +1044,9 @@
         if (hasColor && !colorEl && !sizeEl) {
             _highlightSection('colorSection');
             _highlightSection('sizeSection');
-            showColorHint('Pilih warna dulu');
-            showSizeHint('Pilih ukuran dulu');
-            showBanner('Pilih warna & ukuran terlebih dahulu.');
+            showColorHint('Select color first');
+            showSizeHint('Select size first');
+            showBanner('Please select color & size first.');
             shakeBtn('btnCart');
             shakeBtn('btnBuy');
             scrollToSection('colorSection');
@@ -1055,8 +1055,8 @@
 
         if (!hasColor && !sizeEl) {
             _highlightSection('sizeSection');
-            showSizeHint('Pilih ukuran dulu');
-            showBanner('Pilih ukuran terlebih dahulu.');
+            showSizeHint('Select size first');
+            showBanner('Please select size first.');
             shakeBtn('btnCart');
             shakeBtn('btnBuy');
             scrollToSection('sizeSection');
@@ -1065,8 +1065,8 @@
 
         if (!sizeEl) {
             _highlightSection('sizeSection');
-            showSizeHint('Pilih ukuran dulu');
-            showBanner('Pilih ukuran terlebih dahulu.');
+            showSizeHint('Select size first');
+            showBanner('Please select size first.');
             shakeBtn('btnCart');
             shakeBtn('btnBuy');
             scrollToSection('sizeSection');
@@ -1075,8 +1075,8 @@
 
         if (hasColor && !colorEl) {
             _highlightSection('colorSection');
-            showColorHint('Pilih warna dulu');
-            showBanner('Pilih warna terlebih dahulu.');
+            showColorHint('Select color first');
+            showBanner('Please select color first.');
             shakeBtn('btnCart');
             shakeBtn('btnBuy');
             scrollToSection('colorSection');
@@ -1089,7 +1089,7 @@
         );
 
         if (!v || (!isPreorder && parseInt(v.stock) <= 0)) {
-            showBanner('Stok untuk pilihan ini sudah habis.');
+            showBanner('This option is out of stock.');
             shakeBtn('btnCart');
             shakeBtn('btnBuy');
             return;

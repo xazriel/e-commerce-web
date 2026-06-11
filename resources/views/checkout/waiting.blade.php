@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Menunggu Pembayaran - Farhana</title>
+    <title>Waiting for Payment - Farhana</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('farhana.svg') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -267,12 +267,12 @@
     {{-- Step tag --}}
     <div class="step-tag fade-up delay-1">
         <span class="step-dot"></span>
-        Menunggu Pembayaran
+        Waiting for Payment
     </div>
 
     {{-- Countdown --}}
     <div class="countdown-card fade-up delay-1">
-        <p class="countdown-sub">Selesaikan pembayaran dalam</p>
+        <p class="countdown-sub">Please complete payment within</p>
         <div id="countdown" class="countdown-timer">--:--</div>
         <p class="countdown-order">
             Order <strong>{{ $order->order_number }}</strong>
@@ -281,12 +281,12 @@
 
     {{-- Order Summary --}}
     <div class="card fade-up delay-2">
-        <div class="card-label">Ringkasan Pesanan</div>
+        <div class="card-label">Order Summary</div>
 
         @foreach($order->items as $item)
         <div class="order-row">
             <span class="order-row-label">
-                {{ $item->product->name ?? 'Produk' }}
+                {{ $item->product->name ?? 'Product' }}
                 <span style="opacity:.6;">× {{ $item->quantity }}</span>
             </span>
             <span class="order-row-val">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
@@ -300,7 +300,7 @@
             <span class="order-row-val" style="font-weight:400;">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
         </div>
         <div class="order-row">
-            <span class="order-row-label">Ongkos Kirim</span>
+            <span class="order-row-label">Shipping Cost</span>
             <span class="order-row-val" style="font-weight:400;">Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
         </div>
         <div class="order-row" style="margin-bottom:0;">
@@ -318,7 +318,7 @@
 
     {{-- Shipping Info --}}
     <div class="card fade-up delay-3">
-        <div class="card-label">Dikirim Ke</div>
+        <div class="card-label">Ship To</div>
         <div class="ship-name">{{ $order->receiver_name }}</div>
         <div class="ship-meta">
             {{ $order->receiver_phone }}<br>
@@ -331,16 +331,16 @@
 
     {{-- CTA --}}
     <div class="fade-up delay-4">
-        <button id="pay-button" class="btn-pay">Bayar Sekarang</button>
+        <button id="pay-button" class="btn-pay">Pay Now</button>
 
         <form action="{{ route('checkout.cancel', $order->order_number) }}" method="POST"
-            onsubmit="return confirm('Batalkan pesanan ini?')">
+            onsubmit="return confirm('Cancel this order?')">
             @csrf
             @method('PATCH')
-            <button type="submit" class="btn-cancel">Batalkan Pesanan</button>
+            <button type="submit" class="btn-cancel">Cancel Order</button>
         </form>
 
-        <p class="pay-note">Klik "Bayar Sekarang" untuk membuka halaman pembayaran Midtrans yang aman.</p>
+        <p class="pay-note">Click "Pay Now" to open the secure Midtrans payment gateway.</p>
     </div>
 
 </div>
@@ -372,7 +372,7 @@
         snap.pay('{{ $order->payment_token }}', {
             onSuccess: () => window.location.href = '/checkout/success/{{ $order->order_number }}',
             onPending: () => window.location.href = '/checkout/waiting/{{ $order->order_number }}',
-            onError:   () => alert('Pembayaran gagal. Silakan coba lagi.'),
+            onError:   () => alert('Payment failed. Please try again.'),
             onClose:   () => {}
         });
     };

@@ -222,8 +222,8 @@
         </div>
 
         {{-- Heading --}}
-        <span class="ve-eyebrow">Satu Langkah Lagi</span>
-        <h1 class="ve-heading">Verifikasi <em>Email</em> Kamu</h1>
+        <span class="ve-eyebrow">One More Step</span>
+        <h1 class="ve-heading">Verify Your <em>Email</em></h1>
 
         {{-- Status --}}
         @if (session('status') == 'verification-link-sent')
@@ -231,20 +231,20 @@
                 <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                 </svg>
-                Link verifikasi baru telah dikirim ke email kamu.
+                A new verification link has been sent to your email.
             </div>
         @endif
 
         {{-- Description --}}
         <p class="ve-desc">
-            Kami telah mengirim link verifikasi ke <strong>email kamu</strong>.<br>
-            Buka email tersebut dan klik tombol verifikasi untuk mengaktifkan akun.
+            We have sent a verification link to <strong>your email</strong>.<br>
+            Open the email and click the verification button to activate your account.
         </p>
 
         <hr class="ve-rule">
 
         {{-- Resend --}}
-        <p class="ve-resend-label">Tidak menerima email? Cek folder <strong>Spam</strong> atau kirim ulang.</p>
+        <p class="ve-resend-label">Didn't receive the email? Check your <strong>Spam</strong> folder or resend.</p>
 
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
@@ -252,7 +252,7 @@
                 <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
                 </svg>
-                Kirim Ulang Verifikasi
+                Resend Verification
             </button>
         </form>
 
@@ -260,7 +260,7 @@
         <div class="ve-footer">
             <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                 @csrf
-                <button type="submit" class="ve-logout">Keluar dari akun</button>
+                <button type="submit" class="ve-logout">Log Out</button>
             </form>
         </div>
 

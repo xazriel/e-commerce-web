@@ -64,20 +64,20 @@
     @php
         $faqs = [
             [
-                'Apakah produk dijual dalam satu set?',
-                'Beberapa produk dijual terpisah sesuai kategori masing-masing.'
+                'Are products sold as a set?',
+                'Some products are sold separately according to their respective categories.'
             ],
             [
-                'Bagaimana cara melihat status pesanan?',
-                'Login ke akun Anda dan lihat detail pesanan melalui halaman profile/order.'
+                'How can I view my order status?',
+                'Log in to your account and check order details via the profile/orders page.'
             ],
             [
-                'Kapan pengiriman dilakukan?',
-                'Pengiriman dilakukan pada hari operasional sesuai jadwal yang berlaku.'
+                'When is the shipping done?',
+                'Shipping is conducted on operational days according to the applicable schedule.'
             ],
             [
-                'Apakah Sabtu dan Minggu tetap melayani pengiriman?',
-                'Pesanan di luar jam operasional akan diproses pada hari kerja berikutnya.'
+                'Are shipments processed on Saturdays and Sundays?',
+                'Orders placed outside operational hours will be processed on the next business day.'
             ],
         ];
     @endphp
